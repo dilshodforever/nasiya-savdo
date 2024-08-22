@@ -1,0 +1,59 @@
+syntax = "proto3";
+
+package protos;
+
+
+option go_package = "genprotos/";
+
+import "product.proto";
+
+service OrderItemService {
+    rpc AddItems (AddItemsRequest) returns (AddItemsResponse);
+    rpc DeleteItems (DeleItemsRequest) returns (DeleteProductResponse);
+    rpc ListOrderItems (GetByUseridItems) returns (GetAllItems);
+}
+
+
+message AddItemsRequest{
+    string id = 1;
+    string user_id = 2;
+    string product_id= 3;
+   
+}
+
+message AddItemsResponse{
+    double total_price =1;
+    repeated GetProductResponse products = 2;
+    int32 quantity = 3;
+}
+
+message DeleItemsRequest{
+     string product_id=1;
+}
+
+message DeleteProductResponse{
+    string message =1;
+    bool success =2;
+}
+
+message GetByUseridItems{
+    string user_id =1;
+}
+
+message GetAllItems{
+    double total_amount =1;
+    repeated GetProductResponse products = 2;
+    int32 quantity = 3;
+}
+
+
+
+
+
+
+
+
+
+
+
+

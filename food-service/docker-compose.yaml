@@ -1,0 +1,16 @@
+version: '3.9'
+
+services:
+  game-service:
+    container_name: gameservice
+    build: .
+    ports:
+      - "8087:8087"
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    external: true
+    name: global-network
+    driver: bridge

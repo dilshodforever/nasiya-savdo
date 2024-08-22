@@ -1,0 +1,88 @@
+syntax = "proto3";
+
+package protos;
+
+option go_package = "genprotos/";
+
+import "product.proto";
+
+service OrderService {
+    rpc CreateOrder (CreateOrderRequest) returns (CreateOrderResponse);
+    rpc GetOrderByid (GetByIdRequest) returns (GetAllOrders);
+    rpc UpdateOrder (UpdateOrderRequest) returns (UpdateStatusResponse);
+    rpc DeleteOrder (DeleteOrdersByidRequest) returns (DeleteOrdersByidResponse);
+    rpc ListOrders (GetAllRequest) returns (GetAllOrdersList);
+    rpc UpdateStatus(UpdateStatusRequest) returns(UpdateStatusResponse);
+}
+
+message CreateOrderRequest {
+    string user_id = 1;
+    string courier_id = 2;
+    string delivery_address = 3;
+    string time =4;
+}
+
+message CreateOrderResponse{
+    string order_id=1;
+    string message=9;
+}
+
+
+message GetAllOrders {
+    string order_id=1;
+    string user_id = 2;
+    string courier_id = 3;
+    string status = 4;
+    double total_amount = 5;
+    string delivery_address = 6;
+    string time =7;
+    repeated GetProductResponse products=8;
+}
+
+message GetAllRequest{
+    string order_id=1;
+    string user_id = 2;
+    string courier_id = 3;
+    string status = 4;
+    double total_amount = 5;
+    string delivery_address = 6;
+    repeated GetProductResponse products=7;
+}
+
+message GetAllOrdersList{
+    repeated GetAllOrders orders = 1;
+}
+
+message GetByIdRequest{
+    string order_id=1;
+}
+
+
+message UpdateOrderRequest {
+    string order_id =1;
+    string delivery_address = 2;
+}
+
+
+message UpdateStatusRequest{
+    string order_id=1;
+    string status=2;
+}
+
+message UpdateStatusResponse{
+    bool succes =1;
+    string message =2;
+}
+
+
+message DeleteOrdersByidRequest{
+    string order_id=1;
+}
+
+message DeleteOrdersByidResponse{
+    bool succes =1;
+    string message =2;
+}
+
+
+
