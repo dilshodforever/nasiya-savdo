@@ -1,0 +1,152 @@
+package postgres
+
+import (
+	"database/sql"
+	"fmt"
+	"log"
+	"strings"
+
+	pb "github.com/dilshodforever/nasiya-savdo/genprotos"
+)
+
+type ProductStorage struct {
+	db *sql.DB
+}
+
+func NewProductStorage(db *sql.DB) *ProductStorage {
+	return &ProductStorage{db: db}
+}
+
+func (p *ProductStorage) CreateProduct(req *pb.CreateProductRequest) (*pb.ProductResponse, error) {
+	query := `
+		INSERT INTO products (id, name, color, model, image_url, made_in, date_of_creation, storage_id, created_at, updated_at, deleted_at)
+		VALUES (uuid_generate_v4(), $1, $2, $3, $4, $5, $6, $7, now(), now(), 0)
+		RETURNING id
+	`
+
+	var id string
+	err := p.db.QueryRow(query, req.Name, req.Color, req.Model, req.ImageUrl, req.MadeIn, req.DateOfCreation, req.StorageId).Scan(&id)
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.ProductResponse{
+		Message: "Product created successfully",
+		Success: true,
+	}, nil
+}
+
+func (p *ProductStorage) GetProduct(req *pb.ProductIdRequest) (*pb.GetProductResponse, error) {
+	var product pb.GetProductResponse
+	query := `
+		SELECT id, name, color, model, image_url, made_in, date_of_creation, storage_id, created_at, updated_at, deleted_at
+		FROM products
+		WHERE id = $1 AND deleted_at = 0
+	`
+	err := p.db.QueryRow(query, req.Id).Scan(
+		&product.Id, &product.Name, &product.Color, &product.Model,
+		&product.ImageUrl, &product.MadeIn, &product.DateOfCreation,
+		&product.StorageId, &product.CreatedAt, &product.UpdatedAt, &product.DeletedAt,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return &product, nil
+}
+
+func (p *ProductStorage) UpdateProduct(req *pb.UpdateProductRequest) (*pb.ProductResponse, error) {
+	query := `
+		UPDATE products
+		SET name = $1, color = $2, model = $3, image_url = $4, made_in = $5, date_of_creation = $6, storage_id = $7, updated_at = now()
+		WHERE id = $8 AND deleted_at = 0
+	`
+	_, err := p.db.Exec(query, req.Name, req.Color, req.Model, req.ImageUrl, req.MadeIn, req.DateOfCreation, req.StorageId, req.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.ProductResponse{
+		Message: "Product updated successfully",
+		Success: true,
+	}, nil
+}
+
+func (p *ProductStorage) DeleteProduct(req *pb.ProductIdRequest) (*pb.ProductResponse, error) {
+	query := `
+		UPDATE products
+		SET deleted_at = now()
+		WHERE id = $1 AND deleted_at = 0
+	`
+	_, err := p.db.Exec(query, req.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.ProductResponse{
+		Message: "Product deleted successfully",
+		Success: true,
+	}, nil
+}
+
+func (p *ProductStorage) ListProducts(req *pb.GetAllProductRequest) (*pb.GetAllProductResponse, error) {
+	products := pb.GetAllProductResponse{}
+	var queryBuilder strings.Builder
+
+	queryBuilder.WriteString(`
+		SELECT id, name, color, model, image_url, made_in, date_of_creation, storage_id, created_at, updated_at, deleted_at
+		FROM products
+		WHERE deleted_at = 0
+	`)
+
+	var args []interface{}
+	argCounter := 1
+
+	if req.Name != "" {
+		queryBuilder.WriteString(fmt.Sprintf(" AND name ILIKE $%d", argCounter))
+		args = append(args, "%"+req.Name+"%")
+		argCounter++
+	}
+	if req.Color != "" {
+		queryBuilder.WriteString(fmt.Sprintf(" AND color ILIKE $%d", argCounter))
+		args = append(args, "%"+req.Color+"%")
+		argCounter++
+	}
+	if req.Model != "" {
+		queryBuilder.WriteString(fmt.Sprintf(" AND model ILIKE $%d", argCounter))
+		args = append(args, "%"+req.Model+"%")
+		argCounter++
+	}
+	if req.StorageId != "" {
+		queryBuilder.WriteString(fmt.Sprintf(" AND storage_id = $%d", argCounter))
+		args = append(args, req.StorageId)
+		argCounter++
+	}
+
+	rows, err := p.db.Query(queryBuilder.String(), args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var product pb.GetProductResponse
+		err := rows.Scan(
+			&product.Id, &product.Name, &product.Color, &product.Model,
+			&product.ImageUrl, &product.MadeIn, &product.DateOfCreation,
+			&product.StorageId, &product.CreatedAt, &product.UpdatedAt, &product.DeletedAt,
+		)
+		if err != nil {
+			log.Println("Failed to scan product:", err)
+			return nil, err
+		}
+		products.AllProducts = append(products.AllProducts, &product)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	products.Message = "Products retrieved successfully"
+	return &products, nil
+}

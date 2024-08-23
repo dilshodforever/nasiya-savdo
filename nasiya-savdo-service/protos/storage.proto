@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package protos;
+
+option go_package = "genprotos/";
+
+service StorageService {
+    rpc CreateStorage (CreateStorageRequest) returns (StorageResponse);
+    rpc GetStorage (StorageIdRequest) returns (GetStorageResponse);
+    rpc UpdateStorage (UpdateStorageRequest) returns (StorageResponse);
+    rpc DeleteStorage (StorageIdRequest) returns (StorageResponse);
+    rpc ListStorages (GetAllStorageRequest) returns (GetAllStorageResponse);
+}
+
+message CreateStorageRequest {
+    string name = 1;
+    string user_id = 2;
+}
+
+message StorageIdRequest {
+    string id = 1;
+}
+
+message GetStorageResponse {
+    string id = 1;
+    string name = 2;
+    string user_id = 3;
+}
+
+message UpdateStorageRequest {
+    string id = 1;
+    string name = 2;
+    string user_id = 3;
+}
+
+message StorageResponse {
+    string message = 1;
+    bool success = 2;
+}
+
+message GetAllStorageRequest {
+    string name = 1;
+    string user_id = 2;
+}
+
+message GetAllStorageResponse {
+    repeated GetStorageResponse all_storages = 1;
+    string message = 2;
+}

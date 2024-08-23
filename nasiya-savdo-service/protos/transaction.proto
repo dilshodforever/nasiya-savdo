@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package protos;
+
+option go_package = "genprotos/";
+
+service TransactionService {
+    rpc CreateTransaction (CreateTransactionRequest) returns (TransactionResponse);
+    rpc GetTransaction (TransactionIdRequest) returns (GetTransactionResponse);
+    rpc UpdateTransaction (UpdateTransactionRequest) returns (TransactionResponse);
+    rpc DeleteTransaction (TransactionIdRequest) returns (TransactionResponse);
+    rpc ListTransactions (GetAllTransactionRequest) returns (GetAllTransactionResponse);
+}
+
+message CreateTransactionRequest {
+    string contract_id = 1;
+    double price = 2;
+    int32 duration = 3; // Payment duration
+}
+
+message TransactionIdRequest {
+    string id = 1;
+}
+
+message GetTransactionResponse {
+    string id = 1;
+    string contract_id = 2;
+    double price = 3;
+    int32 duration = 4;
+    string created_at = 5;
+}
+
+message UpdateTransactionRequest {
+    string id = 1;
+    string contract_id = 2;
+    double price = 3;
+    int32 duration = 4;
+}
+
+message TransactionResponse {
+    string message = 1;
+    bool success = 2;
+}
+
+message GetAllTransactionRequest {
+    string contract_id = 1;
+}
+
+message GetAllTransactionResponse {
+    repeated GetTransactionResponse all_transactions = 1;
+    string message = 2;
+}
