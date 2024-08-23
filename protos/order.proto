@@ -18,70 +18,67 @@ service OrderService {
 message CreateOrderRequest {
     string market_id = 1;
     string custumer_id = 2;
-    string delivery_address = 3;
-    string time =4;
+    string time = 3;
 }
 
-message CreateOrderResponse{
-    string order_id=1;
-    string message=9;
+message CreateOrderResponse {
+    string order_id = 1;
+    string message = 2;
 }
 
 
 message GetAllOrders {
-    string order_id=1;
+    string order_id = 1;
     string market_id = 2;
     string custumer_id = 3;
     string status = 4;
     double total_amount = 5;
-    string delivery_address = 6;
-    string time =7;
-    repeated GetProductResponse products=8;
+    string time = 6;
+    repeated GetProductResponse products = 7;
 }
 
 message GetAllRequest{
-    string order_id=1;
+    string order_id = 1;
     string market_id = 2;
     string custumer_id = 3;
     string status = 4;
     double total_amount = 5;
-    string delivery_address = 6;
-    repeated GetProductResponse products=7;
+    repeated GetProductResponse products = 6;
 }
 
-message GetAllOrdersList{
+message GetAllOrdersList {
     repeated GetAllOrders orders = 1;
+    int32 count = 2;
 }
 
-message GetByIdRequest{
-    string order_id=1;
+message GetByIdRequest {
+    string order_id = 1;
 }
 
 
 message UpdateOrderRequest {
-    string order_id =1;
-    string delivery_address = 2;
+    string order_id = 1;
 }
 
 
-message UpdateStatusRequest{
-    string order_id=1;
-    string status=2;
+message UpdateStatusRequest {
+    string order_id = 1;
+    string status = 2;
 }
 
-message UpdateStatusResponse{
-    bool succes =1;
-    string message =2;
+message UpdateStatusResponse {
+    bool succes = 1;
+    string message = 2;
 }
 
 
-message DeleteOrdersByidRequest{
-    string order_id=1;
+message DeleteOrdersByidRequest {
+    string order_id = 1;
 }
 
-message DeleteOrdersByidResponse{
-    bool succes =1;
-    string message =2;
+message DeleteOrdersByidResponse {
+    bool succes = 1;
+    string message = 2;
 }
 
 

@@ -1,0 +1,107 @@
+version: '3.8'
+
+services:
+
+  # zookeeper
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.4
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - 22181:2181
+    networks:
+      - GLhost
+  
+  # kafka
+  kafka:
+    image: confluentinc/cp-kafka:7.4.4
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - 29092:29092
+    networks:
+      - GLhost
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  # redis
+  redis:
+    image: redis:latest
+    container_name: redis
+    restart: always
+    ports:
+      - "6378:6378"
+    volumes:
+      - redis_data:/data
+
+  # migrate
+  migrate:
+    image: migrate/migrate
+    networks:
+      - GLhost
+    volumes:
+      - ./migrations:/migrations
+    command: [ "-path", "/migrations", "-database",  
+                "postgres://postgres:root@postgres:5432/ll_user?sslmode=disable", 
+                "up" ]
+    depends_on:
+      - postgres-db
+
+  # postgres
+  postgres-db:
+    container_name: postgres
+    image: postgres:latest
+    environment:
+      PGUSER: postgres
+      POSTGRES_PASSWORD: root
+      PGDATA: /data/postgres
+      POSTGRES_DB: ll_user
+    volumes:
+      - db:/post-database/post-memory
+    depends_on:
+      - zookeeper
+      - kafka
+    ports:
+      - "5433:5432"
+    networks:
+      - GLhost
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d postgres"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # auth-ll
+  auth-ll:
+    container_name: auth-ll
+    build: ./
+    depends_on:
+      - postgres-db
+      - zookeeper
+      - kafka
+    ports:
+      - "8080:8080"
+      - "8082:8082"
+    networks:
+      - GLhost
+
+# Docker Networks
+networks:
+  GLhost:
+    external: true
+    name: ll-network
+    driver: bridge
+
+# Docker Volumes
+volumes:
+  db:
+  redis_data:

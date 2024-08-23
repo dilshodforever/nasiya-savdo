@@ -20,13 +20,13 @@ message AddItemsRequest{
 }
 
 message AddItemsResponse{
-    double total_price =1;
+    double total_price = 1;
     repeated GetProductResponse products = 2;
     int32 quantity = 3;
 }
 
 message DeleItemsRequest{
-     string product_id=1;
+    string product_id = 1;
 }
 
 message DeleteProductResponse{
@@ -35,11 +35,11 @@ message DeleteProductResponse{
 }
 
 message GetByUseridItems{
-    string user_id =1;
+    string user_id = 1;
 }
 
 message GetAllItems{
-    double total_amount =1;
+    double total_amount = 1;
     repeated GetProductResponse products = 2;
     int32 quantity = 3;
 }

@@ -1,0 +1,413 @@
+basePath: /
+definitions:
+  handler.changePass:
+    properties:
+      currentPassword:
+        type: string
+      newPassword:
+        type: string
+    type: object
+  handler.resetPass:
+    properties:
+      newPassword:
+        type: string
+      resetToken:
+        type: string
+    type: object
+  users.AllUsers:
+    properties:
+      count:
+        type: integer
+      users:
+        items:
+          $ref: '#/definitions/users.User'
+        type: array
+    type: object
+  users.ForgotPass:
+    properties:
+      email:
+        type: string
+    type: object
+  users.User:
+    properties:
+      email:
+        type: string
+      full_name:
+        type: string
+      id:
+        type: string
+      native_language:
+        type: string
+      password:
+        type: string
+      role:
+        type: string
+      user_name:
+        type: string
+    type: object
+  users.UserLogin:
+    properties:
+      password:
+        type: string
+      user_name:
+        type: string
+    type: object
+  users.UserReq:
+    properties:
+      email:
+        type: string
+      full_name:
+        type: string
+      native_language:
+        type: string
+      password:
+        type: string
+      user_name:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: auth service API
+  title: auth service API
+  version: "1.0"
+paths:
+  /user/change-password:
+    post:
+      consumes:
+      - application/json
+      description: Change user password
+      parameters:
+      - description: Change Password
+        in: body
+        name: ChangePass
+        required: true
+        schema:
+          $ref: '#/definitions/handler.changePass'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Password Changed Successfully
+          schema:
+            type: string
+        "400":
+          description: Error while changing password
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Change Password
+      tags:
+      - User
+  /user/delete/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete an existing user
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Delete Successful
+          schema:
+            type: string
+        "400":
+          description: Error while deleting user
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Delete User
+      tags:
+      - User
+  /user/delete_profil:
+    delete:
+      consumes:
+      - application/json
+      description: Delete an existing Profil
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Delete Successful
+          schema:
+            type: string
+        "400":
+          description: Error while deleting user
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Delete Profil
+      tags:
+      - User
+  /user/forgot-password:
+    post:
+      consumes:
+      - application/json
+      description: Initiate forgot password process
+      parameters:
+      - description: Forgot Password
+        in: body
+        name: ForgotPass
+        required: true
+        schema:
+          $ref: '#/definitions/users.ForgotPass'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Forgot Password Initiated Successfully
+          schema:
+            type: string
+        "400":
+          description: Error while initiating forgot password
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Forgot Password
+      tags:
+      - User
+  /user/get_profil:
+    get:
+      consumes:
+      - application/json
+      description: Get a user Profil
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Get Profil Successful
+          schema:
+            $ref: '#/definitions/users.User'
+        "400":
+          description: Error while retrieving user
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get User Profil
+      tags:
+      - User
+  /user/getall:
+    get:
+      consumes:
+      - application/json
+      description: Get all users
+      parameters:
+      - in: query
+        name: email
+        type: string
+      - in: query
+        name: full_name
+        type: string
+      - in: query
+        name: limit
+        type: integer
+      - in: query
+        name: native_language
+        type: string
+      - in: query
+        name: offset
+        type: integer
+      - in: query
+        name: user_name
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Get All Successful
+          schema:
+            $ref: '#/definitions/users.AllUsers'
+        "400":
+          description: Error while retrieving users
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get All Users
+      tags:
+      - User
+  /user/getbyid/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get a user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Get By ID Successful
+          schema:
+            $ref: '#/definitions/users.User'
+        "400":
+          description: Error while retrieving user
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get User By ID
+      tags:
+      - User
+  /user/login:
+    post:
+      consumes:
+      - application/json
+      description: Login a user
+      parameters:
+      - description: Create
+        in: body
+        name: Create
+        required: true
+        schema:
+          $ref: '#/definitions/users.UserLogin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Login Successful
+          schema:
+            type: string
+        "400":
+          description: Error while logging in
+          schema:
+            type: string
+      summary: Login User
+      tags:
+      - User
+  /user/register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user
+      parameters:
+      - description: Create
+        in: body
+        name: Create
+        required: true
+        schema:
+          $ref: '#/definitions/users.UserReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Create Successful
+          schema:
+            type: string
+        "400":
+          description: Error while creating user
+          schema:
+            type: string
+      summary: Register User
+      tags:
+      - User
+  /user/reset-password:
+    post:
+      consumes:
+      - application/json
+      description: Reset user password
+      parameters:
+      - description: Reset Password
+        in: body
+        name: ResetPass
+        required: true
+        schema:
+          $ref: '#/definitions/handler.resetPass'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Password Reset Successfully
+          schema:
+            type: string
+        "400":
+          description: Error while resetting password
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Reset Password
+      tags:
+      - User
+  /user/update/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Update an existing user
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update
+        in: body
+        name: Update
+        required: true
+        schema:
+          $ref: '#/definitions/users.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Update Successful
+          schema:
+            type: string
+        "400":
+          description: Error while updating user
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Update User
+      tags:
+      - User
+  /user/update_profil:
+    put:
+      consumes:
+      - application/json
+      description: Update an existing user
+      parameters:
+      - description: Update
+        in: body
+        name: Update
+        required: true
+        schema:
+          $ref: '#/definitions/users.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Update Successful
+          schema:
+            type: string
+        "400":
+          description: Error while updating user
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Update Profil
+      tags:
+      - User
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
