@@ -19,7 +19,7 @@ func NewContractStorage(db *sql.DB) *ContractStorage {
 func (p *ContractStorage) CreateContract(req *pb.CreateContractRequest) (*pb.ContractResponse, error) {
 	query := `
 		INSERT INTO contract (consumer_name, consumer_passport_serial, consumer_address, passport_image, status, duration, created_at, deleted_at)
-		VALUES ($1, $2, $3, $4, $5, $6, now(), 0)
+		VALUES ($1, $2, $3, $4, 'pending', $6, now(), 0)
 		RETURNING id
 	`
 	var id string

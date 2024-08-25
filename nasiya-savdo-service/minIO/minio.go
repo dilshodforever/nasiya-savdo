@@ -56,5 +56,4 @@ func MinIOConnect() (*minio.Client, error) {
   }
 
   return minioClient, err
-
 }

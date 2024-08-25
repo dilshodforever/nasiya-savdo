@@ -4,58 +4,46 @@ package protos;
 
 option go_package = "genprotos/";
 
-service ChatService {
-    rpc CreateChat(CreateChatRequest) returns (CreateChatResponse);
-    rpc SendMessage(SendMessageRequest) returns (SendMessageResponse);
-    rpc GetMessages(GetMessagesRequest) returns (GetMessagesResponse);
+service NotificationService {
+    rpc CreateNotification (CreateNotificationRequest) returns (NotificationResponse);
+    rpc GetNotification (NotificationIdRequest) returns (GetNotificationResponse);
+    rpc UpdateNotification (UpdateNotificationRequest) returns (NotificationResponse);
+    rpc DeleteNotification (NotificationIdRequest) returns (NotificationResponse);
+    rpc ListNotifications (GetAllNotificationRequest) returns (GetAllNotificationResponse);
 }
 
-message User {
+message CreateNotificationRequest {
+    string message = 1;
+    string user_id = 2;
+}
+
+message NotificationIdRequest {
     string id = 1;
-    string name = 2;
 }
 
-message Message {
+message GetNotificationResponse {
     string id = 1;
-    string chat_id = 2;
-    string sender_id = 3;
-    string receiver_id = 4;
-    string content = 5;
-    int64 timestamp = 6;  
+    string message = 2;
+    string user_id = 3;
+    string created_at = 4;
 }
 
-message Chat {
+message UpdateNotificationRequest {
     string id = 1;
-    string user1_id = 2;
-    string user2_id = 3;
+    string message = 2;
+    string user_id = 3;
 }
 
-message CreateChatRequest {
-    string user1_id = 1;
-    string user2_id = 2;
+message NotificationResponse {
+    string message = 1;
+    bool success = 2;
 }
 
-message CreateChatResponse {
-    bool success = 1;
-    Chat chat = 2;
+message GetAllNotificationRequest {
+    string user_id = 1;
 }
 
-message SendMessageRequest {
-    string chat_id = 1;
-    string sender_id = 2;
-    string receiver_id = 3;
-    string content = 4;
-}
-
-message SendMessageResponse {
-    bool success = 1;
-    Message message = 2;
-}
-
-message GetMessagesRequest {
-    string chat_id = 1;
-}
-
-message GetMessagesResponse {
-    repeated Message messages = 1;
+message GetAllNotificationResponse {
+    repeated GetNotificationResponse all_notifications = 1;
+    string message = 2;
 }
