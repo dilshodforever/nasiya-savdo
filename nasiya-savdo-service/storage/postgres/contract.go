@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"strings"
 
 	pb "github.com/dilshodforever/nasiya-savdo/genprotos"
 )
@@ -53,13 +54,51 @@ func (p *ContractStorage) GetContract(req *pb.ContractIdRequest) (*pb.GetContrac
 }
 
 func (p *ContractStorage) UpdateContract(req *pb.UpdateContractRequest) (*pb.ContractResponse, error) {
-	query := `
+	update := map[string]interface{}{}
+	if req.ConsumerName != "" {
+		update["consumer_name"] = req.ConsumerName
+	}
+	if req.ConsumerPassportSerial != "" {
+		update["consumer_passport_serial"] = req.ConsumerPassportSerial
+	}
+	if req.ConsumerAddress != "" {
+		update["consumer_address"] = req.ConsumerAddress
+	}
+	if req.PassportImage != "" {
+		update["passport_image"] = req.PassportImage
+	}
+	if req.Status != "" {
+		update["status"] = req.Status
+	}
+	if req.Duration != 0 {
+		update["duration"] = req.Duration
+	}
+
+	if len(update) == 0 {
+		return &pb.ContractResponse{Message: "Nothing to update", Success: false}, nil
+	}
+
+	setClauses := []string{}
+	args := []interface{}{}
+	argCount := 1
+
+	for column, value := range update {
+		setClauses = append(setClauses, fmt.Sprintf("%s = $%d", column, argCount))
+		args = append(args, value)
+		argCount++
+	}
+
+	setQuery := strings.Join(setClauses, ", ")
+
+	query := fmt.Sprintf(`
 		UPDATE contract
-		SET consumer_name = $1, consumer_passport_serial = $2, consumer_address = $3, passport_image = $4,
-		    status = $5, duration = $6, updated_at = now()
-		WHERE id = $7 AND deleted_at = 0
-	`
-	_, err := p.db.Exec(query, req.ConsumerName, req.ConsumerPassportSerial, req.ConsumerAddress, req.PassportImage, req.Status, req.Duration, req.Id)
+		SET %s, updated_at = now()
+		WHERE id = $%d AND deleted_at = 0
+	`, setQuery, argCount)
+
+	args = append(args, req.Id)
+
+	_, err := p.db.Exec(query, args...)
 	if err != nil {
 		return nil, err
 	}

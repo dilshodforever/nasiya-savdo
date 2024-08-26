@@ -54,14 +54,62 @@ func (p *ProductStorage) GetProduct(req *pb.ProductIdRequest) (*pb.GetProductRes
 
 	return &product, nil
 }
-
 func (p *ProductStorage) UpdateProduct(req *pb.UpdateProductRequest) (*pb.ProductResponse, error) {
-	query := `
+	// Initialize a map to hold the fields that need to be updated
+	update := map[string]interface{}{}
+	if req.Name != "" {
+		update["name"] = req.Name
+	}
+	if req.Color != "" {
+		update["color"] = req.Color
+	}
+	if req.Model != "" {
+		update["model"] = req.Model
+	}
+	if req.ImageUrl != "" {
+		update["image_url"] = req.ImageUrl
+	}
+	if req.MadeIn != "" {
+		update["made_in"] = req.MadeIn
+	}
+	if req.DateOfCreation != "" {
+		update["date_of_creation"] = req.DateOfCreation
+	}
+	if req.StorageId != "" {
+		update["storage_id"] = req.StorageId
+	}
+
+	// Check if there's anything to update
+	if len(update) == 0 {
+		return &pb.ProductResponse{Message: "Nothing to update", Success: false}, nil
+	}
+
+	// Build the dynamic SQL query based on the fields to be updated
+	setClauses := []string{}
+	args := []interface{}{}
+	argCount := 1
+
+	for column, value := range update {
+		setClauses = append(setClauses, fmt.Sprintf("%s = $%d", column, argCount))
+		args = append(args, value)
+		argCount++
+	}
+
+	// Join the SET clauses
+	setQuery := strings.Join(setClauses, ", ")
+
+	// Final update query
+	query := fmt.Sprintf(`
 		UPDATE products
-		SET name = $1, color = $2, model = $3, image_url = $4, made_in = $5, date_of_creation = $6, storage_id = $7, updated_at = now()
-		WHERE id = $8 AND deleted_at = 0
-	`
-	_, err := p.db.Exec(query, req.Name, req.Color, req.Model, req.ImageUrl, req.MadeIn, req.DateOfCreation, req.StorageId, req.Id)
+		SET %s, updated_at = now()
+		WHERE id = $%d AND deleted_at = 0
+	`, setQuery, argCount)
+
+	// Append the id as the last argument
+	args = append(args, req.Id)
+
+	// Execute the query
+	_, err := p.db.Exec(query, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -71,6 +119,7 @@ func (p *ProductStorage) UpdateProduct(req *pb.UpdateProductRequest) (*pb.Produc
 		Success: true,
 	}, nil
 }
+
 
 func (p *ProductStorage) DeleteProduct(req *pb.ProductIdRequest) (*pb.ProductResponse, error) {
 	query := `

@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"strings"
 
 	pb "github.com/dilshodforever/nasiya-savdo/genprotos"
 )
@@ -52,12 +53,46 @@ func (p *StorageStorage) GetStorage(req *pb.StorageIdRequest) (*pb.GetStorageRes
 }
 
 func (p *StorageStorage) UpdateStorage(req *pb.UpdateStorageRequest) (*pb.StorageResponse, error) {
-	query := `
+	// Initialize a map to hold the fields that need to be updated
+	update := map[string]interface{}{}
+	if req.Name != "" {
+		update["name"] = req.Name
+	}
+	if req.UserId != "" {
+		update["user_id"] = req.UserId
+	}
+
+	// Check if there's anything to update
+	if len(update) == 0 {
+		return &pb.StorageResponse{Message: "Nothing to update", Success: false}, nil
+	}
+
+	// Build the dynamic SQL query based on the fields to be updated
+	setClauses := []string{}
+	args := []interface{}{}
+	argCount := 1
+
+	for column, value := range update {
+		setClauses = append(setClauses, fmt.Sprintf("%s = $%d", column, argCount))
+		args = append(args, value)
+		argCount++
+	}
+
+	// Join the SET clauses
+	setQuery := strings.Join(setClauses, ", ")
+
+	// Final update query
+	query := fmt.Sprintf(`
 		UPDATE storage
-		SET name = $1, user_id = $2, updated_at = now()
-		WHERE id = $3
-	`
-	_, err := p.db.Exec(query, req.Name, req.UserId, req.Id)
+		SET %s, updated_at = now()
+		WHERE id = $%d
+	`, setQuery, argCount)
+
+	// Append the id as the last argument
+	args = append(args, req.Id)
+
+	// Execute the query
+	_, err := p.db.Exec(query, args...)
 	if err != nil {
 		return nil, err
 	}

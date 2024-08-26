@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"strings"
 
 	pb "github.com/dilshodforever/nasiya-savdo/genprotos"
 )
@@ -50,14 +51,50 @@ func (p *TransactionStorage) GetTransaction(req *pb.TransactionIdRequest) (*pb.G
 
 	return &transaction, nil
 }
-
 func (p *TransactionStorage) UpdateTransaction(req *pb.UpdateTransactionRequest) (*pb.TransactionResponse, error) {
-	query := `
+	// Initialize a map to hold the fields that need to be updated
+	update := map[string]interface{}{}
+	if req.ContractId != "" {
+		update["contract_id"] = req.ContractId
+	}
+	if req.Price != 0 {
+		update["price"] = req.Price
+	}
+	if req.Duration != 0 {
+		update["duration"] = req.Duration
+	}
+
+	// Check if there's anything to update
+	if len(update) == 0 {
+		return &pb.TransactionResponse{Message: "Nothing to update", Success: false}, nil
+	}
+
+	// Build the dynamic SQL query based on the fields to be updated
+	setClauses := []string{}
+	args := []interface{}{}
+	argCount := 1
+
+	for column, value := range update {
+		setClauses = append(setClauses, fmt.Sprintf("%s = $%d", column, argCount))
+		args = append(args, value)
+		argCount++
+	}
+
+	// Join the SET clauses
+	setQuery := strings.Join(setClauses, ", ")
+
+	// Final update query
+	query := fmt.Sprintf(`
 		UPDATE transactions
-		SET contract_id = $1, price = $2, duration = $3, updated_at = now()
-		WHERE id = $4
-	`
-	_, err := p.db.Exec(query, req.ContractId, req.Price, req.Duration, req.Id)
+		SET %s, updated_at = now()
+		WHERE id = $%d
+	`, setQuery, argCount)
+
+	// Append the id as the last argument
+	args = append(args, req.Id)
+
+	// Execute the query
+	_, err := p.db.Exec(query, args...)
 	if err != nil {
 		return nil, err
 	}
