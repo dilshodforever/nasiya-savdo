@@ -12,6 +12,10 @@ type InitRoot interface {
 	Transaction() TransactionStorage
 }
 
+type MinIoRoot interface{
+	MinIO() MinIOStorage
+}
+
 type ProductStorage interface {
 	CreateProduct(req *pb.CreateProductRequest) (*pb.ProductResponse, error)
 	GetProduct(req *pb.ProductIdRequest) (*pb.GetProductResponse, error)
@@ -50,4 +54,9 @@ type TransactionStorage interface {
 	UpdateTransaction(req *pb.UpdateTransactionRequest) (*pb.TransactionResponse, error)
 	DeleteTransaction(req *pb.TransactionIdRequest) (*pb.TransactionResponse, error)
 	ListTransactions(req *pb.GetAllTransactionRequest) (*pb.GetAllTransactionResponse, error)
+}
+
+
+type MinIOStorage interface {
+	UploadFile(req *pb.UploadFileRequest) (*pb.UploadFileResponse, error)
 }
