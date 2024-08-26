@@ -21,16 +21,13 @@ func (p *ExchangeStorage) CreateExchange(req *pb.CreateExchangeRequest) (*pb.Exc
 	query := `
 		INSERT INTO exchange (product_id, amount, price, status, contract_id, created_at, deleted_at)
 		VALUES ($1, $2, $3, $4, $5, now(), 0)
-		RETURNING id
 	`
-	var id string
-	err := p.db.QueryRow(query, req.ProductId, req.Amount, req.Price, req.Status, req.ContractId).Scan(&id)
+	_,err := p.db.Exec(query, req.ProductId, req.Amount, req.Price, req.Status, req.ContractId)
 	if err != nil {
 		return nil, err
 	}
-
 	return &pb.ExchangeResponse{
-		Message: "Exchange successfully created with ID: " + id,
+		Message: "Exchange created successfully ",
 		Success: true,
 	}, nil
 }

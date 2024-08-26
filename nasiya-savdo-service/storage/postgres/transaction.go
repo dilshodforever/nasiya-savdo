@@ -18,22 +18,90 @@ func NewTransactionStorage(db *sql.DB) *TransactionStorage {
 }
 
 func (p *TransactionStorage) CreateTransaction(req *pb.CreateTransactionRequest) (*pb.TransactionResponse, error) {
-	query := `
-		INSERT INTO transactions (contract_id, price, duration, created_at)
-		VALUES ($1, $2, $3, now())
-		RETURNING id
-	`
-	var id string
-	err := p.db.QueryRow(query, req.ContractId, req.Price, req.Duration).Scan(&id)
+	// Step 1: Retrieve amount and price from the exchange table for the given contract_id
+	query := `SELECT amount, price FROM exchange WHERE contract_id = $1`
+	rows, err := p.db.Query(query, req.ContractId)
 	if err != nil {
-		return nil, err
+		log.Printf("Failed to retrieve exchange data: %v", err)
+		return nil, fmt.Errorf("failed to retrieve exchange data: %v", err)
+	}
+	defer rows.Close()
+
+	var (
+		amount int32
+		price  float64
+		total  float64
+	)
+
+	for rows.Next() {
+		if err := rows.Scan(&amount, &price); err != nil {
+			log.Printf("Failed to scan exchange data: %v", err)
+			return nil, fmt.Errorf("failed to scan exchange data: %v", err)
+		}
+		total += price * float64(amount)
 	}
 
+	// Step 2: Calculate duration based on total price and the requested price
+	duration := total / req.Price
+
+	// Step 3: Insert the new transaction into the transactions table
+	query = `
+		INSERT INTO transactions (contract_id, price, duration, created_at)
+		VALUES ($1, $2, $3, now())
+	`
+	_, err = p.db.Exec(query, req.ContractId, req.Price, duration)
+	if err != nil {
+		log.Printf("Failed to create transaction: %v", err)
+		return nil, fmt.Errorf("failed to create transaction: %v", err)
+	}
+
+	// Step 4: Calculate the total price and duration from all transactions for the contract
+	query = `
+		SELECT 
+			SUM(t.price) AS total_price, 
+			SUM(t.duration) AS total_duration, 
+			c.duration AS contract_duration
+		FROM 
+			transactions AS t
+		JOIN 
+			contract AS c ON c.id = t.contract_id
+		WHERE 
+			t.contract_id = $1
+		GROUP BY 
+			c.duration
+	`
+	var (
+		totalPrice       float64
+		totalDuration    int32
+		contractDuration int32
+	)
+	err = p.db.QueryRow(query, req.ContractId).Scan(&totalPrice, &totalDuration, &contractDuration)
+	if err != nil {
+		log.Printf("Failed to calculate totals: %v", err)
+		return nil, fmt.Errorf("failed to calculate totals: %v", err)
+	}
+
+	// Step 5: Update the contract status if the total duration meets or exceeds the contract duration
+	if totalDuration >= contractDuration {
+		query = `UPDATE contract SET status = 'finished', deleted_at = now() WHERE id = $1`
+		_, err = p.db.Exec(query, req.ContractId)
+		if err != nil {
+			log.Printf("Failed to update contract status: %v", err)
+			return nil, fmt.Errorf("failed to update contract status: %v", err)
+		}
+		return &pb.TransactionResponse{
+			Message: "Transaction created successfully. The contract is now finished.",
+			Success: true,
+		}, nil
+	}
+
+	remainingPending := totalPrice - req.Price
 	return &pb.TransactionResponse{
-		Message: "Transaction successfully created with ID: " + id,
+		Message: fmt.Sprintf("Transaction created successfully. Remaining balance: %.2f", remainingPending),
 		Success: true,
 	}, nil
 }
+
 
 func (p *TransactionStorage) GetTransaction(req *pb.TransactionIdRequest) (*pb.GetTransactionResponse, error) {
 	query := `

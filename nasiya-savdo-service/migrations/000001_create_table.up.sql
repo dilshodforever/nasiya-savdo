@@ -11,9 +11,9 @@ CREATE TABLE users (
   phone_number VARCHAR(20),
   username VARCHAR(50) UNIQUE NOT NULL,
   password_hash VARCHAR(255) NOT NULL,
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ,
-  deleted_at BIGINT
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW(),
+  deleted_at BIGINT DEFAULT 0
 );
 
 CREATE TABLE storage (
@@ -29,11 +29,11 @@ CREATE TABLE product (
   model VARCHAR(50),
   image_url TEXT,
   made_in VARCHAR(100),
-  date_of_creation TIMESTAMPTZ,
+  date_of_creation TIMESTAMP,
   storage_id UUID REFERENCES storage(id) ON DELETE SET NULL,
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ,
-  deleted_at BIGINT
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW(),
+  deleted_at BIGINT DEFAULT 0
 );
 
 CREATE TABLE contract (
@@ -41,12 +41,14 @@ CREATE TABLE contract (
   consumer_name VARCHAR(255) NOT NULL,
   consumer_passport_serial VARCHAR(50),
   consumer_address TEXT,
+  consumer_phone_number VARCHAR(13),
   passport_image TEXT,
   status contract_status,
-  created_at TIMESTAMPTZ DEFAULT NOW(),
+  created_at TIMESTAMP DEFAULT NOW(),
   duration INT,
-  deleted_at TIMESTAMPTZ
+  deleted_at TIMESTAMP
 );
+
 
 CREATE TABLE exchange (
   id UUID PRIMARY KEY,
@@ -55,9 +57,9 @@ CREATE TABLE exchange (
   price DECIMAL(10, 2) NOT NULL,
   status exchange_status,
   contract_id UUID REFERENCES contract(id) ON DELETE SET NULL,
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ,
-  deleted_at BIGINT
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW(),
+  deleted_at BIGINT DEFAULT 0
 );
 
 CREATE TABLE transaction (
@@ -65,12 +67,12 @@ CREATE TABLE transaction (
   contract_id UUID REFERENCES contract(id) ON DELETE CASCADE,
   price DECIMAL(10, 2) NOT NULL,
   duration INT,  -- Payment duration
-  created_at TIMESTAMPTZ DEFAULT NOW()
+  created_at TIMESTAMP DEFAULT NOW()
 );
 
 CREATE TABLE notification (
   id UUID PRIMARY KEY,
   message TEXT NOT NULL,
   user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-  created_at TIMESTAMPTZ DEFAULT NOW()
+  created_at TIMESTAMP DEFAULT NOW()
 );

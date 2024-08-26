@@ -84,7 +84,7 @@ func (p *ProductStorage) UpdateProduct(req *pb.UpdateProductRequest) (*pb.Produc
 		return &pb.ProductResponse{Message: "Nothing to update", Success: false}, nil
 	}
 
-	// Build the dynamic SQL query based on the fields to be updated
+	
 	setClauses := []string{}
 	args := []interface{}{}
 	argCount := 1
@@ -95,10 +95,9 @@ func (p *ProductStorage) UpdateProduct(req *pb.UpdateProductRequest) (*pb.Produc
 		argCount++
 	}
 
-	// Join the SET clauses
+	
 	setQuery := strings.Join(setClauses, ", ")
 
-	// Final update query
 	query := fmt.Sprintf(`
 		UPDATE products
 		SET %s, updated_at = now()

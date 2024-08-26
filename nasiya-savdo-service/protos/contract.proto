@@ -16,9 +16,10 @@ message CreateContractRequest {
     string consumer_name = 1;
     string consumer_passport_serial = 2;
     string consumer_address = 3;
-    string passport_image = 4;
-    string status = 5; // Enum: pending, finished, canceled
-    int32 duration = 6;
+    string consumer_phone_number = 4;
+    string passport_image = 5;
+    string status = 6; // Enum: pending, finished, canceled
+    int32 duration = 7;
 }
 
 message ContractIdRequest {
@@ -30,11 +31,12 @@ message GetContractResponse {
     string consumer_name = 2;
     string consumer_passport_serial = 3;
     string consumer_address = 4;
-    string passport_image = 5;
-    string status = 6;
-    int32 duration = 7;
-    string created_at = 8;
-    string deleted_at = 9;
+    string consumer_phone_number = 5;
+    string passport_image = 6;
+    string status = 7;
+    int32 duration = 8;
+    string created_at = 9;
+    string deleted_at = 10;
 }
 
 message UpdateContractRequest {
@@ -42,9 +44,10 @@ message UpdateContractRequest {
     string consumer_name = 2;
     string consumer_passport_serial = 3;
     string consumer_address = 4;
-    string passport_image = 5;
-    string status = 6;
-    int32 duration = 7;
+    string consumer_phone_number = 5;
+    string passport_image = 6;
+    string status = 7;
+    int32 duration = 8;
 }
 
 message ContractResponse {
@@ -55,6 +58,7 @@ message ContractResponse {
 message GetAllContractRequest {
     string consumer_name = 1;
     string status = 2;
+    string pasport_seria =3;
 }
 
 message GetAllContractResponse {

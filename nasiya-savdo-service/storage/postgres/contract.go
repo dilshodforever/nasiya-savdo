@@ -19,8 +19,8 @@ func NewContractStorage(db *sql.DB) *ContractStorage {
 
 func (p *ContractStorage) CreateContract(req *pb.CreateContractRequest) (*pb.ContractResponse, error) {
 	query := `
-		INSERT INTO contract (consumer_name, consumer_passport_serial, consumer_address, passport_image, status, duration, created_at, deleted_at)
-		VALUES ($1, $2, $3, $4, 'pending', $6, now(), 0)
+		INSERT INTO contract (consumer_name, consumer_passport_serial, consumer_address, consumer_phone_number, passport_image, status, duration, created_at, deleted_at)
+		VALUES ($1, $2, $3, $4, $5, 'pending', $7, now(), 0)
 		RETURNING id
 	`
 	var id string
@@ -28,7 +28,6 @@ func (p *ContractStorage) CreateContract(req *pb.CreateContractRequest) (*pb.Con
 	if err != nil {
 		return nil, err
 	}
-
 	return &pb.ContractResponse{
 		Message: "Contract successfully created with ID: " + id,
 		Success: true,
@@ -37,13 +36,13 @@ func (p *ContractStorage) CreateContract(req *pb.CreateContractRequest) (*pb.Con
 
 func (p *ContractStorage) GetContract(req *pb.ContractIdRequest) (*pb.GetContractResponse, error) {
 	query := `
-		SELECT id, consumer_name, consumer_passport_serial, consumer_address, passport_image, status, duration, created_at, deleted_at
+		SELECT id, consumer_name, consumer_passport_serial, consumer_address, consumer_phone_number, passport_image, status, duration, created_at, deleted_at
 		FROM contract
 		WHERE id = $1 AND deleted_at = 0
 	`
 	var contract pb.GetContractResponse
 	err := p.db.QueryRow(query, req.Id).Scan(
-		&contract.Id, &contract.ConsumerName, &contract.ConsumerPassportSerial, &contract.ConsumerAddress,
+		&contract.Id, &contract.ConsumerName, &contract.ConsumerPassportSerial, &contract.ConsumerAddress, &contract.ConsumerPhoneNumber,
 		&contract.PassportImage, &contract.Status, &contract.Duration, &contract.CreatedAt, &contract.DeletedAt,
 	)
 	if err != nil {
@@ -72,6 +71,9 @@ func (p *ContractStorage) UpdateContract(req *pb.UpdateContractRequest) (*pb.Con
 	}
 	if req.Duration != 0 {
 		update["duration"] = req.Duration
+	}
+	if req.ConsumerPhoneNumber != ""{
+		update["consumer_phone_number"] = req.ConsumerPhoneNumber
 	}
 
 	if len(update) == 0 {
@@ -113,7 +115,7 @@ func (p *ContractStorage) DeleteContract(req *pb.ContractIdRequest) (*pb.Contrac
 	query := `
 		UPDATE contract
 		SET deleted_at = now()
-		WHERE id = $1 AND deleted_at = 0
+		WHERE id = $1 
 	`
 	_, err := p.db.Exec(query, req.Id)
 	if err != nil {
@@ -129,7 +131,7 @@ func (p *ContractStorage) DeleteContract(req *pb.ContractIdRequest) (*pb.Contrac
 func (p *ContractStorage) ListContracts(req *pb.GetAllContractRequest) (*pb.GetAllContractResponse, error) {
 	contracts := pb.GetAllContractResponse{}
 	query := `
-		SELECT id, consumer_name, consumer_passport_serial, consumer_address, passport_image, status, duration, created_at, deleted_at
+		SELECT id, consumer_name, consumer_passport_serial, consumer_address, consumer_phone_number, passport_image, status, duration, created_at, deleted_at
 		FROM contract
 		WHERE deleted_at = 0
 	`
@@ -141,6 +143,13 @@ func (p *ContractStorage) ListContracts(req *pb.GetAllContractRequest) (*pb.GetA
 		args = append(args, "%"+req.ConsumerName+"%")
 		count++
 	}
+
+	if req.ConsumerName != "" {
+		query += fmt.Sprintf(" AND consumer_passport_serial ILIKE $%d", count)
+		args = append(args, "%"+req.PasportSeria+"%")
+		count++
+	}
+
 	if req.Status != "" {
 		query += fmt.Sprintf(" AND status = $%d", count)
 		args = append(args, req.Status)
@@ -156,7 +165,7 @@ func (p *ContractStorage) ListContracts(req *pb.GetAllContractRequest) (*pb.GetA
 	for rows.Next() {
 		var contract pb.GetContractResponse
 		err := rows.Scan(
-			&contract.Id, &contract.ConsumerName, &contract.ConsumerPassportSerial, &contract.ConsumerAddress,
+			&contract.Id, &contract.ConsumerName, &contract.ConsumerPassportSerial, &contract.ConsumerAddress, &contract.ConsumerPhoneNumber,
 			&contract.PassportImage, &contract.Status, &contract.Duration, &contract.CreatedAt, &contract.DeletedAt,
 		)
 		if err != nil {
