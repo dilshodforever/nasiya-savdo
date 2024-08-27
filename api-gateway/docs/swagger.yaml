@@ -513,12 +513,6 @@ paths:
       - application/json
       description: Create a new exchange record with the specified details
       parameters:
-      - description: Exchange details
-        in: body
-        name: exchange
-        required: true
-        schema:
-          $ref: '#/definitions/genprotos.CreateExchangeRequest'
       - description: Exchange Status
         enum:
         - buy
@@ -527,6 +521,12 @@ paths:
         name: status
         required: true
         type: string
+      - description: Exchange details
+        in: body
+        name: exchange
+        required: true
+        schema:
+          $ref: '#/definitions/genprotos.CreateExchangeRequest'
       produces:
       - application/json
       responses:

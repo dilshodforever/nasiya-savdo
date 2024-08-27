@@ -289,15 +289,6 @@ const docTemplate = `{
                 "summary": "Create a new Exchange",
                 "parameters": [
                     {
-                        "description": "Exchange details",
-                        "name": "exchange",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/genprotos.CreateExchangeRequest"
-                        }
-                    },
-                    {
                         "enum": [
                             "buy",
                             "sell"
@@ -307,6 +298,15 @@ const docTemplate = `{
                         "name": "status",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "description": "Exchange details",
+                        "name": "exchange",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/genprotos.CreateExchangeRequest"
+                        }
                     }
                 ],
                 "responses": {

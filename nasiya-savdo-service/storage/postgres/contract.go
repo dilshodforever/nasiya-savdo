@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	pb "github.com/dilshodforever/nasiya-savdo/genprotos"
+	"github.com/google/uuid"
 )
 
 type ContractStorage struct {
@@ -18,13 +19,12 @@ func NewContractStorage(db *sql.DB) *ContractStorage {
 }
 
 func (p *ContractStorage) CreateContract(req *pb.CreateContractRequest) (*pb.ContractResponse, error) {
+	id:=uuid.NewString()
 	query := `
-		INSERT INTO contract (consumer_name, consumer_passport_serial, consumer_address, consumer_phone_number, passport_image, status, duration, created_at, deleted_at)
-		VALUES ($1, $2, $3, $4, $5, 'pending', $7, now(), 0)
-		RETURNING id
+		INSERT INTO contract (id, consumer_name, consumer_passport_serial, consumer_address, consumer_phone_number, passport_image, status, duration, created_at)
+		VALUES ($1, $2, $3, $4, $5, $6,'pending', $7, now())
 	`
-	var id string
-	err := p.db.QueryRow(query, req.ConsumerName, req.ConsumerPassportSerial, req.ConsumerAddress, req.PassportImage, req.Status, req.Duration).Scan(&id)
+	_,err := p.db.Exec(query, id,req.ConsumerName, req.ConsumerPassportSerial, req.ConsumerAddress, req.PassportImage, req.Status, req.Duration)
 	if err != nil {
 		return nil, err
 	}
@@ -128,12 +128,13 @@ func (p *ContractStorage) DeleteContract(req *pb.ContractIdRequest) (*pb.Contrac
 	}, nil
 }
 
+
 func (p *ContractStorage) ListContracts(req *pb.GetAllContractRequest) (*pb.GetAllContractResponse, error) {
 	contracts := pb.GetAllContractResponse{}
 	query := `
 		SELECT id, consumer_name, consumer_passport_serial, consumer_address, consumer_phone_number, passport_image, status, duration, created_at, deleted_at
 		FROM contract
-		WHERE deleted_at = 0
+		WHERE true
 	`
 	var args []interface{}
 	count := 1
@@ -144,7 +145,7 @@ func (p *ContractStorage) ListContracts(req *pb.GetAllContractRequest) (*pb.GetA
 		count++
 	}
 
-	if req.ConsumerName != "" {
+	if req.PasportSeria != "" { 
 		query += fmt.Sprintf(" AND consumer_passport_serial ILIKE $%d", count)
 		args = append(args, "%"+req.PasportSeria+"%")
 		count++
@@ -164,14 +165,24 @@ func (p *ContractStorage) ListContracts(req *pb.GetAllContractRequest) (*pb.GetA
 
 	for rows.Next() {
 		var contract pb.GetContractResponse
+		var deletedAt sql.NullString // Use sql.NullString for nullable fields
+
 		err := rows.Scan(
 			&contract.Id, &contract.ConsumerName, &contract.ConsumerPassportSerial, &contract.ConsumerAddress, &contract.ConsumerPhoneNumber,
-			&contract.PassportImage, &contract.Status, &contract.Duration, &contract.CreatedAt, &contract.DeletedAt,
+			&contract.PassportImage, &contract.Status, &contract.Duration, &contract.CreatedAt, &deletedAt,
 		)
 		if err != nil {
 			log.Println(err)
 			return nil, err
 		}
+
+		// Handle the nullable field
+		if deletedAt.Valid {
+			contract.DeletedAt = deletedAt.String
+		} else {
+			contract.DeletedAt = "" // Or set it to a default value
+		}
+
 		contracts.AllContracts = append(contracts.AllContracts, &contract)
 	}
 

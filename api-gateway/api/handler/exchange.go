@@ -15,8 +15,8 @@ import (
 // @Accept       json
 // @Produce      json
 // @Security     BearerAuth
-// @Param        exchange body pb.CreateExchangeRequest true "Exchange details"
 // @Param        status query string true "Exchange Status" Enums(buy, sell)
+// @Param        exchange body pb.CreateExchangeRequest true "Exchange details"
 // @Success      200 {object} pb.ExchangeResponse "Exchange created successfully"
 // @Failure      400 {string} string "Invalid input"
 // @Failure      500 {string} string "Error while creating exchange"
@@ -27,8 +27,8 @@ func (h *Handler) CreateExchange(ctx *gin.Context) {
 		ctx.JSON(400, gin.H{"error": "Invalid input"})
 		return
 	}
-	status := ctx.Query("status") // Query parameter for status
-	req.Status = status // Directly assigning status if no enum conversion is required
+	req.Status = ctx.Query("status")
+
 	res, err := h.ExchangeService.CreateExchange(context.Background(), &req)
 	if err != nil {
 		log.Print(err)
@@ -83,7 +83,7 @@ func (h *Handler) UpdateExchange(ctx *gin.Context) {
 		return
 	}
 	status := ctx.Query("status") // Query parameter for status
-	req.Status = status // Directly assigning status if no enum conversion is required
+	req.Status = status           // Directly assigning status if no enum conversion is required
 	res, err := h.ExchangeService.UpdateExchange(context.Background(), &req)
 	if err != nil {
 		log.Print(err)
