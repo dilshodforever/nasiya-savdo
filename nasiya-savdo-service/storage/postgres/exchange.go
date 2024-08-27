@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	pb "github.com/dilshodforever/nasiya-savdo/genprotos"
+	"github.com/google/uuid"
 )
 
 type ExchangeStorage struct {
@@ -18,13 +19,25 @@ func NewExchangeStorage(db *sql.DB) *ExchangeStorage {
 }
 
 func (p *ExchangeStorage) CreateExchange(req *pb.CreateExchangeRequest) (*pb.ExchangeResponse, error) {
-	query := `
-		INSERT INTO exchange (product_id, amount, price, status, contract_id, created_at, deleted_at)
+	id :=uuid.NewString()
+	if req.Status == `sell` {
+		query := `
+			INSERT INTO exchange (product_id, amount, price, status, contract_id, created_at, deleted_at)
+			VALUES ($1, $2, $3, $4, $5, $6, now(), 0)
+		`
+		_, err := p.db.Exec(query, id, req.ProductId, req.Amount, req.Price, req.Status, req.ContractId)
+		if err != nil {
+			return nil, err
+		}
+	} else{
+		query := `
+		INSERT INTO exchange (id, product_id, amount, price, status,  created_at, deleted_at)
 		VALUES ($1, $2, $3, $4, $5, now(), 0)
 	`
-	_,err := p.db.Exec(query, req.ProductId, req.Amount, req.Price, req.Status, req.ContractId)
+	_, err := p.db.Exec(query, id, req.ProductId, req.Amount, req.Price, req.Status)
 	if err != nil {
 		return nil, err
+	}
 	}
 	return &pb.ExchangeResponse{
 		Message: "Exchange created successfully ",

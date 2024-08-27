@@ -1,33 +1,29 @@
-p, user, /account/create, POST
-p, user, /account/get/:id, GET
-p, user, /account/update, PUT
-p, user, /account/delete, DELETE
-p, user, /account/list, GET
+p, user, /contract/create, POST
+p, user, /contract/get/:id, GET
+p, user, /contract/update, PUT
+p, user, /contract/delete/:id, DELETE
+p, user, /contract/list, GET
 
-p, user, /budget/create, POST
-p, user, /budget/get/:id, GET
-p, user, /budget/update, PUT
-p, user, /budget/delete/:id, DELETE
-p, user, /budget/list, GET
+p, user, /exchange/create, POST
+p, user, /exchange/get/:id, GET
+p, user, /exchange/update, PUT
+p, user, /exchange/delete/:id, DELETE
+p, user, /exchange/list, GET
 
-p, user, /category/create, POST
-p, user, /category/update, PUT
-p, user, /category/delete/:id, DELETE
-p, user, /category/list, GET
-p, user, /category/get/:id, GET
+p, user, /product/create, POST
+p, user, /product/get/:id, GET
+p, user, /product/update, PUT
+p, user, /product/delete/:id, DELETE
+p, user, /product/list, GET
 
-p, user, /goal/create, POST
-p, user, /goal/get/:id, GET
-p, user, /goal/update, PUT
-p, user, /goal/delete/:id, DELETE
-p, user, /goal/list, GET
+p, user, /storage/create, POST
+p, user, /storage/get/:id, GET
+p, user, /storage/update, PUT
+p, user, /storage/delete/:id, DELETE
+p, user, /storage/list, GET
 
 p, user, /transaction/create, POST
 p, user, /transaction/get/:id, GET
 p, user, /transaction/update, PUT
 p, user, /transaction/delete/:id, DELETE
 p, user, /transaction/list, GET
-
-p, user, /notifications/get, GET
-p, user, /notifications/delete, DELETE
-p, user, /notifications/getlist, GET
