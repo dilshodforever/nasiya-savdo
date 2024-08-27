@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+package protos;
+
+option go_package = "genprotos/";
+
+service ContractService {
+    rpc CreateContract (CreateContractRequest) returns (ContractResponse);
+    rpc GetContract (ContractIdRequest) returns (GetContractResponse);
+    rpc UpdateContract (UpdateContractRequest) returns (ContractResponse);
+    rpc DeleteContract (ContractIdRequest) returns (ContractResponse);
+    rpc ListContracts (GetAllContractRequest) returns (GetAllContractResponse);
+}
+
+message CreateContractRequest {
+    string consumer_name = 1;
+    string consumer_passport_serial = 2;
+    string consumer_address = 3;
+    string consumer_phone_number = 4;
+    string passport_image = 5;
+    string status = 6; // Enum: pending, finished, canceled
+    int32 duration = 7;
+}
+
+message ContractIdRequest {
+    string id = 1;
+}
+
+message GetContractResponse {
+    string id = 1;
+    string consumer_name = 2;
+    string consumer_passport_serial = 3;
+    string consumer_address = 4;
+    string consumer_phone_number = 5;
+    string passport_image = 6;
+    string status = 7;
+    int32 duration = 8;
+    string created_at = 9;
+    string deleted_at = 10;
+}
+
+message UpdateContractRequest {
+    string id = 1;
+    string consumer_name = 2;
+    string consumer_passport_serial = 3;
+    string consumer_address = 4;
+    string consumer_phone_number = 5;
+    string passport_image = 6;
+    string status = 7;
+    int32 duration = 8;
+}
+
+message ContractResponse {
+    string message = 1;
+    bool success = 2;
+}
+
+message GetAllContractRequest {
+    string consumer_name = 1;
+    string status = 2;
+    string pasport_seria =3;
+}
+
+message GetAllContractResponse {
+    repeated GetContractResponse all_contracts = 1;
+    string message = 2;
+}

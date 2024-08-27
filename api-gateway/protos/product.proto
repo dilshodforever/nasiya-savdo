@@ -1,0 +1,69 @@
+syntax = "proto3";
+
+package protos;
+
+option go_package = "genprotos/";
+
+service ProductService {
+    rpc CreateProduct (CreateProductRequest) returns (ProductResponse);
+    rpc GetProduct (ProductIdRequest) returns (GetProductResponse);
+    rpc UpdateProduct (UpdateProductRequest) returns (ProductResponse);
+    rpc DeleteProduct (ProductIdRequest) returns (ProductResponse);
+    rpc ListProducts (GetAllProductRequest) returns (GetAllProductResponse);
+}
+
+message CreateProductRequest {
+    string name = 1;
+    string color = 2;
+    string model = 3;
+    string image_url = 4;
+    string made_in = 5;
+    string date_of_creation = 6;
+    string storage_id = 7;
+}
+
+message ProductIdRequest {
+    string id = 1;
+}
+
+message GetProductResponse {
+    string id = 1;
+    string name = 2;
+    string color = 3;
+    string model = 4;
+    string image_url = 5;
+    string made_in = 6;
+    string date_of_creation = 7;
+    string storage_id = 8;
+    string created_at = 9;
+    string updated_at = 10;
+    string deleted_at = 11;
+}
+
+message UpdateProductRequest {
+    string id = 1;
+    string name = 2;
+    string color = 3;
+    string model = 4;
+    string image_url = 5;
+    string made_in = 6;
+    string date_of_creation = 7;
+    string storage_id = 8;
+}
+
+message ProductResponse {
+    string message = 1;
+    bool success = 2;
+}
+
+message GetAllProductRequest {
+    string name = 1;
+    string color = 2;
+    string model = 3;
+    string storage_id = 4;
+}
+
+message GetAllProductResponse {
+    repeated GetProductResponse all_products = 1;
+    string message = 2;
+}

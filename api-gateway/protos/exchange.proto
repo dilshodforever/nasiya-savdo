@@ -1,0 +1,61 @@
+syntax = "proto3";
+
+package protos;
+
+option go_package = "genprotos/";
+
+service ExchangeService {
+    rpc CreateExchange (CreateExchangeRequest) returns (ExchangeResponse);
+    rpc GetExchange (ExchangeIdRequest) returns (GetExchangeResponse);
+    rpc UpdateExchange (UpdateExchangeRequest) returns (ExchangeResponse);
+    rpc DeleteExchange (ExchangeIdRequest) returns (ExchangeResponse);
+    rpc ListExchanges (GetAllExchangeRequest) returns (GetAllExchangeResponse);
+}
+
+message CreateExchangeRequest {
+    string product_id = 1;
+    int32 amount = 2;
+    double price = 3;
+    string status = 4; // Enum: buy, sell
+    string contract_id = 5;
+}
+
+message ExchangeIdRequest {
+    string id = 1;
+}
+
+message GetExchangeResponse {
+    string id = 1;
+    string product_id = 2;
+    int32 amount = 3;
+    double price = 4;
+    string status = 5;
+    string contract_id = 6;
+    string created_at = 7;
+    string updated_at = 8;
+    string deleted_at = 9;
+}
+
+message UpdateExchangeRequest {
+    string id = 1;
+    string product_id = 2;
+    int32 amount = 3;
+    double price = 4;
+    string status = 5;
+    string contract_id = 6;
+}
+
+message ExchangeResponse {
+    string message = 1;
+    bool success = 2;
+}
+
+message GetAllExchangeRequest {
+    string product_id = 1;
+    string status = 2;
+}
+
+message GetAllExchangeResponse {
+    repeated GetExchangeResponse all_exchanges = 1;
+    string message = 2;
+}

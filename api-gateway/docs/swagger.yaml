@@ -1,0 +1,1159 @@
+basePath: /
+definitions:
+  genprotos.ContractResponse:
+    properties:
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  genprotos.CreateContractRequest:
+    properties:
+      consumer_address:
+        type: string
+      consumer_name:
+        type: string
+      consumer_passport_serial:
+        type: string
+      consumer_phone_number:
+        type: string
+      duration:
+        type: integer
+      passport_image:
+        type: string
+      status:
+        description: 'Enum: pending, finished, canceled'
+        type: string
+    type: object
+  genprotos.CreateExchangeRequest:
+    properties:
+      amount:
+        type: integer
+      contract_id:
+        type: string
+      price:
+        type: number
+      product_id:
+        type: string
+      status:
+        description: 'Enum: buy, sell'
+        type: string
+    type: object
+  genprotos.CreateProductRequest:
+    properties:
+      color:
+        type: string
+      date_of_creation:
+        type: string
+      image_url:
+        type: string
+      made_in:
+        type: string
+      model:
+        type: string
+      name:
+        type: string
+      storage_id:
+        type: string
+    type: object
+  genprotos.CreateStorageRequest:
+    properties:
+      name:
+        type: string
+      user_id:
+        type: string
+    type: object
+  genprotos.CreateTransactionRequest:
+    properties:
+      contract_id:
+        type: string
+      duration:
+        description: Payment duration
+        type: integer
+      price:
+        type: number
+    type: object
+  genprotos.ExchangeResponse:
+    properties:
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  genprotos.GetAllContractResponse:
+    properties:
+      all_contracts:
+        items:
+          $ref: '#/definitions/genprotos.GetContractResponse'
+        type: array
+      message:
+        type: string
+    type: object
+  genprotos.GetAllExchangeResponse:
+    properties:
+      all_exchanges:
+        items:
+          $ref: '#/definitions/genprotos.GetExchangeResponse'
+        type: array
+      message:
+        type: string
+    type: object
+  genprotos.GetAllProductResponse:
+    properties:
+      all_products:
+        items:
+          $ref: '#/definitions/genprotos.GetProductResponse'
+        type: array
+      message:
+        type: string
+    type: object
+  genprotos.GetAllStorageResponse:
+    properties:
+      all_storages:
+        items:
+          $ref: '#/definitions/genprotos.GetStorageResponse'
+        type: array
+      message:
+        type: string
+    type: object
+  genprotos.GetAllTransactionResponse:
+    properties:
+      all_transactions:
+        items:
+          $ref: '#/definitions/genprotos.GetTransactionResponse'
+        type: array
+      message:
+        type: string
+    type: object
+  genprotos.GetContractResponse:
+    properties:
+      consumer_address:
+        type: string
+      consumer_name:
+        type: string
+      consumer_passport_serial:
+        type: string
+      consumer_phone_number:
+        type: string
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      duration:
+        type: integer
+      id:
+        type: string
+      passport_image:
+        type: string
+      status:
+        type: string
+    type: object
+  genprotos.GetExchangeResponse:
+    properties:
+      amount:
+        type: integer
+      contract_id:
+        type: string
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      id:
+        type: string
+      price:
+        type: number
+      product_id:
+        type: string
+      status:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  genprotos.GetProductResponse:
+    properties:
+      color:
+        type: string
+      created_at:
+        type: string
+      date_of_creation:
+        type: string
+      deleted_at:
+        type: string
+      id:
+        type: string
+      image_url:
+        type: string
+      made_in:
+        type: string
+      model:
+        type: string
+      name:
+        type: string
+      storage_id:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  genprotos.GetStorageResponse:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      user_id:
+        type: string
+    type: object
+  genprotos.GetTransactionResponse:
+    properties:
+      contract_id:
+        type: string
+      created_at:
+        type: string
+      duration:
+        type: integer
+      id:
+        type: string
+      price:
+        type: number
+    type: object
+  genprotos.ProductResponse:
+    properties:
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  genprotos.StorageResponse:
+    properties:
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  genprotos.TransactionResponse:
+    properties:
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  genprotos.UpdateContractRequest:
+    properties:
+      consumer_address:
+        type: string
+      consumer_name:
+        type: string
+      consumer_passport_serial:
+        type: string
+      consumer_phone_number:
+        type: string
+      duration:
+        type: integer
+      id:
+        type: string
+      passport_image:
+        type: string
+      status:
+        type: string
+    type: object
+  genprotos.UpdateExchangeRequest:
+    properties:
+      amount:
+        type: integer
+      contract_id:
+        type: string
+      id:
+        type: string
+      price:
+        type: number
+      product_id:
+        type: string
+      status:
+        type: string
+    type: object
+  genprotos.UpdateProductRequest:
+    properties:
+      color:
+        type: string
+      date_of_creation:
+        type: string
+      id:
+        type: string
+      image_url:
+        type: string
+      made_in:
+        type: string
+      model:
+        type: string
+      name:
+        type: string
+      storage_id:
+        type: string
+    type: object
+  genprotos.UpdateStorageRequest:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      user_id:
+        type: string
+    type: object
+  genprotos.UpdateTransactionRequest:
+    properties:
+      contract_id:
+        type: string
+      duration:
+        type: integer
+      id:
+        type: string
+      price:
+        type: number
+    type: object
+info:
+  contact: {}
+  description: Dilshod's API Gateway
+  title: API Gateway
+  version: "1.0"
+paths:
+  /contract/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a contract by ID
+      parameters:
+      - description: Contract ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Contract details
+          schema:
+            $ref: '#/definitions/genprotos.GetContractResponse'
+        "404":
+          description: Contract not found
+          schema:
+            type: string
+        "500":
+          description: Error while retrieving contract
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get Contract
+      tags:
+      - Contract
+  /contract/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a new contract
+      parameters:
+      - description: Contract details
+        in: body
+        name: contract
+        required: true
+        schema:
+          $ref: '#/definitions/genprotos.CreateContractRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Contract created successfully
+          schema:
+            $ref: '#/definitions/genprotos.ContractResponse'
+        "400":
+          description: Invalid input
+          schema:
+            type: string
+        "500":
+          description: Error while creating contract
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Create Contract
+      tags:
+      - Contract
+  /contract/delete/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a contract by ID
+      parameters:
+      - description: Contract ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Contract deleted successfully
+          schema:
+            $ref: '#/definitions/genprotos.ContractResponse'
+        "404":
+          description: Contract not found
+          schema:
+            type: string
+        "500":
+          description: Error while deleting contract
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Delete Contract
+      tags:
+      - Contract
+  /contract/list:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of contracts with optional filters
+      parameters:
+      - description: Filter by consumer name
+        in: query
+        name: consumer_name
+        type: string
+      - description: Filter by status
+        in: query
+        name: status
+        type: string
+      - description: Filter by passport seria
+        in: query
+        name: pasport_seria
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of contracts
+          schema:
+            $ref: '#/definitions/genprotos.GetAllContractResponse'
+        "500":
+          description: Error while retrieving contracts
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: List Contracts
+      tags:
+      - Contract
+  /contract/update:
+    put:
+      consumes:
+      - application/json
+      description: Update an existing contract
+      parameters:
+      - description: Updated contract details
+        in: body
+        name: contract
+        required: true
+        schema:
+          $ref: '#/definitions/genprotos.UpdateContractRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Contract updated successfully
+          schema:
+            $ref: '#/definitions/genprotos.ContractResponse'
+        "400":
+          description: Invalid input
+          schema:
+            type: string
+        "500":
+          description: Error while updating contract
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Update Contract
+      tags:
+      - Contract
+  /exchange/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a specific exchange record using its ID
+      parameters:
+      - description: Exchange ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Exchange retrieved successfully
+          schema:
+            $ref: '#/definitions/genprotos.GetExchangeResponse'
+        "404":
+          description: Exchange not found
+          schema:
+            type: string
+        "500":
+          description: Error while retrieving exchange
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get Exchange by ID
+      tags:
+      - Exchange
+  /exchange/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a new exchange record with the specified details
+      parameters:
+      - description: Exchange details
+        in: body
+        name: exchange
+        required: true
+        schema:
+          $ref: '#/definitions/genprotos.CreateExchangeRequest'
+      - description: Exchange Status
+        enum:
+        - buy
+        - sell
+        in: query
+        name: status
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Exchange created successfully
+          schema:
+            $ref: '#/definitions/genprotos.ExchangeResponse'
+        "400":
+          description: Invalid input
+          schema:
+            type: string
+        "500":
+          description: Error while creating exchange
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Create a new Exchange
+      tags:
+      - Exchange
+  /exchange/delete:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a specific exchange record using its ID
+      parameters:
+      - description: Exchange ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Exchange deleted successfully
+          schema:
+            $ref: '#/definitions/genprotos.ExchangeResponse'
+        "404":
+          description: Exchange not found
+          schema:
+            type: string
+        "500":
+          description: Error while deleting exchange
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Delete Exchange by ID
+      tags:
+      - Exchange
+  /exchange/list:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of all exchange records with optional filtering
+        by product ID or status
+      parameters:
+      - description: Product ID
+        in: query
+        name: product_id
+        type: string
+      - description: Exchange Status
+        enum:
+        - buy
+        - sell
+        in: query
+        name: status
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of exchanges retrieved successfully
+          schema:
+            $ref: '#/definitions/genprotos.GetAllExchangeResponse'
+        "500":
+          description: Error while listing exchanges
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: List all Exchanges
+      tags:
+      - Exchange
+  /exchange/update:
+    put:
+      consumes:
+      - application/json
+      description: Update an existing exchange record with new details
+      parameters:
+      - description: Exchange details
+        in: body
+        name: exchange
+        required: true
+        schema:
+          $ref: '#/definitions/genprotos.UpdateExchangeRequest'
+      - description: Exchange Status
+        enum:
+        - buy
+        - sell
+        in: query
+        name: status
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Exchange updated successfully
+          schema:
+            $ref: '#/definitions/genprotos.ExchangeResponse'
+        "400":
+          description: Invalid input
+          schema:
+            type: string
+        "404":
+          description: Exchange not found
+          schema:
+            type: string
+        "500":
+          description: Error while updating exchange
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Update an Exchange
+      tags:
+      - Exchange
+  /product/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a product by its ID
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Product deleted successfully
+          schema:
+            $ref: '#/definitions/genprotos.ProductResponse'
+        "404":
+          description: Product not found
+          schema:
+            type: string
+        "500":
+          description: Error while deleting product
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Delete Product
+      tags:
+      - Product
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a product by its ID
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Product retrieved successfully
+          schema:
+            $ref: '#/definitions/genprotos.GetProductResponse'
+        "404":
+          description: Product not found
+          schema:
+            type: string
+        "500":
+          description: Error while retrieving product
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get Product
+      tags:
+      - Product
+  /product/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a new product
+      parameters:
+      - description: Product details
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/genprotos.CreateProductRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Product created successfully
+          schema:
+            $ref: '#/definitions/genprotos.ProductResponse'
+        "400":
+          description: Invalid input
+          schema:
+            type: string
+        "500":
+          description: Error while creating product
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Create Product
+      tags:
+      - Product
+  /product/update:
+    put:
+      consumes:
+      - application/json
+      description: Update an existing product
+      parameters:
+      - description: Updated product details
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/genprotos.UpdateProductRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Product updated successfully
+          schema:
+            $ref: '#/definitions/genprotos.ProductResponse'
+        "400":
+          description: Invalid input
+          schema:
+            type: string
+        "500":
+          description: Error while updating product
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Update Product
+      tags:
+      - Product
+  /products:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of products with optional filters
+      parameters:
+      - description: Product Name
+        in: query
+        name: name
+        type: string
+      - description: Product Color
+        in: query
+        name: color
+        type: string
+      - description: Product Model
+        in: query
+        name: model
+        type: string
+      - description: Storage ID
+        in: query
+        name: storage_id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Products retrieved successfully
+          schema:
+            $ref: '#/definitions/genprotos.GetAllProductResponse'
+        "500":
+          description: Error while listing products
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: List Products
+      tags:
+      - Product
+  /storage/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a specific storage record using its ID
+      parameters:
+      - description: Storage ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Storage retrieved successfully
+          schema:
+            $ref: '#/definitions/genprotos.GetStorageResponse'
+        "404":
+          description: Storage not found
+          schema:
+            type: string
+        "500":
+          description: Error while retrieving storage
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get Storage by ID
+      tags:
+      - Storage
+  /storage/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a new storage record with the specified details
+      parameters:
+      - description: Storage details
+        in: body
+        name: storage
+        required: true
+        schema:
+          $ref: '#/definitions/genprotos.CreateStorageRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Storage created successfully
+          schema:
+            $ref: '#/definitions/genprotos.StorageResponse'
+        "400":
+          description: Invalid input
+          schema:
+            type: string
+        "500":
+          description: Error while creating storage
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Create a new Storage
+      tags:
+      - Storage
+  /storage/delete:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a specific storage record using its ID
+      parameters:
+      - description: Storage ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Storage deleted successfully
+          schema:
+            $ref: '#/definitions/genprotos.StorageResponse'
+        "404":
+          description: Storage not found
+          schema:
+            type: string
+        "500":
+          description: Error while deleting storage
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Delete Storage by ID
+      tags:
+      - Storage
+  /storage/list:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of all storage records with optional filtering
+        by name or user ID
+      parameters:
+      - description: Storage name
+        in: query
+        name: name
+        type: string
+      - description: User ID
+        in: query
+        name: user_id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of storages retrieved successfully
+          schema:
+            $ref: '#/definitions/genprotos.GetAllStorageResponse'
+        "500":
+          description: Error while listing storages
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: List all Storages
+      tags:
+      - Storage
+  /storage/update:
+    put:
+      consumes:
+      - application/json
+      description: Update an existing storage record with new details
+      parameters:
+      - description: Storage details
+        in: body
+        name: storage
+        required: true
+        schema:
+          $ref: '#/definitions/genprotos.UpdateStorageRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Storage updated successfully
+          schema:
+            $ref: '#/definitions/genprotos.StorageResponse'
+        "400":
+          description: Invalid input
+          schema:
+            type: string
+        "404":
+          description: Storage not found
+          schema:
+            type: string
+        "500":
+          description: Error while updating storage
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Update a Storage
+      tags:
+      - Storage
+  /transaction/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a transaction record by ID
+      parameters:
+      - description: Transaction ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Transaction deleted successfully
+          schema:
+            $ref: '#/definitions/genprotos.TransactionResponse'
+        "400":
+          description: Invalid input
+          schema:
+            type: string
+        "404":
+          description: Transaction not found
+          schema:
+            type: string
+        "500":
+          description: Error while deleting transaction
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Delete Transaction by ID
+      tags:
+      - Transaction
+    get:
+      consumes:
+      - application/json
+      description: Retrieve transaction details by transaction ID
+      parameters:
+      - description: Transaction ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Transaction details
+          schema:
+            $ref: '#/definitions/genprotos.GetTransactionResponse'
+        "400":
+          description: Invalid input
+          schema:
+            type: string
+        "404":
+          description: Transaction not found
+          schema:
+            type: string
+        "500":
+          description: Error while retrieving transaction
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get Transaction by ID
+      tags:
+      - Transaction
+    put:
+      consumes:
+      - application/json
+      description: Update an existing transaction record by ID
+      parameters:
+      - description: Transaction ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Updated transaction details
+        in: body
+        name: transaction
+        required: true
+        schema:
+          $ref: '#/definitions/genprotos.UpdateTransactionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Transaction updated successfully
+          schema:
+            $ref: '#/definitions/genprotos.TransactionResponse'
+        "400":
+          description: Invalid input
+          schema:
+            type: string
+        "404":
+          description: Transaction not found
+          schema:
+            type: string
+        "500":
+          description: Error while updating transaction
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Update Transaction
+      tags:
+      - Transaction
+  /transaction/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a new transaction record with the specified details
+      parameters:
+      - description: Transaction details
+        in: body
+        name: transaction
+        required: true
+        schema:
+          $ref: '#/definitions/genprotos.CreateTransactionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Transaction created successfully
+          schema:
+            $ref: '#/definitions/genprotos.TransactionResponse'
+        "400":
+          description: Invalid input
+          schema:
+            type: string
+        "500":
+          description: Error while creating transaction
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Create a new Transaction
+      tags:
+      - Transaction
+  /transactions:
+    get:
+      consumes:
+      - application/json
+      description: List all transactions, optionally filtered by contract ID
+      parameters:
+      - description: Contract ID
+        in: query
+        name: contract_id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of transactions
+          schema:
+            $ref: '#/definitions/genprotos.GetAllTransactionResponse'
+        "400":
+          description: Invalid input
+          schema:
+            type: string
+        "500":
+          description: Error while listing transactions
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: List Transactions
+      tags:
+      - Transaction
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
