@@ -7,19 +7,19 @@ import (
 	"github.com/dilshodforever/nasiya-savdo/storage"
 )
 
-type miiIOService struct {
+type MiiIOService struct {
 	genprotos.UnimplementedMediaServiceServer
 	storage.MinIoRoot
 }
 
-func NewMinIOService(stg storage.MinIoRoot) *miiIOService {
-	return &miiIOService{
+func NewMinIOService(stg storage.MinIoRoot) *MiiIOService {
+	return &MiiIOService{
 		MinIoRoot: stg,
 	}
 }
 
-func (s *miiIOService) UploadFile(contex context.Context, req *genprotos.UploadFileRequest) (*genprotos.UploadFileResponse, error) {
-	resp, err := s.MinIO().UploadFile(req)
+func (s *MiiIOService) UploadFile(contex context.Context, req *genprotos.UploadFileRequest) (*genprotos.UploadFileResponse, error) {
+	resp, err := s.MinIO().UploadFile(contex, req)
 	if err != nil {
 		return nil, err
 	}

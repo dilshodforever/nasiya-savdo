@@ -89,5 +89,11 @@ func NewGin(h *handler.Handler) *gin.Engine {
 		transaction.GET("/list", h.ListTransactions)
 	}
 
+	minIO := router.Group("/minio")
+	{
+		minIO.POST("/upload", h.UploadFile)
+	}
+
+
 	return r
 }

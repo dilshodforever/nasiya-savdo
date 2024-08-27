@@ -1,6 +1,7 @@
 package minio
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/dilshodforever/nasiya-savdo/storage"
@@ -26,16 +27,15 @@ func InitMinioClient() (storage.MinIoRoot, error) {
 	if err != nil {
 		log.Fatalln(err)
 	}
-
+	fmt.Println("Connection to MinIO database established!")
 	return &MinIO{
 		client: minioClient,
 	}, nil
 }
 
-
 func (m *MinIO) MinIO() storage.MinIOStorage {
-	if m.minIO != nil {
-		m.minIO = &MediaServiceServer{minioClient: m.client}
-	}
-	return m.minIO
+    if m.minIO == nil {
+        m.minIO = &MediaServiceServer{minioClient: m.client}
+    }
+    return m.minIO
 }

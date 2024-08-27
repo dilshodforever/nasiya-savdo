@@ -31,8 +31,10 @@ func main() {
 	categoryClient := genprotos.NewProductServiceClient(NasiaConn)
 	goalClient := genprotos.NewStorageServiceClient(NasiaConn)
 	transactionClient := genprotos.NewTransactionServiceClient(NasiaConn)
+	minIOClient := genprotos.NewMediaServiceClient(NasiaConn)
+
 	// Create a new handler with the service clients
-	h := handler.NewHandler(accountClient, budgetClient, categoryClient, goalClient, transactionClient)
+	h := handler.NewHandler(accountClient, budgetClient, categoryClient, goalClient, transactionClient, minIOClient)
 
 	// Initialize Gin router
 	r := api.NewGin(h)

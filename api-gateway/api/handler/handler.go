@@ -5,11 +5,12 @@ import (
 )
 
 type Handler struct {
-	ContractService   pb.ContractServiceClient
-	ExchangeService   pb.ExchangeServiceClient
-	ProductService    pb.ProductServiceClient
-	StorageService    pb.StorageServiceClient
+	ContractService    pb.ContractServiceClient
+	ExchangeService    pb.ExchangeServiceClient
+	ProductService     pb.ProductServiceClient
+	StorageService     pb.StorageServiceClient
 	TransactionService pb.TransactionServiceClient
+	MinIO              pb.MediaServiceClient
 }
 
 func NewHandler(
@@ -18,12 +19,14 @@ func NewHandler(
 	ProductService pb.ProductServiceClient,
 	StorageService pb.StorageServiceClient,
 	TransactionService pb.TransactionServiceClient,
+	MinIO pb.MediaServiceClient,
 ) *Handler {
 	return &Handler{
-		ContractService:   ContractService,
-		ExchangeService:   ExchangeService,
-		ProductService:    ProductService,
-		StorageService:    StorageService,
+		ContractService:    ContractService,
+		ExchangeService:    ExchangeService,
+		ProductService:     ProductService,
+		StorageService:     StorageService,
 		TransactionService: TransactionService,
+		MinIO:              MinIO,
 	}
 }

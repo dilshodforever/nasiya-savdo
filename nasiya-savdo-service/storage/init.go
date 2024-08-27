@@ -1,6 +1,8 @@
 package storage
 
 import (
+	"context"
+
 	pb "github.com/dilshodforever/nasiya-savdo/genprotos"
 )
 
@@ -58,5 +60,5 @@ type TransactionStorage interface {
 
 
 type MinIOStorage interface {
-	UploadFile(req *pb.UploadFileRequest) (*pb.UploadFileResponse, error)
+	UploadFile(ctx context.Context, req *pb.UploadFileRequest) (*pb.UploadFileResponse, error)
 }
