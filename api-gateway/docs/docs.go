@@ -115,6 +115,104 @@ const docTemplate = `{
                 }
             }
         },
+        "/contract/get/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retrieve a contract by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Contract"
+                ],
+                "summary": "Get Contract",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Contract ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Contract details",
+                        "schema": {
+                            "$ref": "#/definitions/genprotos.GetContractResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Contract not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Error while retrieving contract",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/contract/getpdf/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retrieve a contract by ID and return it in PDF format",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/pdf"
+                ],
+                "tags": [
+                    "Contract"
+                ],
+                "summary": "Get Contract",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Contract ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "file"
+                        }
+                    },
+                    "404": {
+                        "description": "Contract not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Error while retrieving contract",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/contract/list": {
             "get": {
                 "security": [
@@ -213,55 +311,6 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Error while updating contract",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/contract/{id}": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Retrieve a contract by ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Contract"
-                ],
-                "summary": "Get Contract",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Contract ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Contract details",
-                        "schema": {
-                            "$ref": "#/definitions/genprotos.GetContractResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Contract not found",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Error while retrieving contract",
                         "schema": {
                             "type": "string"
                         }
@@ -1117,6 +1166,40 @@ const docTemplate = `{
                 }
             }
         },
+        "/transaction/check": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Check all pending transactions and return a message if any payments are due this month",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Transactions"
+                ],
+                "summary": "Check Transactions",
+                "responses": {
+                    "200": {
+                        "description": "Payments due this month",
+                        "schema": {
+                            "$ref": "#/definitions/genprotos.CheckResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error while checking transactions",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/transaction/create": {
             "post": {
                 "security": [
@@ -1161,6 +1244,54 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Error while creating transaction",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/transaction/list": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "List all transactions, optionally filtered by contract ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Transaction"
+                ],
+                "summary": "List Transactions",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Contract ID",
+                        "name": "contract_id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of transactions",
+                        "schema": {
+                            "$ref": "#/definitions/genprotos.GetAllTransactionResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Error while listing transactions",
                         "schema": {
                             "type": "string"
                         }
@@ -1337,57 +1468,17 @@ const docTemplate = `{
                     }
                 }
             }
-        },
-        "/transactions": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "List all transactions, optionally filtered by contract ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Transaction"
-                ],
-                "summary": "List Transactions",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Contract ID",
-                        "name": "contract_id",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "List of transactions",
-                        "schema": {
-                            "$ref": "#/definitions/genprotos.GetAllTransactionResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid input",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Error while listing transactions",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
         }
     },
     "definitions": {
+        "genprotos.CheckResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "genprotos.ContractResponse": {
             "type": "object",
             "properties": {
@@ -1491,7 +1582,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "duration": {
-                    "description": "Payment duration",
                     "type": "integer"
                 },
                 "price": {

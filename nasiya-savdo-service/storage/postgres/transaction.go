@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"strings"
+	"time"
 
 	pb "github.com/dilshodforever/nasiya-savdo/genprotos"
 )
@@ -101,7 +102,6 @@ func (p *TransactionStorage) CreateTransaction(req *pb.CreateTransactionRequest)
 		Success: true,
 	}, nil
 }
-
 
 func (p *TransactionStorage) GetTransaction(req *pb.TransactionIdRequest) (*pb.GetTransactionResponse, error) {
 	query := `
@@ -224,4 +224,67 @@ func (p *TransactionStorage) ListTransactions(req *pb.GetAllTransactionRequest) 
 	}
 
 	return &transactions, nil
+}
+
+func (p *TransactionStorage) CheckTransactions(req *pb.CheckRequest) (*pb.CheckResponse, error) {
+	query := `
+		SELECT c.id, c.created_at, SUM(t.duration)
+		FROM contract AS c
+		LEFT JOIN transactions AS t ON t.contract_id = c.id
+		WHERE c.status = 'pending'
+		GROUP BY c.id, c.created_at
+	`
+	rows, err := p.db.Query(query)
+	if err != nil {
+		log.Printf("Error executing query: %v", err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	var dueIDs []string
+
+	for rows.Next() {
+		var contractID, createdAt string
+		var totalDuration sql.NullInt32
+
+		if err := rows.Scan(&contractID, &createdAt, &totalDuration); err != nil {
+			log.Printf("Error scanning row: %v", err)
+			return nil, err
+		}
+		creationTime, err := time.Parse(time.RFC3339, createdAt)
+		if err != nil {
+			log.Printf("Error parsing date: %v", err)
+			return nil, err
+		}
+
+		duration := int32(0)
+
+		if totalDuration.Valid {
+			duration = totalDuration.Int32
+		}
+
+		dueDay := int(creationTime.Month()) + int(duration)
+		switch {
+		case dueDay == int(time.Now().Month()) && creationTime.Day() == time.Now().Day():
+			dueIDs = append(dueIDs, contractID)
+
+		case dueDay >= int(time.Now().Month()) && creationTime.Day() >= time.Now().Day():
+			dueIDs = append(dueIDs, contractID)
+
+		case dueDay == int(time.Now().Month()) && creationTime.Day() >= time.Now().Day():
+			dueIDs = append(dueIDs, contractID)
+		}
+
+	}
+
+	if err := rows.Err(); err != nil {
+		log.Printf("Error during rows iteration: %v", err)
+		return nil, err
+	}
+
+	if len(dueIDs) > 0 {
+		return &pb.CheckResponse{Message: "" + dueIDs[0]}, nil
+	}
+
+	return &pb.CheckResponse{Message: "No payments are due today."}, nil
 }

@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	pb "github.com/dilshodforever/nasiya-savdo/genprotos"
+	"github.com/google/uuid"
 )
 
 type ProductStorage struct {
@@ -18,14 +19,14 @@ func NewProductStorage(db *sql.DB) *ProductStorage {
 }
 
 func (p *ProductStorage) CreateProduct(req *pb.CreateProductRequest) (*pb.ProductResponse, error) {
+	id:=uuid.NewString()
 	query := `
 		INSERT INTO products (id, name, color, model, image_url, made_in, date_of_creation, storage_id, created_at, updated_at, deleted_at)
-		VALUES (uuid_generate_v4(), $1, $2, $3, $4, $5, $6, $7, now(), now(), 0)
-		RETURNING id
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8,now(), now(), 0)
+		
 	`
 
-	var id string
-	err := p.db.QueryRow(query, req.Name, req.Color, req.Model, req.ImageUrl, req.MadeIn, req.DateOfCreation, req.StorageId).Scan(&id)
+	_,err := p.db.Exec(query, id, req.Name, req.Color, req.Model, req.ImageUrl, req.MadeIn, req.DateOfCreation, req.StorageId)
 	if err != nil {
 		return nil, err
 	}

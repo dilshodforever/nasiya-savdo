@@ -1,5 +1,10 @@
 basePath: /
 definitions:
+  genprotos.CheckResponse:
+    properties:
+      message:
+        type: string
+    type: object
   genprotos.ContractResponse:
     properties:
       message:
@@ -68,7 +73,6 @@ definitions:
       contract_id:
         type: string
       duration:
-        description: Payment duration
         type: integer
       price:
         type: number
@@ -321,37 +325,6 @@ info:
   title: API Gateway
   version: "1.0"
 paths:
-  /contract/{id}:
-    get:
-      consumes:
-      - application/json
-      description: Retrieve a contract by ID
-      parameters:
-      - description: Contract ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Contract details
-          schema:
-            $ref: '#/definitions/genprotos.GetContractResponse'
-        "404":
-          description: Contract not found
-          schema:
-            type: string
-        "500":
-          description: Error while retrieving contract
-          schema:
-            type: string
-      security:
-      - BearerAuth: []
-      summary: Get Contract
-      tags:
-      - Contract
   /contract/create:
     post:
       consumes:
@@ -413,6 +386,68 @@ paths:
       security:
       - BearerAuth: []
       summary: Delete Contract
+      tags:
+      - Contract
+  /contract/get/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a contract by ID
+      parameters:
+      - description: Contract ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Contract details
+          schema:
+            $ref: '#/definitions/genprotos.GetContractResponse'
+        "404":
+          description: Contract not found
+          schema:
+            type: string
+        "500":
+          description: Error while retrieving contract
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get Contract
+      tags:
+      - Contract
+  /contract/getpdf/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a contract by ID and return it in PDF format
+      parameters:
+      - description: Contract ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/pdf
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: file
+        "404":
+          description: Contract not found
+          schema:
+            type: string
+        "500":
+          description: Error while retrieving contract
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get Contract
       tags:
       - Contract
   /contract/list:
@@ -1130,6 +1165,28 @@ paths:
       summary: Update Transaction
       tags:
       - Transaction
+  /transaction/check:
+    post:
+      consumes:
+      - application/json
+      description: Check all pending transactions and return a message if any payments
+        are due this month
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Payments due this month
+          schema:
+            $ref: '#/definitions/genprotos.CheckResponse'
+        "500":
+          description: Error while checking transactions
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Check Transactions
+      tags:
+      - Transactions
   /transaction/create:
     post:
       consumes:
@@ -1162,7 +1219,7 @@ paths:
       summary: Create a new Transaction
       tags:
       - Transaction
-  /transactions:
+  /transaction/list:
     get:
       consumes:
       - application/json

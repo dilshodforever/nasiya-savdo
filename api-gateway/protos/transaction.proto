@@ -10,12 +10,13 @@ service TransactionService {
     rpc UpdateTransaction (UpdateTransactionRequest) returns (TransactionResponse);
     rpc DeleteTransaction (TransactionIdRequest) returns (TransactionResponse);
     rpc ListTransactions (GetAllTransactionRequest) returns (GetAllTransactionResponse);
-}
+    rpc CheckTransactions(CheckRequest) returns (CheckResponse);
+} 
 
 message CreateTransactionRequest {
     string contract_id = 1;
     double price = 2;
-    int32 duration = 3; // Payment duration
+    int32 duration = 3; 
 }
 
 message TransactionIdRequest {
@@ -49,4 +50,12 @@ message GetAllTransactionRequest {
 message GetAllTransactionResponse {
     repeated GetTransactionResponse all_transactions = 1;
     string message = 2;
+}
+
+message CheckRequest{
+
+}
+
+message CheckResponse{
+    string message = 1;
 }

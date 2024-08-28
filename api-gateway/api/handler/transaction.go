@@ -132,7 +132,7 @@ func (h *Handler) DeleteTransaction(ctx *gin.Context) {
 // @Success      200 {object} pb.GetAllTransactionResponse "List of transactions"
 // @Failure      400 {string} string "Invalid input"
 // @Failure      500 {string} string "Error while listing transactions"
-// @Router       /transactions [get]
+// @Router       /transaction/list [get]
 func (h *Handler) ListTransactions(ctx *gin.Context) {
 	contractID := ctx.Query("contract_id")
 	req := &pb.GetAllTransactionRequest{ContractId: contractID}
@@ -143,5 +143,28 @@ func (h *Handler) ListTransactions(ctx *gin.Context) {
 		ctx.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
+	ctx.JSON(200, res)
+}
+
+
+// CheckTransactions handles checking for due payments
+// @Summary      Check Transactions
+// @Description  Check all pending transactions and return a message if any payments are due this month
+// @Tags         Transactions
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Success      200 {object} pb.CheckResponse "Payments due this month"
+// @Failure      500 {string} string "Error while checking transactions"
+// @Router       /transaction/check [post]
+func (h *Handler) CheckTransactions(ctx *gin.Context) {
+	req := &pb.CheckRequest{}
+	
+	res, err := h.TransactionService.CheckTransactions(ctx.Copy(),req)
+	if err != nil {
+		ctx.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+	
 	ctx.JSON(200, res)
 }

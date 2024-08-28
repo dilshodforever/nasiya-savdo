@@ -27,6 +27,7 @@ type TransactionServiceClient interface {
 	UpdateTransaction(ctx context.Context, in *UpdateTransactionRequest, opts ...grpc.CallOption) (*TransactionResponse, error)
 	DeleteTransaction(ctx context.Context, in *TransactionIdRequest, opts ...grpc.CallOption) (*TransactionResponse, error)
 	ListTransactions(ctx context.Context, in *GetAllTransactionRequest, opts ...grpc.CallOption) (*GetAllTransactionResponse, error)
+	CheckTransactions(ctx context.Context, in *CheckRequest, opts ...grpc.CallOption) (*CheckResponse, error)
 }
 
 type transactionServiceClient struct {
@@ -82,6 +83,15 @@ func (c *transactionServiceClient) ListTransactions(ctx context.Context, in *Get
 	return out, nil
 }
 
+func (c *transactionServiceClient) CheckTransactions(ctx context.Context, in *CheckRequest, opts ...grpc.CallOption) (*CheckResponse, error) {
+	out := new(CheckResponse)
+	err := c.cc.Invoke(ctx, "/protos.TransactionService/CheckTransactions", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TransactionServiceServer is the server API for TransactionService service.
 // All implementations must embed UnimplementedTransactionServiceServer
 // for forward compatibility
@@ -91,6 +101,7 @@ type TransactionServiceServer interface {
 	UpdateTransaction(context.Context, *UpdateTransactionRequest) (*TransactionResponse, error)
 	DeleteTransaction(context.Context, *TransactionIdRequest) (*TransactionResponse, error)
 	ListTransactions(context.Context, *GetAllTransactionRequest) (*GetAllTransactionResponse, error)
+	CheckTransactions(context.Context, *CheckRequest) (*CheckResponse, error)
 	mustEmbedUnimplementedTransactionServiceServer()
 }
 
@@ -112,6 +123,9 @@ func (UnimplementedTransactionServiceServer) DeleteTransaction(context.Context, 
 }
 func (UnimplementedTransactionServiceServer) ListTransactions(context.Context, *GetAllTransactionRequest) (*GetAllTransactionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListTransactions not implemented")
+}
+func (UnimplementedTransactionServiceServer) CheckTransactions(context.Context, *CheckRequest) (*CheckResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CheckTransactions not implemented")
 }
 func (UnimplementedTransactionServiceServer) mustEmbedUnimplementedTransactionServiceServer() {}
 
@@ -216,6 +230,24 @@ func _TransactionService_ListTransactions_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
+func _TransactionService_CheckTransactions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CheckRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TransactionServiceServer).CheckTransactions(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protos.TransactionService/CheckTransactions",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TransactionServiceServer).CheckTransactions(ctx, req.(*CheckRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // TransactionService_ServiceDesc is the grpc.ServiceDesc for TransactionService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -242,6 +274,10 @@ var TransactionService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListTransactions",
 			Handler:    _TransactionService_ListTransactions_Handler,
+		},
+		{
+			MethodName: "CheckTransactions",
+			Handler:    _TransactionService_CheckTransactions_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -28,6 +28,7 @@ func (p *ContractStorage) CreateContract(req *pb.CreateContractRequest) (*pb.Con
 	if err != nil {
 		return nil, err
 	}
+
 	return &pb.ContractResponse{
 		Message: "Contract successfully created with ID: " + id,
 		Success: true,
@@ -38,13 +39,19 @@ func (p *ContractStorage) GetContract(req *pb.ContractIdRequest) (*pb.GetContrac
 	query := `
 		SELECT id, consumer_name, consumer_passport_serial, consumer_address, consumer_phone_number, passport_image, status, duration, created_at, deleted_at
 		FROM contract
-		WHERE id = $1 AND deleted_at = 0
+		WHERE id = $1
 	`
 	var contract pb.GetContractResponse
+	var deletedAt sql.NullString
 	err := p.db.QueryRow(query, req.Id).Scan(
 		&contract.Id, &contract.ConsumerName, &contract.ConsumerPassportSerial, &contract.ConsumerAddress, &contract.ConsumerPhoneNumber,
-		&contract.PassportImage, &contract.Status, &contract.Duration, &contract.CreatedAt, &contract.DeletedAt,
+		&contract.PassportImage, &contract.Status, &contract.Duration, &contract.CreatedAt, &deletedAt,
 	)
+	if deletedAt.Valid{
+		contract.DeletedAt=deletedAt.String
+	} else{
+		contract.DeletedAt=""
+	}
 	if err != nil {
 		return nil, err
 	}
@@ -188,3 +195,5 @@ func (p *ContractStorage) ListContracts(req *pb.GetAllContractRequest) (*pb.GetA
 
 	return &contracts, nil
 }
+
+

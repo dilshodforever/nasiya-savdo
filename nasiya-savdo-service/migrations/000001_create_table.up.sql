@@ -18,8 +18,9 @@ CREATE TABLE users (
 
 CREATE TABLE storage (
   id UUID PRIMARY KEY,
-  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-  name VARCHAR(100) NOT NULL
+  user_id UUID,
+  name VARCHAR(100) NOT NULL,
+  created_at  TIMESTAMP DEFAULT NOW()
 );
 
 CREATE TABLE product (
@@ -62,7 +63,7 @@ CREATE TABLE exchange (
   deleted_at BIGINT DEFAULT 0
 );
 
-CREATE TABLE transaction (
+CREATE TABLE transactions (
   id UUID PRIMARY KEY,
   contract_id UUID REFERENCES contract(id) ON DELETE CASCADE,
   price DECIMAL(10, 2) NOT NULL,

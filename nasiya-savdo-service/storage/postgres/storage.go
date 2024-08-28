@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	pb "github.com/dilshodforever/nasiya-savdo/genprotos"
+	"github.com/google/uuid"
 )
 
 type StorageStorage struct {
@@ -18,13 +19,13 @@ func NewStorageStorage(db *sql.DB) *StorageStorage {
 }
 
 func (p *StorageStorage) CreateStorage(req *pb.CreateStorageRequest) (*pb.StorageResponse, error) {
+	id:=uuid.NewString()
 	query := `
-		INSERT INTO storage (name, user_id, created_at)
-		VALUES ($1, $2, now())
+		INSERT INTO storage (id, name, user_id, created_at)
+		VALUES ($1, $2, $3,now())
 		RETURNING id
 	`
-	var id string
-	err := p.db.QueryRow(query, req.Name, req.UserId).Scan(&id)
+	_,err := p.db.Exec(query, id, req.Name, req.UserId)
 	if err != nil {
 		return nil, err
 	}

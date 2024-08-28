@@ -56,6 +56,7 @@ type TransactionStorage interface {
 	UpdateTransaction(req *pb.UpdateTransactionRequest) (*pb.TransactionResponse, error)
 	DeleteTransaction(req *pb.TransactionIdRequest) (*pb.TransactionResponse, error)
 	ListTransactions(req *pb.GetAllTransactionRequest) (*pb.GetAllTransactionResponse, error)
+	CheckTransactions(req *pb.CheckRequest) (*pb.CheckResponse, error)
 }
 
 

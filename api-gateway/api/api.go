@@ -47,6 +47,7 @@ func NewGin(h *handler.Handler) *gin.Engine {
 		contract.PUT("/update", h.UpdateContract)
 		contract.DELETE("/delete/:id", h.DeleteContract)
 		contract.GET("/list", h.ListContracts)
+		contract.GET("/getpdf/:id", h.GetContractPdf)
 	}
 
 	// Exchange endpoints
@@ -87,6 +88,7 @@ func NewGin(h *handler.Handler) *gin.Engine {
 		transaction.PUT("/update", h.UpdateTransaction)
 		transaction.DELETE("/delete/:id", h.DeleteTransaction)
 		transaction.GET("/list", h.ListTransactions)
+		transaction.POST("/check", h.CheckTransactions)
 	}
 
 	minIO := router.Group("/minio")
