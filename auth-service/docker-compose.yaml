@@ -85,20 +85,20 @@ services:
     container_name: auth-ll
     build: ./
     depends_on:
-      - postgres-db
+      # - postgres-db
       - zookeeper
       - kafka
     ports:
       - "8081:8081"
       - "8082:8082"
     networks:
-      - GLhost
+      - mynetwork
 
 # Docker Networks
 networks:
-  GLhost:
+  mynetwork:
     external: true
-    name: ll-network
+    name: nasiya-network
     driver: bridge
 
 # Docker Volumes
