@@ -15,9 +15,9 @@ type MinIO struct {
 }
 
 func InitMinioClient() (storage.MinIoRoot, error) {
-	endpoint := "127.0.0.1:9000"
-	accessKeyID := "pen0FH8fIYhbCcT0zCGK"
-	secretAccessKey := "q73ArcpEWn3bypibpFu0wcW7rsC6kyHQ8u9yOVUD"
+	endpoint := "minio:9000"
+	accessKeyID := "5Gs4vzm1YdasQUtphPuV"
+	secretAccessKey := "ILSENWnje7qbPHj582u8Enb1g4KKEsPJ0sET3dbq"
 	useSSL := false
 
 	minioClient, err := minio.New(endpoint, &minio.Options{

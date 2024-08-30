@@ -1,16 +1,75 @@
 version: '3.9'
 
 services:
-  game-service:
-    container_name: gameservice
+  # migrate
+  migrate:
+    image: migrate/migrate
+    networks:
+      - mynetwork
+    volumes:
+      - ./migrations:/migrations
+    command: [ "-path", "/migrations", "-database",  
+                "postgres://postgres:1234@postgres-nasiya:5432/nasia?sslmode=disable", 
+                "up" ]
+    depends_on:
+      - postgres-db
+
+  # postgres
+  postgres-db:
+    container_name: postgres-nasiya
+    image: postgres:latest
+    environment:
+      PGUSER: postgres
+      POSTGRES_PASSWORD: 1234
+      PGDATA: /data/postgres
+      POSTGRES_DB: nasia
+    volumes:
+      - db:/post-database/post-memory
+    ports:
+      - "5433:5432"
+    networks:
+      - mynetwork
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d postgres"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # minio
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    environment:
+      MINIO_ROOT_USER: Dior
+      MINIO_ROOT_PASSWORD: isakov05@
+    command: server /data --console-address ":9001"
+    ports:
+      - "9000:9000"   
+      - "9001:9001"   
+    volumes:
+      - minio-data:/data
+    networks:
+      - mynetwork
+
+
+  # nasiya-service
+  nasiya-service:
+    container_name: nasiya-service
     build: .
     ports:
       - "8087:8087"
+    depends_on:
+      - postgres-db
     networks:
       - mynetwork
 
 networks:
   mynetwork:
     external: true
-    name: global-network
+    name: nasiya-network
     driver: bridge
+
+volumes:
+  db:
+  minio-data:

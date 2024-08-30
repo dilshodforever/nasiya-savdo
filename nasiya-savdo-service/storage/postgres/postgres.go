@@ -21,7 +21,7 @@ type Storage struct {
 
 func NewPostgresStorage() (u.InitRoot, error) {
 	config := config.Load()
-	con := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=require",
+	con := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=disable",
 		config.PostgresUser, config.PostgresPassword,
 		config.PostgresHost, config.PostgresPort,
 		config.PostgresDatabase)

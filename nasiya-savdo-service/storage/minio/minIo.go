@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"log"
 	"time"
 
 	pb "github.com/dilshodforever/nasiya-savdo/genprotos"
@@ -30,13 +29,14 @@ func (s *MediaServiceServer) UploadFile(ctx context.Context, req *pb.UploadFileR
 	location := "us-east-1"
 	exists, err := s.minioClient.BucketExists(ctx, bucketName)
 	if err != nil {
+		fmt.Println(err)
 		return nil, status.Errorf(codes.Internal, "Failed to check if bucket exists")
 	}
 
 	if !exists {
 		err = s.minioClient.MakeBucket(ctx, bucketName, minio.MakeBucketOptions{Region: location})
 		if err != nil {
-			log.Println("Failed to create bucket")
+			fmt.Println("Failed to create bucket: ", err)
 			return nil, status.Errorf(codes.Internal, "Failed to create bucket")
 		}
 	}
@@ -45,13 +45,13 @@ func (s *MediaServiceServer) UploadFile(ctx context.Context, req *pb.UploadFileR
 
 	_, err = s.minioClient.PutObject(ctx, bucketName, objectName, file, -1, minio.PutObjectOptions{})
 	if err != nil {
-		log.Println("Failed to upload image")
-		return nil, status.Errorf(codes.Internal, "Failed to upload image")
+		fmt.Println("Failed to upload image: ", err)
+		return nil, status.Errorf(codes.Internal, "Failed to upload image: %v", err)
 	}
 
 	presignedURL, err := s.minioClient.PresignedGetObject(ctx, bucketName, objectName, 24*time.Hour, nil)
 	if err != nil {
-		log.Println("Failed to generate URL")
+		fmt.Println("Failed to generate URL: ", err)
 		return nil, status.Errorf(codes.Internal, "Failed to generate URL")
 	}
 
