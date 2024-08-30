@@ -1092,40 +1092,6 @@ paths:
       summary: Delete Transaction by ID
       tags:
       - Transaction
-    get:
-      consumes:
-      - application/json
-      description: Retrieve transaction details by transaction ID
-      parameters:
-      - description: Transaction ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Transaction details
-          schema:
-            $ref: '#/definitions/genprotos.GetTransactionResponse'
-        "400":
-          description: Invalid input
-          schema:
-            type: string
-        "404":
-          description: Transaction not found
-          schema:
-            type: string
-        "500":
-          description: Error while retrieving transaction
-          schema:
-            type: string
-      security:
-      - BearerAuth: []
-      summary: Get Transaction by ID
-      tags:
-      - Transaction
     put:
       consumes:
       - application/json
@@ -1218,6 +1184,41 @@ paths:
       security:
       - BearerAuth: []
       summary: Create a new Transaction
+      tags:
+      - Transaction
+  /transaction/get/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve transaction details by transaction ID
+      parameters:
+      - description: Transaction ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Transaction details
+          schema:
+            $ref: '#/definitions/genprotos.GetTransactionResponse'
+        "400":
+          description: Invalid input
+          schema:
+            type: string
+        "404":
+          description: Transaction not found
+          schema:
+            type: string
+        "500":
+          description: Error while retrieving transaction
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get Transaction by ID
       tags:
       - Transaction
   /transaction/list:

@@ -48,7 +48,7 @@ func (h *Handler) CreateTransaction(ctx *gin.Context) {
 // @Failure      400 {string} string "Invalid input"
 // @Failure      404 {string} string "Transaction not found"
 // @Failure      500 {string} string "Error while retrieving transaction"
-// @Router       /transaction/{id} [get]
+// @Router       /transaction/get/{id} [get]
 func (h *Handler) GetTransaction(ctx *gin.Context) {
 	id := ctx.Param("id")
 	req := &pb.TransactionIdRequest{Id: id}
