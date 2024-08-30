@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"io"
 	"net/http"
 
@@ -53,7 +54,7 @@ func (h *Handler) UploadFile(c *gin.Context) {
 		Filename: filename,
 	})
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to upload file"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Failed to upload file %v", err)})
 		return
 	}
 

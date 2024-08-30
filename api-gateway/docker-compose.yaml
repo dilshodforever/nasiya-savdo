@@ -6,25 +6,14 @@ services:
     build: .
     ports:
       - "8080:8080"
-    depends_on:
-      - redis
     networks:
       - mynetwork
 
-  redis:
-    image: redis:latest
-    container_name: redis_api
-    ports:
-      - "6385:6379"
-    volumes:
-      - redis-data:/data
-    networks:
-      - mynetwork
 # Docker Networks
 networks:
   mynetwork:
     external: true
-    name: global-network
+    name: nasiya-network
     driver: bridge
 
 # Docker Volumes

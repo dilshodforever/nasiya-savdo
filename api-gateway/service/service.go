@@ -13,7 +13,7 @@ import (
 )
 
 func Connect() {
-	NasiaConn, err := grpc.NewClient(fmt.Sprintf("localhost%s", ":8087"), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	NasiaConn, err := grpc.NewClient(fmt.Sprintf("nasiya-service%s", ":8087"), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatal("Error while connecting to ExchangeService: ", err.Error())
 	}
