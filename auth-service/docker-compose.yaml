@@ -42,43 +42,43 @@ services:
     volumes:
       - redis_data:/data
 
-  # migrate
-  migrate:
-    image: migrate/migrate
-    networks:
-      - GLhost
-    volumes:
-      - ./migrations:/migrations
-    command: [ "-path", "/migrations", "-database",  
-                "postgres://postgres:root@postgres:5432/ll_user?sslmode=disable", 
-                "up" ]
-    depends_on:
-      - postgres-db
+  # # migrate
+  # migrate:
+  #   image: migrate/migrate
+  #   networks:
+  #     - GLhost
+  #   volumes:
+  #     - ./migrations:/migrations
+  #   command: [ "-path", "/migrations", "-database",  
+  #               "postgres://postgres:root@postgres:5432/ll_user?sslmode=disable", 
+  #               "up" ]
+  #   depends_on:
+  #     - postgres-db
 
-  # postgres
-  postgres-db:
-    container_name: postgres
-    image: postgres:latest
-    environment:
-      PGUSER: postgres
-      POSTGRES_PASSWORD: root
-      PGDATA: /data/postgres
-      POSTGRES_DB: ll_user
-    volumes:
-      - db:/post-database/post-memory
-    depends_on:
-      - zookeeper
-      - kafka
-    ports:
-      - "5433:5432"
-    networks:
-      - GLhost
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -d postgres"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
+  # # postgres
+  # postgres-db:
+  #   container_name: postgres
+  #   image: postgres:latest
+  #   environment:
+  #     PGUSER: postgres
+  #     POSTGRES_PASSWORD: root
+  #     PGDATA: /data/postgres
+  #     POSTGRES_DB: ll_user
+  #   volumes:
+  #     - db:/post-database/post-memory
+  #   depends_on:
+  #     - zookeeper
+  #     - kafka
+  #   ports:
+  #     - "5433:5432"
+  #   networks:
+  #     - GLhost
+  #   restart: unless-stopped
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -d postgres"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 5
 
   # auth-ll
   auth-ll:
@@ -89,7 +89,7 @@ services:
       - zookeeper
       - kafka
     ports:
-      - "8080:8080"
+      - "8081:8081"
       - "8082:8082"
     networks:
       - GLhost
