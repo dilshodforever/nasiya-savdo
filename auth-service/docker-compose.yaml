@@ -42,43 +42,18 @@ services:
     volumes:
       - redis_data:/data
 
-  # # migrate
-  # migrate:
-  #   image: migrate/migrate
-  #   networks:
-  #     - mynetwork
-  #   volumes:
-  #     - ./migrations:/migrations
-  #   command: [ "-path", "/migrations", "-database",  
-  #               "postgres://postgres:root@postgres:5432/ll_user?sslmode=disable", 
-  #               "up" ]
-  #   depends_on:
-  #     - postgres-db
-
-  # # postgres
-  # postgres-db:
-  #   container_name: postgres
-  #   image: postgres:latest
-  #   environment:
-  #     PGUSER: postgres
-  #     POSTGRES_PASSWORD: root
-  #     PGDATA: /data/postgres
-  #     POSTGRES_DB: ll_user
-  #   volumes:
-  #     - db:/post-database/post-memory
-  #   depends_on:
-  #     - zookeeper
-  #     - kafka
-  #   ports:
-  #     - "5433:5432"
-  #   networks:
-  #     - mynetwork
-  #   restart: unless-stopped
-  #   healthcheck:
-  #     test: ["CMD-SHELL", "pg_isready -d postgres"]
-  #     interval: 30s
-  #     timeout: 10s
-  #     retries: 5
+  # migrate
+  migrate:
+    image: migrate/migrate
+    networks:
+      - mynetwork
+    volumes:
+      - ./migrations:/migrations
+    command: [ "-path", "/migrations", "-database",  
+                "postgres://postgres:1234@postgres-nasiya:5432/nasia?sslmode=disable", 
+                "up" ]
+    depends_on:
+      - postgres-db
 
   # auth-ll
   auth-ll:

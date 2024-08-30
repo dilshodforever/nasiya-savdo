@@ -1,14 +1,12 @@
-CREATE TYPE role_user AS ENUM ('admin', 'user');
-
 CREATE TABLE users (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_name VARCHAR(50) NOT NULL,
-    email VARCHAR(100) NOT NULL UNIQUE,
-    password VARCHAR(50) NOT NULL,
-    full_name VARCHAR(150),
-    native_language VARCHAR(10),
-    role role_user DEFAULT 'user',
-    created_at TIMESTAMP DEFAULT now(),
-    updated_at TIMESTAMP DEFAULT now(),
-    deleted_at BIGINT DEFAULT 0
+  id UUID PRIMARY KEY,
+  full_name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  address TEXT,
+  phone_number VARCHAR(20),
+  username VARCHAR(50) UNIQUE NOT NULL,
+  password_hash VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW(),
+  deleted_at BIGINT DEFAULT 0
 );
