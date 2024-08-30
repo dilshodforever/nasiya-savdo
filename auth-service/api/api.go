@@ -8,7 +8,6 @@ import (
 	files "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"gitlab.com/lingualeap/auth/api/handler"
-	middleware "gitlab.com/lingualeap/auth/api/middleware"
 	_ "gitlab.com/lingualeap/auth/docs"
 )
 
@@ -34,7 +33,7 @@ func NewGin(h *handler.Handler) *gin.Engine {
 
 	r := gin.Default()
 
-	r.Use(middleware.NewAuth(e))
+	// r.Use(middleware.NewAuth(e))
 
 	u := r.Group("/user")
 	u.POST("/register", h.RegisterUser)
