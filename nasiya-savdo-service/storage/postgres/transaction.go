@@ -8,6 +8,7 @@ import (
 	"time"
 
 	pb "github.com/dilshodforever/nasiya-savdo/genprotos"
+	"github.com/google/uuid"
 )
 
 type TransactionStorage struct {
@@ -20,7 +21,7 @@ func NewTransactionStorage(db *sql.DB) *TransactionStorage {
 
 func (p *TransactionStorage) CreateTransaction(req *pb.CreateTransactionRequest) (*pb.TransactionResponse, error) {
 	// Step 1: Retrieve amount and price from the exchange table for the given contract_id
-	query := `SELECT amount, price FROM exchange WHERE contract_id = $1`
+	query := `SELECT amount, price FROM exchange WHERE contract_id = $1 and deleted_at = 0`
 	rows, err := p.db.Query(query, req.ContractId)
 	if err != nil {
 		log.Printf("Failed to retrieve exchange data: %v", err)
@@ -44,13 +45,14 @@ func (p *TransactionStorage) CreateTransaction(req *pb.CreateTransactionRequest)
 
 	// Step 2: Calculate duration based on total price and the requested price
 	duration := total / req.Price
+	fmt.Println(duration, total, req.Price)
 
 	// Step 3: Insert the new transaction into the transactions table
 	query = `
-		INSERT INTO transactions (contract_id, price, duration, created_at)
-		VALUES ($1, $2, $3, now())
+		INSERT INTO transactions (id, contract_id, price, duration, created_at)
+		VALUES ($1, $2, $3, $4, now())
 	`
-	_, err = p.db.Exec(query, req.ContractId, req.Price, duration)
+	_, err = p.db.Exec(query, uuid.New().String(), req.ContractId, req.Price, duration)
 	if err != nil {
 		log.Printf("Failed to create transaction: %v", err)
 		return nil, fmt.Errorf("failed to create transaction: %v", err)
