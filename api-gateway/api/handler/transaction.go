@@ -8,7 +8,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-
 // CreateTransaction handles creating a new transaction
 // @Summary      Create a new Transaction
 // @Description  Create a new transaction record with the specified details
@@ -146,7 +145,6 @@ func (h *Handler) ListTransactions(ctx *gin.Context) {
 	ctx.JSON(200, res)
 }
 
-
 // CheckTransactions handles checking for due payments
 // @Summary      Check Transactions
 // @Description  Check all pending transactions and return a message if any payments are due this month
@@ -159,12 +157,12 @@ func (h *Handler) ListTransactions(ctx *gin.Context) {
 // @Router       /transaction/check [post]
 func (h *Handler) CheckTransactions(ctx *gin.Context) {
 	req := &pb.CheckRequest{}
-	
-	res, err := h.TransactionService.CheckTransactions(ctx.Copy(),req)
+
+	res, err := h.TransactionService.CheckTransactions(ctx.Copy(), req)
 	if err != nil {
 		ctx.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
-	
+
 	ctx.JSON(200, res)
 }

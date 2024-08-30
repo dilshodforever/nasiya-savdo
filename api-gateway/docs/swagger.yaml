@@ -516,37 +516,6 @@ paths:
       summary: Update Contract
       tags:
       - Contract
-  /exchange/{id}:
-    get:
-      consumes:
-      - application/json
-      description: Retrieve a specific exchange record using its ID
-      parameters:
-      - description: Exchange ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Exchange retrieved successfully
-          schema:
-            $ref: '#/definitions/genprotos.GetExchangeResponse'
-        "404":
-          description: Exchange not found
-          schema:
-            type: string
-        "500":
-          description: Error while retrieving exchange
-          schema:
-            type: string
-      security:
-      - BearerAuth: []
-      summary: Get Exchange by ID
-      tags:
-      - Exchange
   /exchange/create:
     post:
       consumes:
@@ -587,7 +556,7 @@ paths:
       summary: Create a new Exchange
       tags:
       - Exchange
-  /exchange/delete:
+  /exchange/delete/{id}:
     delete:
       consumes:
       - application/json
@@ -616,6 +585,37 @@ paths:
       security:
       - BearerAuth: []
       summary: Delete Exchange by ID
+      tags:
+      - Exchange
+  /exchange/get/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a specific exchange record using its ID
+      parameters:
+      - description: Exchange ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Exchange retrieved successfully
+          schema:
+            $ref: '#/definitions/genprotos.GetExchangeResponse'
+        "404":
+          description: Exchange not found
+          schema:
+            type: string
+        "500":
+          description: Error while retrieving exchange
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get Exchange by ID
       tags:
       - Exchange
   /exchange/list:
@@ -732,67 +732,6 @@ paths:
       summary: Upload File
       tags:
       - MinIO
-  /product/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: Delete a product by its ID
-      parameters:
-      - description: Product ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Product deleted successfully
-          schema:
-            $ref: '#/definitions/genprotos.ProductResponse'
-        "404":
-          description: Product not found
-          schema:
-            type: string
-        "500":
-          description: Error while deleting product
-          schema:
-            type: string
-      security:
-      - BearerAuth: []
-      summary: Delete Product
-      tags:
-      - Product
-    get:
-      consumes:
-      - application/json
-      description: Retrieve a product by its ID
-      parameters:
-      - description: Product ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Product retrieved successfully
-          schema:
-            $ref: '#/definitions/genprotos.GetProductResponse'
-        "404":
-          description: Product not found
-          schema:
-            type: string
-        "500":
-          description: Error while retrieving product
-          schema:
-            type: string
-      security:
-      - BearerAuth: []
-      summary: Get Product
-      tags:
-      - Product
   /product/create:
     post:
       consumes:
@@ -825,39 +764,69 @@ paths:
       summary: Create Product
       tags:
       - Product
-  /product/update:
-    put:
+  /product/delete/{id}:
+    delete:
       consumes:
       - application/json
-      description: Update an existing product
+      description: Delete a product by its ID
       parameters:
-      - description: Updated product details
-        in: body
-        name: product
+      - description: Product ID
+        in: path
+        name: id
         required: true
-        schema:
-          $ref: '#/definitions/genprotos.UpdateProductRequest'
+        type: string
       produces:
       - application/json
       responses:
         "200":
-          description: Product updated successfully
+          description: Product deleted successfully
           schema:
             $ref: '#/definitions/genprotos.ProductResponse'
-        "400":
-          description: Invalid input
+        "404":
+          description: Product not found
           schema:
             type: string
         "500":
-          description: Error while updating product
+          description: Error while deleting product
           schema:
             type: string
       security:
       - BearerAuth: []
-      summary: Update Product
+      summary: Delete Product
       tags:
       - Product
-  /products:
+  /product/get/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a product by its ID
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Product retrieved successfully
+          schema:
+            $ref: '#/definitions/genprotos.GetProductResponse'
+        "404":
+          description: Product not found
+          schema:
+            type: string
+        "500":
+          description: Error while retrieving product
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get Product
+      tags:
+      - Product
+  /product/list:
     get:
       consumes:
       - application/json
@@ -895,37 +864,38 @@ paths:
       summary: List Products
       tags:
       - Product
-  /storage/{id}:
-    get:
+  /product/update:
+    put:
       consumes:
       - application/json
-      description: Retrieve a specific storage record using its ID
+      description: Update an existing product
       parameters:
-      - description: Storage ID
-        in: path
-        name: id
+      - description: Updated product details
+        in: body
+        name: product
         required: true
-        type: string
+        schema:
+          $ref: '#/definitions/genprotos.UpdateProductRequest'
       produces:
       - application/json
       responses:
         "200":
-          description: Storage retrieved successfully
+          description: Product updated successfully
           schema:
-            $ref: '#/definitions/genprotos.GetStorageResponse'
-        "404":
-          description: Storage not found
+            $ref: '#/definitions/genprotos.ProductResponse'
+        "400":
+          description: Invalid input
           schema:
             type: string
         "500":
-          description: Error while retrieving storage
+          description: Error while updating product
           schema:
             type: string
       security:
       - BearerAuth: []
-      summary: Get Storage by ID
+      summary: Update Product
       tags:
-      - Storage
+      - Product
   /storage/create:
     post:
       consumes:
@@ -987,6 +957,37 @@ paths:
       security:
       - BearerAuth: []
       summary: Delete Storage by ID
+      tags:
+      - Storage
+  /storage/get/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a specific storage record using its ID
+      parameters:
+      - description: Storage ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Storage retrieved successfully
+          schema:
+            $ref: '#/definitions/genprotos.GetStorageResponse'
+        "404":
+          description: Storage not found
+          schema:
+            type: string
+        "500":
+          description: Error while retrieving storage
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get Storage by ID
       tags:
       - Storage
   /storage/list:

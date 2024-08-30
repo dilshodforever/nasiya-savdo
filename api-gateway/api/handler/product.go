@@ -46,7 +46,7 @@ func (h *Handler) CreateProduct(ctx *gin.Context) {
 // @Success      200 {object} pb.GetProductResponse "Product retrieved successfully"
 // @Failure      404 {string} string "Product not found"
 // @Failure      500 {string} string "Error while retrieving product"
-// @Router       /product/{id} [get]
+// @Router       /product/get/{id} [get]
 func (h *Handler) GetProduct(ctx *gin.Context) {
 	var req pb.ProductIdRequest
 	req.Id = ctx.Param("id")
@@ -97,7 +97,7 @@ func (h *Handler) UpdateProduct(ctx *gin.Context) {
 // @Success      200 {object} pb.ProductResponse "Product deleted successfully"
 // @Failure      404 {string} string "Product not found"
 // @Failure      500 {string} string "Error while deleting product"
-// @Router       /product/{id} [delete]
+// @Router       /product/delete/{id} [delete]
 func (h *Handler) DeleteProduct(ctx *gin.Context) {
 	var req pb.ProductIdRequest
 	req.Id = ctx.Param("id")
@@ -123,7 +123,7 @@ func (h *Handler) DeleteProduct(ctx *gin.Context) {
 // @Param        storage_id query string false "Storage ID"
 // @Success      200 {object} pb.GetAllProductResponse "Products retrieved successfully"
 // @Failure      500 {string} string "Error while listing products"
-// @Router       /products [get]
+// @Router       /product/list [get]
 func (h *Handler) ListProducts(ctx *gin.Context) {
 	var req pb.GetAllProductRequest
 	req.Name = ctx.Query("name")

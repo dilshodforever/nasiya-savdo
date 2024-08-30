@@ -2,7 +2,6 @@ package handler
 
 import (
 	pb "github.com/dilshodforever/nasiya-savdo/genprotos"
-
 )
 
 type Handler struct {
@@ -22,7 +21,7 @@ func NewHandler(
 	StorageService pb.StorageServiceClient,
 	TransactionService pb.TransactionServiceClient,
 	MinIO pb.MediaServiceClient,
-	Redis              InMemoryStorageI,
+	Redis InMemoryStorageI,
 ) *Handler {
 	return &Handler{
 		ContractService:    ContractService,
@@ -31,6 +30,6 @@ func NewHandler(
 		StorageService:     StorageService,
 		TransactionService: TransactionService,
 		MinIO:              MinIO,
-		Redis: 				Redis,		
+		Redis:              Redis,
 	}
 }

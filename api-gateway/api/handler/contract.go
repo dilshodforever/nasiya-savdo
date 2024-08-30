@@ -144,8 +144,6 @@ func (h *Handler) ListContracts(ctx *gin.Context) {
 	ctx.JSON(200, res)
 }
 
-
-
 // GetContract retrieves a specific contract by ID
 // @Summary      Get Contract
 // @Description  Retrieve a contract by ID and return it in PDF format
@@ -159,53 +157,53 @@ func (h *Handler) ListContracts(ctx *gin.Context) {
 // @Failure      500 {string} string "Error while retrieving contract"
 // @Router       /contract/getpdf/{id} [get]
 func (h *Handler) GetContractPdf(ctx *gin.Context) {
-    id := ctx.Param("id")
-    req := &pb.ContractIdRequest{Id: id}
-    res, err := h.ContractService.GetContract(ctx, req)
-    if err != nil {
-        ctx.JSON(500, gin.H{"error": err.Error()})
-        return
-    }
-    if res == nil {
-        ctx.JSON(404, gin.H{"error": "Contract not found"})
-        return
-    }
+	id := ctx.Param("id")
+	req := &pb.ContractIdRequest{Id: id}
+	res, err := h.ContractService.GetContract(ctx, req)
+	if err != nil {
+		ctx.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+	if res == nil {
+		ctx.JSON(404, gin.H{"error": "Contract not found"})
+		return
+	}
 
-    pdf := gofpdf.New("P", "mm", "A4", "")
-    pdf.AddPage()
-    pdf.SetFont("Arial", "B", 16)
-    pdf.Cell(0, 10, "Contract Details")
-    pdf.Ln(12)
+	pdf := gofpdf.New("P", "mm", "A4", "")
+	pdf.AddPage()
+	pdf.SetFont("Arial", "B", 16)
+	pdf.Cell(0, 10, "Contract Details")
+	pdf.Ln(12)
 
-    pdf.SetFont("Arial", "", 12)
-    pdf.Cell(0, 10, fmt.Sprintf("Contract ID: %s", res.Id))
-    pdf.Ln(10)
-    pdf.Cell(0, 10, fmt.Sprintf("Consumer Name: %s", res.ConsumerName))
-    pdf.Ln(10)
-    pdf.Cell(0, 10, fmt.Sprintf("Consumer Passport Serial: %s", res.ConsumerPassportSerial))
-    pdf.Ln(10)
-    pdf.Cell(0, 10, fmt.Sprintf("Consumer Address: %s", res.ConsumerAddress))
-    pdf.Ln(10)
-    pdf.Cell(0, 10, fmt.Sprintf("Consumer Phone Number: %s", res.ConsumerPhoneNumber))
-    pdf.Ln(10)
-    pdf.Cell(0, 10, fmt.Sprintf("Passport Image: %s", res.PassportImage))
-    pdf.Ln(10)
-    pdf.Cell(0, 10, fmt.Sprintf("Status: %s", res.Status))
-    pdf.Ln(10)
-    pdf.Cell(0, 10, fmt.Sprintf("Duration: %d", res.Duration))
-    pdf.Ln(10)
-    pdf.Cell(0, 10, fmt.Sprintf("Created At: %s", res.CreatedAt))
-    pdf.Ln(10)
-    pdf.Cell(0, 10, fmt.Sprintf("Deleted At: %s", res.DeletedAt))
+	pdf.SetFont("Arial", "", 12)
+	pdf.Cell(0, 10, fmt.Sprintf("Contract ID: %s", res.Id))
+	pdf.Ln(10)
+	pdf.Cell(0, 10, fmt.Sprintf("Consumer Name: %s", res.ConsumerName))
+	pdf.Ln(10)
+	pdf.Cell(0, 10, fmt.Sprintf("Consumer Passport Serial: %s", res.ConsumerPassportSerial))
+	pdf.Ln(10)
+	pdf.Cell(0, 10, fmt.Sprintf("Consumer Address: %s", res.ConsumerAddress))
+	pdf.Ln(10)
+	pdf.Cell(0, 10, fmt.Sprintf("Consumer Phone Number: %s", res.ConsumerPhoneNumber))
+	pdf.Ln(10)
+	pdf.Cell(0, 10, fmt.Sprintf("Passport Image: %s", res.PassportImage))
+	pdf.Ln(10)
+	pdf.Cell(0, 10, fmt.Sprintf("Status: %s", res.Status))
+	pdf.Ln(10)
+	pdf.Cell(0, 10, fmt.Sprintf("Duration: %d", res.Duration))
+	pdf.Ln(10)
+	pdf.Cell(0, 10, fmt.Sprintf("Created At: %s", res.CreatedAt))
+	pdf.Ln(10)
+	pdf.Cell(0, 10, fmt.Sprintf("Deleted At: %s", res.DeletedAt))
 
-    var buf bytes.Buffer
-    if err := pdf.Output(&buf); err != nil {
-        log.Printf("Error generating PDF: %v", err)
-        ctx.JSON(500, gin.H{"error": "Error generating PDF"})
-        return
-    }
+	var buf bytes.Buffer
+	if err := pdf.Output(&buf); err != nil {
+		log.Printf("Error generating PDF: %v", err)
+		ctx.JSON(500, gin.H{"error": "Error generating PDF"})
+		return
+	}
 
-    ctx.Header("Content-Type", "application/pdf")
-    ctx.Header("Content-Disposition", "attachment; filename=contract_details.pdf")
-    ctx.Data(http.StatusOK, "application/pdf", buf.Bytes())
+	ctx.Header("Content-Type", "application/pdf")
+	ctx.Header("Content-Disposition", "attachment; filename=contract_details.pdf")
+	ctx.Data(http.StatusOK, "application/pdf", buf.Bytes())
 }

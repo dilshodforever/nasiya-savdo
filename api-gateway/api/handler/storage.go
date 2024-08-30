@@ -46,7 +46,7 @@ func (h *Handler) CreateStorage(ctx *gin.Context) {
 // @Success      200 {object} pb.GetStorageResponse "Storage retrieved successfully"
 // @Failure      404 {string} string "Storage not found"
 // @Failure      500 {string} string "Error while retrieving storage"
-// @Router       /storage/{id} [get]
+// @Router       /storage/get/{id} [get]
 func (h *Handler) GetStorage(ctx *gin.Context) {
 	var req pb.StorageIdRequest
 	req.Id = ctx.Param("id")

@@ -49,7 +49,7 @@ func (h *Handler) CreateExchange(ctx *gin.Context) {
 // @Success      200 {object} pb.GetExchangeResponse "Exchange retrieved successfully"
 // @Failure      404 {string} string "Exchange not found"
 // @Failure      500 {string} string "Error while retrieving exchange"
-// @Router       /exchange/{id} [get]
+// @Router       /exchange/get/{id} [get]
 func (h *Handler) GetExchange(ctx *gin.Context) {
 	var req pb.ExchangeIdRequest
 	req.Id = ctx.Param("id")
@@ -104,7 +104,7 @@ func (h *Handler) UpdateExchange(ctx *gin.Context) {
 // @Success      200 {object} pb.ExchangeResponse "Exchange deleted successfully"
 // @Failure      404 {string} string "Exchange not found"
 // @Failure      500 {string} string "Error while deleting exchange"
-// @Router       /exchange/delete [delete]
+// @Router       /exchange/delete/{id} [delete]
 func (h *Handler) DeleteExchange(ctx *gin.Context) {
 	var req pb.ExchangeIdRequest
 	req.Id = ctx.Param("id")

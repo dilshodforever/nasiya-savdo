@@ -40,4 +40,3 @@ func (r *storageRedis) Get(key string) (string, error) {
 	}
 	return val, nil
 }
-
