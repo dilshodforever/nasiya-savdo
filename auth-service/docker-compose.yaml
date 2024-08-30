@@ -52,15 +52,12 @@ services:
     command: [ "-path", "/migrations", "-database",  
                 "postgres://postgres:1234@postgres-nasiya:5432/nasia?sslmode=disable", 
                 "up" ]
-    depends_on:
-      - postgres-db
 
   # auth-ll
   auth-ll:
     container_name: auth-ll
     build: ./
     depends_on:
-      # - postgres-db
       - zookeeper
       - kafka
     ports:
