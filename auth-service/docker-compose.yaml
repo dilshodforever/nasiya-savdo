@@ -12,7 +12,7 @@ services:
     ports:
       - 22181:2181
     networks:
-      - GLhost
+      - mynetwork
   
   # kafka
   kafka:
@@ -23,7 +23,7 @@ services:
     ports:
       - 29092:29092
     networks:
-      - GLhost
+      - mynetwork
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
@@ -46,7 +46,7 @@ services:
   # migrate:
   #   image: migrate/migrate
   #   networks:
-  #     - GLhost
+  #     - mynetwork
   #   volumes:
   #     - ./migrations:/migrations
   #   command: [ "-path", "/migrations", "-database",  
@@ -72,7 +72,7 @@ services:
   #   ports:
   #     - "5433:5432"
   #   networks:
-  #     - GLhost
+  #     - mynetwork
   #   restart: unless-stopped
   #   healthcheck:
   #     test: ["CMD-SHELL", "pg_isready -d postgres"]
