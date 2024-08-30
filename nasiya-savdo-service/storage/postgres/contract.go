@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"strings"
+	"time"
 
 	pb "github.com/dilshodforever/nasiya-savdo/genprotos"
 	"github.com/google/uuid"
@@ -19,12 +20,12 @@ func NewContractStorage(db *sql.DB) *ContractStorage {
 }
 
 func (p *ContractStorage) CreateContract(req *pb.CreateContractRequest) (*pb.ContractResponse, error) {
-	id:=uuid.NewString()
+	id := uuid.NewString()
 	query := `
 		INSERT INTO contract (id, consumer_name, consumer_passport_serial, consumer_address, consumer_phone_number, passport_image, status, duration, created_at)
 		VALUES ($1, $2, $3, $4, $5, $6,'pending', $7, now())
 	`
-	_,err := p.db.Exec(query, id,req.ConsumerName, req.ConsumerPassportSerial, req.ConsumerAddress, req.PassportImage, req.Status, req.Duration)
+	_, err := p.db.Exec(query, id, req.ConsumerName, req.ConsumerPassportSerial, req.ConsumerAddress, req.PassportImage, req.Status, req.Duration)
 	if err != nil {
 		return nil, err
 	}
@@ -47,10 +48,10 @@ func (p *ContractStorage) GetContract(req *pb.ContractIdRequest) (*pb.GetContrac
 		&contract.Id, &contract.ConsumerName, &contract.ConsumerPassportSerial, &contract.ConsumerAddress, &contract.ConsumerPhoneNumber,
 		&contract.PassportImage, &contract.Status, &contract.Duration, &contract.CreatedAt, &deletedAt,
 	)
-	if deletedAt.Valid{
-		contract.DeletedAt=deletedAt.String
-	} else{
-		contract.DeletedAt=""
+	if deletedAt.Valid {
+		contract.DeletedAt = deletedAt.String
+	} else {
+		contract.DeletedAt = ""
 	}
 	if err != nil {
 		return nil, err
@@ -79,7 +80,7 @@ func (p *ContractStorage) UpdateContract(req *pb.UpdateContractRequest) (*pb.Con
 	if req.Duration != 0 {
 		update["duration"] = req.Duration
 	}
-	if req.ConsumerPhoneNumber != ""{
+	if req.ConsumerPhoneNumber != "" {
 		update["consumer_phone_number"] = req.ConsumerPhoneNumber
 	}
 
@@ -121,10 +122,10 @@ func (p *ContractStorage) UpdateContract(req *pb.UpdateContractRequest) (*pb.Con
 func (p *ContractStorage) DeleteContract(req *pb.ContractIdRequest) (*pb.ContractResponse, error) {
 	query := `
 		UPDATE contract
-		SET deleted_at = now()
+		SET deleted_at = $2
 		WHERE id = $1 
 	`
-	_, err := p.db.Exec(query, req.Id)
+	_, err := p.db.Exec(query, req.Id, time.Now().Unix())
 	if err != nil {
 		return nil, err
 	}
@@ -134,7 +135,6 @@ func (p *ContractStorage) DeleteContract(req *pb.ContractIdRequest) (*pb.Contrac
 		Success: true,
 	}, nil
 }
-
 
 func (p *ContractStorage) ListContracts(req *pb.GetAllContractRequest) (*pb.GetAllContractResponse, error) {
 	contracts := pb.GetAllContractResponse{}
@@ -152,7 +152,7 @@ func (p *ContractStorage) ListContracts(req *pb.GetAllContractRequest) (*pb.GetA
 		count++
 	}
 
-	if req.PasportSeria != "" { 
+	if req.PasportSeria != "" {
 		query += fmt.Sprintf(" AND consumer_passport_serial ILIKE $%d", count)
 		args = append(args, "%"+req.PasportSeria+"%")
 		count++
@@ -195,5 +195,3 @@ func (p *ContractStorage) ListContracts(req *pb.GetAllContractRequest) (*pb.GetA
 
 	return &contracts, nil
 }
-
-

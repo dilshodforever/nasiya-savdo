@@ -1,5 +1,5 @@
 CURRENT_DIR=$(shell pwd)
-DBURL=postgres://postgres:root@localhost:5432/emergency?sslmode=disable
+DBURL=postgres://postgres:1234@localhost:5432/nasia?sslmode=disable
 
 proto-gen:
 	./scripts/gen-proto.sh ${CURRENT_DIR}
@@ -15,3 +15,6 @@ mig-create:
 
 mig-insert:
 	migrate create -ext sql -dir db/migrations -seq insert_table
+
+mig-force:
+	migrate -path ./migrations -database '$(DBURL)' force 1

@@ -20,10 +20,12 @@ CREATE TABLE storage (
   id UUID PRIMARY KEY,
   user_id UUID,
   name VARCHAR(100) NOT NULL,
-  created_at  TIMESTAMP DEFAULT NOW()
+  created_at  TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW(),
+  deleted_at BIGINT DEFAULT 0
 );
 
-CREATE TABLE product (
+CREATE TABLE products (
   id UUID PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
   color VARCHAR(50),
@@ -53,7 +55,7 @@ CREATE TABLE contract (
 
 CREATE TABLE exchange (
   id UUID PRIMARY KEY,
-  product_id UUID REFERENCES product(id) ON DELETE SET NULL,
+  product_id UUID REFERENCES products(id) ON DELETE SET NULL,
   amount INT NOT NULL,
   price DECIMAL(10, 2) NOT NULL,
   status exchange_status,

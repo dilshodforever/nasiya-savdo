@@ -14,7 +14,7 @@ type InitRoot interface {
 	Transaction() TransactionStorage
 }
 
-type MinIoRoot interface{
+type MinIoRoot interface {
 	MinIO() MinIOStorage
 }
 
@@ -58,7 +58,6 @@ type TransactionStorage interface {
 	ListTransactions(req *pb.GetAllTransactionRequest) (*pb.GetAllTransactionResponse, error)
 	CheckTransactions(req *pb.CheckRequest) (*pb.CheckResponse, error)
 }
-
 
 type MinIOStorage interface {
 	UploadFile(ctx context.Context, req *pb.UploadFileRequest) (*pb.UploadFileResponse, error)

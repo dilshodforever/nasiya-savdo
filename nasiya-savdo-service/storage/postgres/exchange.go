@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"strings"
+	"time"
 
 	pb "github.com/dilshodforever/nasiya-savdo/genprotos"
 	"github.com/google/uuid"
@@ -19,25 +20,43 @@ func NewExchangeStorage(db *sql.DB) *ExchangeStorage {
 }
 
 func (p *ExchangeStorage) CreateExchange(req *pb.CreateExchangeRequest) (*pb.ExchangeResponse, error) {
-	id :=uuid.NewString()
+	id := uuid.NewString()
 	if req.Status == `sell` {
 		query := `
-			INSERT INTO exchange (product_id, amount, price, status, contract_id, created_at, deleted_at)
-			VALUES ($1, $2, $3, $4, $5, $6, now(), 0)
-		`
-		_, err := p.db.Exec(query, id, req.ProductId, req.Amount, req.Price, req.Status, req.ContractId)
+		SELECT SUM(
+			CASE 
+				WHEN status = 'buy' THEN amount 
+				WHEN status = 'sell' THEN -amount 
+				ELSE 0 
+			END
+		) 
+		FROM exchange 
+		WHERE deleted_at = 0 AND product_id = $1`
+		var amount int
+		err := p.db.QueryRow(query, req.ProductId).Scan(&amount)
 		if err != nil {
 			return nil, err
 		}
-	} else{
+		if amount < int(req.Amount) {
+			return nil, fmt.Errorf("insufficient product quantity available")
+		}
+		query = `
+			INSERT INTO exchange (id, product_id, amount, price, status, contract_id, created_at, deleted_at)
+			VALUES ($1, $2, $3, $4, $5, $6, now(), 0)
+		`
+		_, err = p.db.Exec(query, id, req.ProductId, req.Amount, req.Price, req.Status, req.ContractId)
+		if err != nil {
+			return nil, err
+		}
+	} else {
 		query := `
-		INSERT INTO exchange (id, product_id, amount, price, status,  created_at, deleted_at)
-		VALUES ($1, $2, $3, $4, $5, now(), 0)
-	`
-	_, err := p.db.Exec(query, id, req.ProductId, req.Amount, req.Price, req.Status)
-	if err != nil {
-		return nil, err
-	}
+			INSERT INTO exchange (id, product_id, amount, price, status,  created_at, deleted_at)
+			VALUES ($1, $2, $3, $4, $5, now(), 0)
+		`
+		_, err := p.db.Exec(query, id, req.ProductId, req.Amount, req.Price, req.Status)
+		if err != nil {
+			return nil, err
+		}
 	}
 	return &pb.ExchangeResponse{
 		Message: "Exchange created successfully ",
@@ -52,10 +71,17 @@ func (p *ExchangeStorage) GetExchange(req *pb.ExchangeIdRequest) (*pb.GetExchang
 		WHERE id = $1 AND deleted_at = 0
 	`
 	var exchange pb.GetExchangeResponse
+	var contractId sql.NullString
 	err := p.db.QueryRow(query, req.Id).Scan(
 		&exchange.Id, &exchange.ProductId, &exchange.Amount, &exchange.Price, &exchange.Status,
-		&exchange.ContractId, &exchange.CreatedAt, &exchange.UpdatedAt, &exchange.DeletedAt,
+		&contractId, &exchange.CreatedAt, &exchange.UpdatedAt, &exchange.DeletedAt,
 	)
+	// Handle the nullable field
+	if contractId.Valid {
+		exchange.ContractId = contractId.String
+	} else {
+		exchange.ContractId = "" // Or set it to a default value
+	}
 	if err != nil {
 		return nil, err
 	}
@@ -78,7 +104,7 @@ func (p *ExchangeStorage) UpdateExchange(req *pb.UpdateExchangeRequest) (*pb.Exc
 	if req.Status != "" {
 		update["status"] = req.Status
 	}
-	
+
 	if req.ContractId != "" {
 		update["contract_id"] = req.ContractId
 	}
@@ -127,10 +153,10 @@ func (p *ExchangeStorage) UpdateExchange(req *pb.UpdateExchangeRequest) (*pb.Exc
 func (p *ExchangeStorage) DeleteExchange(req *pb.ExchangeIdRequest) (*pb.ExchangeResponse, error) {
 	query := `
 		UPDATE exchange
-		SET deleted_at = now()
+		SET deleted_at = $2
 		WHERE id = $1 AND deleted_at = 0
 	`
-	_, err := p.db.Exec(query, req.Id)
+	_, err := p.db.Exec(query, req.Id, time.Now().Unix())
 	if err != nil {
 		return nil, err
 	}
@@ -170,14 +196,22 @@ func (p *ExchangeStorage) ListExchanges(req *pb.GetAllExchangeRequest) (*pb.GetA
 
 	for rows.Next() {
 		var exchange pb.GetExchangeResponse
+		var contractId sql.NullString
 		err := rows.Scan(
 			&exchange.Id, &exchange.ProductId, &exchange.Amount, &exchange.Price, &exchange.Status,
-			&exchange.ContractId, &exchange.CreatedAt, &exchange.UpdatedAt, &exchange.DeletedAt,
+			&contractId, &exchange.CreatedAt, &exchange.UpdatedAt, &exchange.DeletedAt,
 		)
 		if err != nil {
 			log.Println(err)
 			return nil, err
 		}
+		// Handle the nullable field
+		if contractId.Valid {
+			exchange.ContractId = contractId.String
+		} else {
+			exchange.ContractId = "" // Or set it to a default value
+		}
+
 		exchanges.AllExchanges = append(exchanges.AllExchanges, &exchange)
 	}
 

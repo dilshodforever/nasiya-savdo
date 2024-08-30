@@ -12,11 +12,11 @@ import (
 
 type Storage struct {
 	Db           *sql.DB
-	Products      u.ProductStorage
-	Contracts     u.ContractStorage
-	Exchanges     u.ExchangeStorage
-	Storages      u.StorageStorage
-	Transactions  u.TransactionStorage
+	Products     u.ProductStorage
+	Contracts    u.ContractStorage
+	Exchanges    u.ExchangeStorage
+	Storages     u.StorageStorage
+	Transactions u.TransactionStorage
 }
 
 func NewPostgresStorage() (u.InitRoot, error) {

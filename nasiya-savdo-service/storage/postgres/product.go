@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"strings"
+	"time"
 
 	pb "github.com/dilshodforever/nasiya-savdo/genprotos"
 	"github.com/google/uuid"
@@ -19,14 +20,14 @@ func NewProductStorage(db *sql.DB) *ProductStorage {
 }
 
 func (p *ProductStorage) CreateProduct(req *pb.CreateProductRequest) (*pb.ProductResponse, error) {
-	id:=uuid.NewString()
+	id := uuid.NewString()
 	query := `
 		INSERT INTO products (id, name, color, model, image_url, made_in, date_of_creation, storage_id, created_at, updated_at, deleted_at)
 		VALUES ($1, $2, $3, $4, $5, $6, $7, $8,now(), now(), 0)
 		
 	`
 
-	_,err := p.db.Exec(query, id, req.Name, req.Color, req.Model, req.ImageUrl, req.MadeIn, req.DateOfCreation, req.StorageId)
+	_, err := p.db.Exec(query, id, req.Name, req.Color, req.Model, req.ImageUrl, req.MadeIn, req.DateOfCreation, req.StorageId)
 	if err != nil {
 		return nil, err
 	}
@@ -85,7 +86,6 @@ func (p *ProductStorage) UpdateProduct(req *pb.UpdateProductRequest) (*pb.Produc
 		return &pb.ProductResponse{Message: "Nothing to update", Success: false}, nil
 	}
 
-	
 	setClauses := []string{}
 	args := []interface{}{}
 	argCount := 1
@@ -96,7 +96,6 @@ func (p *ProductStorage) UpdateProduct(req *pb.UpdateProductRequest) (*pb.Produc
 		argCount++
 	}
 
-	
 	setQuery := strings.Join(setClauses, ", ")
 
 	query := fmt.Sprintf(`
@@ -120,14 +119,13 @@ func (p *ProductStorage) UpdateProduct(req *pb.UpdateProductRequest) (*pb.Produc
 	}, nil
 }
 
-
 func (p *ProductStorage) DeleteProduct(req *pb.ProductIdRequest) (*pb.ProductResponse, error) {
 	query := `
 		UPDATE products
-		SET deleted_at = now()
+		SET deleted_at = $2
 		WHERE id = $1 AND deleted_at = 0
 	`
-	_, err := p.db.Exec(query, req.Id)
+	_, err := p.db.Exec(query, req.Id, time.Now().Unix())
 	if err != nil {
 		return nil, err
 	}

@@ -19,13 +19,13 @@ func NewStorageStorage(db *sql.DB) *StorageStorage {
 }
 
 func (p *StorageStorage) CreateStorage(req *pb.CreateStorageRequest) (*pb.StorageResponse, error) {
-	id:=uuid.NewString()
+	id := uuid.NewString()
 	query := `
 		INSERT INTO storage (id, name, user_id, created_at)
 		VALUES ($1, $2, $3,now())
 		RETURNING id
 	`
-	_,err := p.db.Exec(query, id, req.Name, req.UserId)
+	_, err := p.db.Exec(query, id, req.Name, req.UserId)
 	if err != nil {
 		return nil, err
 	}

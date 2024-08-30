@@ -61,7 +61,7 @@ func (s *TransactionService) ListTransactions(ctx context.Context, req *pb.GetAl
 	return resp, nil
 }
 
-func (s *TransactionService) CheckTransactions(ctx context.Context,req *pb.CheckRequest) (*pb.CheckResponse, error) {
+func (s *TransactionService) CheckTransactions(ctx context.Context, req *pb.CheckRequest) (*pb.CheckResponse, error) {
 	resp, err := s.stg.Transaction().CheckTransactions(req)
 	if err != nil {
 		log.Print(err)
@@ -69,5 +69,3 @@ func (s *TransactionService) CheckTransactions(ctx context.Context,req *pb.Check
 	}
 	return resp, nil
 }
-
-

@@ -27,7 +27,6 @@ package postgres
 // 		return nil, err
 // 	}
 
-	
 // 	return &chats.CreateChatResponse{
 // 		Success: true,
 // 	}, nil

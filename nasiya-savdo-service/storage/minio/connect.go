@@ -34,8 +34,8 @@ func InitMinioClient() (storage.MinIoRoot, error) {
 }
 
 func (m *MinIO) MinIO() storage.MinIOStorage {
-    if m.minIO == nil {
-        m.minIO = &MediaServiceServer{minioClient: m.client}
-    }
-    return m.minIO
+	if m.minIO == nil {
+		m.minIO = &MediaServiceServer{minioClient: m.client}
+	}
+	return m.minIO
 }
