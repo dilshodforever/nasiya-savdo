@@ -1,0 +1,70 @@
+syntax = "proto3";
+
+package accaunts;
+
+option go_package = "genprotos/accaunts";
+
+service AccountService {
+    rpc CreateAccount(CreateAccountRequest) returns (CreateAccountResponse);
+    rpc GetAccountByid(GetByIdAccauntRequest) returns (GetAccountByidResponse);
+    rpc UpdateAccount(UpdateAccountRequest) returns (UpdateAccountResponse);
+    rpc DeleteAccount(DeleteAccountRequest) returns (UpdateAccountResponse);
+    rpc ListAccounts(ListAccountsRequest) returns (ListAccountsResponse);
+}
+
+message CreateAccountRequest {
+    string user_id = 2;
+    string name = 3;
+    string type = 4;  
+    float balance = 5;
+    string currency = 6;
+}
+
+message CreateAccountResponse {
+    bool success = 1;
+    string message =2;
+}
+
+message GetByIdAccauntRequest{
+    string id =1;
+}
+
+message GetAccountByidResponse {
+    string id = 1;
+    string user_id = 2;
+    string name = 3;
+    string type = 4;  
+    float balance = 5;
+    string currency = 6;
+}
+
+message UpdateAccountRequest {
+    string id = 1;
+    string name = 2;
+    string type = 3;  
+    string currency = 4;
+}
+
+
+message UpdateAccountResponse {
+    bool success = 1;
+    string message =2;
+}
+
+message DeleteAccountRequest {
+    string id = 1;
+}
+
+
+message ListAccountsRequest {
+    string id = 1;
+    string user_id = 2;
+    string name = 3;
+    string type = 4;  
+    float balance = 5;
+    string currency = 6;
+}
+
+message ListAccountsResponse {
+    repeated GetAccountByidResponse accounts = 1;
+}

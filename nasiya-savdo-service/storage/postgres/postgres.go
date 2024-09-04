@@ -17,6 +17,7 @@ type Storage struct {
 	Exchanges    u.ExchangeStorage
 	Storages     u.StorageStorage
 	Transactions u.TransactionStorage
+	//kafka        kafka.KafkaProducer
 }
 
 func NewPostgresStorage() (u.InitRoot, error) {
@@ -34,6 +35,10 @@ func NewPostgresStorage() (u.InitRoot, error) {
 		return nil, err
 	}
 	fmt.Println("Connection to database established!")
+	// kaf, err := kafka.NewKafkaProducer([]string{"kafka:9092"})
+	// if err != nil {
+	// 	log.Fatal("Error while connection kafka: ", err.Error())
+	// }
 	return &Storage{Db: db}, nil
 }
 

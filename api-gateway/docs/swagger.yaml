@@ -234,6 +234,8 @@ definitions:
       success:
         type: boolean
     type: object
+  genprotos.Testresponse:
+    type: object
   genprotos.TransactionResponse:
     properties:
       message:
@@ -1151,7 +1153,7 @@ paths:
             type: string
       security:
       - BearerAuth: []
-      summary: Check Transactions
+      summary: Test Transactions
       tags:
       - Transactions
   /transaction/create:
@@ -1251,6 +1253,28 @@ paths:
       summary: List Transactions
       tags:
       - Transaction
+  /transaction/test:
+    post:
+      consumes:
+      - application/json
+      description: Check all pending transactions and return a message if any payments
+        are due this month
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Payments due this month
+          schema:
+            $ref: '#/definitions/genprotos.Testresponse'
+        "500":
+          description: Error while checking transactions
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Test Notification
+      tags:
+      - Transactions
 securityDefinitions:
   BearerAuth:
     in: header

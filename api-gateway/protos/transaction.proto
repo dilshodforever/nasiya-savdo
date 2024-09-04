@@ -11,6 +11,7 @@ service TransactionService {
     rpc DeleteTransaction (TransactionIdRequest) returns (TransactionResponse);
     rpc ListTransactions (GetAllTransactionRequest) returns (GetAllTransactionResponse);
     rpc CheckTransactions(CheckRequest) returns (CheckResponse);
+    rpc TestNotification (Testresponse) returns (Testrequest);
 } 
 
 message CreateTransactionRequest {
@@ -53,9 +54,17 @@ message GetAllTransactionResponse {
 }
 
 message CheckRequest{
-
+    string user_id=1;
 }
 
 message CheckResponse{
     string message = 1;
+}
+
+message Testresponse{
+
+}
+
+message Testrequest{
+    string message =1;
 }

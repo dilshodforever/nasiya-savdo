@@ -18,3 +18,6 @@ mig-insert:
 
 mig-force:
 	migrate -path ./migrations -database '$(DBURL)' force 1
+
+
+

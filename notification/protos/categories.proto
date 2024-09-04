@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+package budgets;
+
+option go_package = "genprotos/categories";
+
+service CategoryService {
+    rpc CreateCategory(CreateCategoryRequest) returns (CategoryResponse);
+    rpc UpdateCategory(UpdateCategoryRequest) returns (CategoryResponse);
+    rpc DeleteCategory(DeleteCategoryRequest) returns (CategoryResponse);
+    rpc ListCategories(ListCategoriesRequest) returns (ListCategoriesResponse);
+    rpc GetByidCatagory(GetByidCategoriesRequest) returns (GetByidCategoriesResponse);
+}
+
+
+message CreateCategoryRequest{
+    string user_id = 2;              
+    string name = 3;
+    string type = 4; 
+}
+
+message CategoryResponse {
+    bool success = 1;
+    string message =2;
+}
+
+message UpdateCategoryRequest {
+    string id =1;
+    string name = 2;
+    string type = 3; 
+}
+
+message DeleteCategoryRequest {
+    string id = 1;
+}
+
+message ListCategoriesRequest {
+    string user_id = 2;              
+    string name = 3;
+    string type = 4; 
+}
+
+message GetByidCategoriesRequest{
+   string id =1;
+}
+
+message GetByidCategoriesResponse{
+    string user_id = 2;              
+    string name = 3;
+    string type = 4; 
+}
+
+message ListCategoriesResponse {
+    repeated GetByidCategoriesResponse categories = 1;
+}
+

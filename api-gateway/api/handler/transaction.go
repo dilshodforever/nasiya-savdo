@@ -146,7 +146,7 @@ func (h *Handler) ListTransactions(ctx *gin.Context) {
 }
 
 // CheckTransactions handles checking for due payments
-// @Summary      Check Transactions
+// @Summary      Test Transactions
 // @Description  Check all pending transactions and return a message if any payments are due this month
 // @Tags         Transactions
 // @Accept       json
@@ -159,6 +159,27 @@ func (h *Handler) CheckTransactions(ctx *gin.Context) {
 	req := &pb.CheckRequest{}
 
 	res, err := h.TransactionService.CheckTransactions(ctx.Copy(), req)
+	if err != nil {
+		ctx.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(200, res)
+}
+
+// TestNotification handles checking for due payments
+// @Summary      Test Notification
+// @Description  Check all pending transactions and return a message if any payments are due this month
+// @Tags         Transactions
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Success      200 {object} pb.Testresponse "Payments due this month"
+// @Failure      500 {string} string "Error while checking transactions"
+// @Router       /transaction/test [post]
+func (h *Handler) TestNotification(ctx *gin.Context) {
+	req := &pb.Testresponse{}
+	res, err := h.TransactionService.TestNotification(ctx.Copy(), req)
 	if err != nil {
 		ctx.JSON(500, gin.H{"error": err.Error()})
 		return

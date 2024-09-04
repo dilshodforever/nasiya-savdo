@@ -89,6 +89,7 @@ func NewGin(h *handler.Handler) *gin.Engine {
 		transaction.DELETE("/delete/:id", h.DeleteTransaction)
 		transaction.GET("/list", h.ListTransactions)
 		transaction.POST("/check", h.CheckTransactions)
+		transaction.POST("/test", h.TestNotification)
 	}
 
 	minIO := router.Group("/minio")

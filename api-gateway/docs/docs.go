@@ -1185,7 +1185,7 @@ const docTemplate = `{
                 "tags": [
                     "Transactions"
                 ],
-                "summary": "Check Transactions",
+                "summary": "Test Transactions",
                 "responses": {
                     "200": {
                         "description": "Payments due this month",
@@ -1349,6 +1349,40 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Error while listing transactions",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/transaction/test": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Check all pending transactions and return a message if any payments are due this month",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Transactions"
+                ],
+                "summary": "Test Notification",
+                "responses": {
+                    "200": {
+                        "description": "Payments due this month",
+                        "schema": {
+                            "$ref": "#/definitions/genprotos.Testresponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error while checking transactions",
                         "schema": {
                             "type": "string"
                         }
@@ -1834,6 +1868,9 @@ const docTemplate = `{
                     "type": "boolean"
                 }
             }
+        },
+        "genprotos.Testresponse": {
+            "type": "object"
         },
         "genprotos.TransactionResponse": {
             "type": "object",

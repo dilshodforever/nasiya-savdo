@@ -57,6 +57,7 @@ type TransactionStorage interface {
 	DeleteTransaction(req *pb.TransactionIdRequest) (*pb.TransactionResponse, error)
 	ListTransactions(req *pb.GetAllTransactionRequest) (*pb.GetAllTransactionResponse, error)
 	CheckTransactions(req *pb.CheckRequest) (*pb.CheckResponse, error)
+	TestNotification(req *pb.Testresponse) (*pb.Testrequest, error)
 }
 
 type MinIOStorage interface {

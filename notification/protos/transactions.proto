@@ -1,0 +1,72 @@
+syntax = "proto3";
+
+package budgets;
+
+option go_package = "genprotos/transactions";
+
+
+service TransactionService {
+    rpc CreateTransaction(CreateTransactionRequest) returns (TransactionResponse);
+    rpc GetTransaction(GetTransactionRequest) returns (GetTransactionResponse);
+    rpc UpdateTransaction(UpdateTransactionRequest) returns (TransactionResponse);
+    rpc DeleteTransaction(DeleteTransactionRequest) returns (TransactionResponse);
+    rpc ListTransactions(ListTransactionsRequest) returns (ListTransactionsResponse);
+}
+
+message CreateTransactionRequest{
+    string user_id = 2;
+    string account_id = 3;
+    string category_id = 4;
+    float amount = 5;
+    string type = 6; 
+    string description = 7;
+    string date = 8;
+}
+
+message TransactionResponse {
+    bool success = 1;
+    string message =2;
+}
+
+message GetTransactionRequest {
+    string id = 1;
+}
+
+message GetTransactionResponse{
+    string id = 1;
+    string user_id = 2;
+    string account_id = 3;
+    string category_id = 4;
+    float amount = 5;
+    string type = 6; 
+    string description = 7;
+    string date = 8;
+}
+
+message UpdateTransactionRequest {
+    string id =1;
+    string account_id = 3;
+    string category_id = 4;
+    float amount = 5;
+    string type = 6; 
+    string description = 7;
+    string date = 8;
+}
+
+message DeleteTransactionRequest {
+    string id = 1;
+}
+
+message ListTransactionsRequest {
+    string account_id = 3;
+    string category_id = 4;
+    float amount = 5;
+    string type = 6; 
+    string description = 7;
+    string date = 8;
+}
+
+message ListTransactionsResponse {
+    repeated GetTransactionResponse transactions = 1;
+}
+

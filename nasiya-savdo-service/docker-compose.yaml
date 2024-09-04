@@ -1,6 +1,30 @@
 version: '3.9'
 
 services:
+
+  zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+      - "2182:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+    networks:
+      - mynetwork
+
+  kafka:
+    image: wurstmeister/kafka
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: kafka
+      KAFKA_ADVERTISED_PORT: 9092
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+    networks:
+      - mynetwork
+
   # migrate
   migrate:
     image: migrate/migrate
@@ -26,7 +50,7 @@ services:
     volumes:
       - db:/post-database/post-memory
     ports:
-      - "5433:5432"
+      - "5434:5432"
     networks:
       - mynetwork
     restart: unless-stopped
@@ -73,3 +97,5 @@ networks:
 volumes:
   db:
   minio-data:
+
+

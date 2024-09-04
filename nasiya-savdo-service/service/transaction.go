@@ -69,3 +69,14 @@ func (s *TransactionService) CheckTransactions(ctx context.Context, req *pb.Chec
 	}
 	return resp, nil
 }
+
+
+
+func (s *TransactionService) TestNotification(ctx context.Context,req *pb.Testresponse) (*pb.Testrequest, error) {
+	resp, err := s.stg.Transaction().TestNotification(req)
+	if err != nil {
+		log.Print(err)
+		return nil, err
+	}
+	return resp, nil
+}

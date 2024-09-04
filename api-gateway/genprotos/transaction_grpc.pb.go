@@ -28,6 +28,7 @@ type TransactionServiceClient interface {
 	DeleteTransaction(ctx context.Context, in *TransactionIdRequest, opts ...grpc.CallOption) (*TransactionResponse, error)
 	ListTransactions(ctx context.Context, in *GetAllTransactionRequest, opts ...grpc.CallOption) (*GetAllTransactionResponse, error)
 	CheckTransactions(ctx context.Context, in *CheckRequest, opts ...grpc.CallOption) (*CheckResponse, error)
+	TestNotification(ctx context.Context, in *Testresponse, opts ...grpc.CallOption) (*Testrequest, error)
 }
 
 type transactionServiceClient struct {
@@ -92,6 +93,15 @@ func (c *transactionServiceClient) CheckTransactions(ctx context.Context, in *Ch
 	return out, nil
 }
 
+func (c *transactionServiceClient) TestNotification(ctx context.Context, in *Testresponse, opts ...grpc.CallOption) (*Testrequest, error) {
+	out := new(Testrequest)
+	err := c.cc.Invoke(ctx, "/protos.TransactionService/TestNotification", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TransactionServiceServer is the server API for TransactionService service.
 // All implementations must embed UnimplementedTransactionServiceServer
 // for forward compatibility
@@ -102,6 +112,7 @@ type TransactionServiceServer interface {
 	DeleteTransaction(context.Context, *TransactionIdRequest) (*TransactionResponse, error)
 	ListTransactions(context.Context, *GetAllTransactionRequest) (*GetAllTransactionResponse, error)
 	CheckTransactions(context.Context, *CheckRequest) (*CheckResponse, error)
+	TestNotification(context.Context, *Testresponse) (*Testrequest, error)
 	mustEmbedUnimplementedTransactionServiceServer()
 }
 
@@ -126,6 +137,9 @@ func (UnimplementedTransactionServiceServer) ListTransactions(context.Context, *
 }
 func (UnimplementedTransactionServiceServer) CheckTransactions(context.Context, *CheckRequest) (*CheckResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CheckTransactions not implemented")
+}
+func (UnimplementedTransactionServiceServer) TestNotification(context.Context, *Testresponse) (*Testrequest, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TestNotification not implemented")
 }
 func (UnimplementedTransactionServiceServer) mustEmbedUnimplementedTransactionServiceServer() {}
 
@@ -248,6 +262,24 @@ func _TransactionService_CheckTransactions_Handler(srv interface{}, ctx context.
 	return interceptor(ctx, in, info, handler)
 }
 
+func _TransactionService_TestNotification_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Testresponse)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TransactionServiceServer).TestNotification(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protos.TransactionService/TestNotification",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TransactionServiceServer).TestNotification(ctx, req.(*Testresponse))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // TransactionService_ServiceDesc is the grpc.ServiceDesc for TransactionService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -278,6 +310,10 @@ var TransactionService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CheckTransactions",
 			Handler:    _TransactionService_CheckTransactions_Handler,
+		},
+		{
+			MethodName: "TestNotification",
+			Handler:    _TransactionService_TestNotification_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

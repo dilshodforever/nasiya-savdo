@@ -8,15 +8,20 @@ import (
 	"time"
 
 	pb "github.com/dilshodforever/nasiya-savdo/genprotos"
+	"github.com/dilshodforever/nasiya-savdo/kafka"
+	connect"github.com/dilshodforever/nasiya-savdo/kafkaconnect"
+	"github.com/dilshodforever/nasiya-savdo/kafkasender"
+	"github.com/dilshodforever/nasiya-savdo/model"
 	"github.com/google/uuid"
 )
 
 type TransactionStorage struct {
-	db *sql.DB
+	db    *sql.DB
+	kafka kafka.KafkaProducer
 }
 
-func NewTransactionStorage(db *sql.DB) *TransactionStorage {
-	return &TransactionStorage{db: db}
+func NewTransactionStorage(db *sql.DB, kafka kafka.KafkaProducer) *TransactionStorage {
+	return &TransactionStorage{db: db, kafka: kafka}
 }
 
 func (p *TransactionStorage) CreateTransaction(req *pb.CreateTransactionRequest) (*pb.TransactionResponse, error) {
@@ -228,9 +233,11 @@ func (p *TransactionStorage) ListTransactions(req *pb.GetAllTransactionRequest) 
 	return &transactions, nil
 }
 
+// V2
+
 func (p *TransactionStorage) CheckTransactions(req *pb.CheckRequest) (*pb.CheckResponse, error) {
 	query := `
-		SELECT c.id, c.created_at, SUM(t.duration)
+		SELECT c.id, c.created_at, COALESCE(SUM(t.duration), 0) as total_duration
 		FROM contract AS c
 		LEFT JOIN transactions AS t ON t.contract_id = c.id
 		WHERE c.status = 'pending'
@@ -243,8 +250,6 @@ func (p *TransactionStorage) CheckTransactions(req *pb.CheckRequest) (*pb.CheckR
 	}
 	defer rows.Close()
 
-	var dueIDs []string
-
 	for rows.Next() {
 		var contractID, createdAt string
 		var totalDuration sql.NullInt32
@@ -253,40 +258,128 @@ func (p *TransactionStorage) CheckTransactions(req *pb.CheckRequest) (*pb.CheckR
 			log.Printf("Error scanning row: %v", err)
 			return nil, err
 		}
+
 		creationTime, err := time.Parse(time.RFC3339, createdAt)
 		if err != nil {
 			log.Printf("Error parsing date: %v", err)
 			return nil, err
 		}
 
-		duration := int32(0)
-
+		// Calculate the due date
+		durationMonths := int32(0)
 		if totalDuration.Valid {
-			duration = totalDuration.Int32
+			durationMonths = totalDuration.Int32
 		}
+		dueDate := creationTime.AddDate(0, int(durationMonths), 0)
 
-		dueDay := int(creationTime.Month()) + int(duration)
+		// Check the due date and send notifications
+		now := time.Now()
 		switch {
-		case dueDay == int(time.Now().Month()) && creationTime.Day() == time.Now().Day():
-			dueIDs = append(dueIDs, contractID)
+		case dueDate.Year() == now.Year() && dueDate.Month() == now.Month() && dueDate.Day() == now.Day():
+			kafka:=connect.ConnectToKafka()
+			kafkasender.CreateNotification(kafka, model.Send{
+				Userid:     req.UserId,
+				Message:    "Payment due today for contract " + contractID,
+				ContractId: contractID,
+			})
 
-		case dueDay >= int(time.Now().Month()) && creationTime.Day() >= time.Now().Day():
-			dueIDs = append(dueIDs, contractID)
+		case dueDate.Before(now):
+			kafka:=connect.ConnectToKafka()
+			kafkasender.CreateNotification(kafka, model.Send{
+				Userid:     req.UserId,
+				Message:    "Payment overdue by 1 month for contract " + contractID,
+				ContractId: contractID,
+			})
 
-		case dueDay == int(time.Now().Month()) && creationTime.Day() >= time.Now().Day():
-			dueIDs = append(dueIDs, contractID)
+		case dueDate.Month() == now.Month() && dueDate.Day() > now.Day():
+			kafka:=connect.ConnectToKafka()
+			kafkasender.CreateNotification(kafka, model.Send{
+				Userid:     req.UserId,
+				Message:    "Payment due this month for contract " + contractID,
+				ContractId: contractID,
+			})
 		}
-
 	}
 
 	if err := rows.Err(); err != nil {
 		log.Printf("Error during rows iteration: %v", err)
 		return nil, err
 	}
-
-	if len(dueIDs) > 0 {
-		return &pb.CheckResponse{Message: "" + dueIDs[0]}, nil
-	}
-
-	return &pb.CheckResponse{Message: "No payments are due today."}, nil
+	return &pb.CheckResponse{Message: "Payment checks completed successfully."}, nil
 }
+
+
+
+func (p *TransactionStorage) TestNotification(req *pb.Testresponse) (*pb.Testrequest, error) {
+	kafka:=connect.ConnectToKafka()
+	kafkasender.CreateNotification(kafka, model.Send{
+		Userid:     "1111",
+		Message:    "Payment due this month for contract " + "contractID",
+		ContractId: "2222222",
+	})
+	return &pb.Testrequest{Message: "Success"}, nil
+}
+
+// V1
+
+// func (p *TransactionStorage) CheckTransactions(req *pb.CheckRequest) (*pb.CheckResponse, error) {
+// 	query := `
+// 		SELECT c.id, c.created_at, SUM(t.duration)
+// 		FROM contract AS c
+// 		LEFT JOIN transactions AS t ON t.contract_id = c.id
+// 		WHERE c.status = 'pending'
+// 		GROUP BY c.id, c.created_at
+// 	`
+// 	rows, err := p.db.Query(query)
+// 	if err != nil {
+// 		log.Printf("Error executing query: %v", err)
+// 		return nil, err
+// 	}
+// 	defer rows.Close()
+
+// 	var dueIDs []string
+
+// 	for rows.Next() {
+// 		var contractID, createdAt string
+// 		var totalDuration sql.NullInt32
+
+// 		if err := rows.Scan(&contractID, &createdAt, &totalDuration); err != nil {
+// 			log.Printf("Error scanning row: %v", err)
+// 			return nil, err
+// 		}
+// 		creationTime, err := time.Parse(time.RFC3339, createdAt)
+// 		if err != nil {
+// 			log.Printf("Error parsing date: %v", err)
+// 			return nil, err
+// 		}
+
+// 		duration := int32(0)
+
+// 		if totalDuration.Valid {
+// 			duration = totalDuration.Int32
+// 		}
+
+// 		dueDay := int(creationTime.Month()) + int(duration)
+// 		switch {
+// 		case dueDay == int(time.Now().Month()) && creationTime.Day() == time.Now().Day():
+// 			kafkasender.CreateNotification(p.kafka, model.Send{Userid: req.UserId,Message: "This contact's paymant day come today", ContractId: contractID})
+// 		case dueDay >= int(time.Now().Month()) && creationTime.Day() >= time.Now().Day():
+// 			kafkasender.CreateNotification(p.kafka, model.Send{Userid: req.UserId,Message: "1 oydan oship ketgan tolanmagan contact  ", ContractId: contractID})
+
+// 		case dueDay == int(time.Now().Month()) && creationTime.Day() >= time.Now().Day():
+// 			kafkasender.CreateNotification(p.kafka, model.Send{Userid: req.UserId,Message: "shu oy tolanishi kere bolgan contract", ContractId: contractID})
+// 		}
+
+// 	}
+
+// 	if err := rows.Err(); err != nil {
+// 		log.Printf("Error during rows iteration: %v", err)
+// 		return nil, err
+// 	}
+
+// 	if len(dueIDs) > 0 {
+// 		return &pb.CheckResponse{Message: "" + dueIDs[0]}, nil
+// 	}
+
+// 	return &pb.CheckResponse{Message: "No payments are due today."}, nil
+// }
