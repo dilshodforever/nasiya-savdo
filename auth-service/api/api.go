@@ -14,7 +14,6 @@ import (
 // @title auth service API
 // @version 1.0
 // @description auth service API
-// @host localhost:8080
 // @BasePath /
 // @securityDefinitions.apikey BearerAuth
 // @in header
