@@ -1,6 +1,6 @@
 module github.com/dilshodforever/nasiya-savdo
 
-go 1.22.2
+go 1.22.1
 
 require (
 	github.com/casbin/casbin/v2 v2.98.0

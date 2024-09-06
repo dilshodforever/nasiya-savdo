@@ -39,39 +39,13 @@ services:
     volumes:
       - ./migrations:/migrations
     command: [ "-path", "/migrations", "-database",  
-                "postgres://postgres:root@postgres:5432/medicine_auth?sslmode=disable", 
+                "postgres://postgres:root@postgres:5432/nasia?sslmode=disable", 
                 "up" ]
-    depends_on:
-      - postgres-db
-
-  # postgres
-  postgres-db:
-    container_name: postgres
-    image: postgres:latest
-    environment:
-      PGUSER: postgres
-      POSTGRES_PASSWORD: root
-      PGDATA: /data/postgres
-      POSTGRES_DB: medicine_auth
-    volumes:
-      - db:/post-database/post-memory
-    ports:
-      - "5434:5432"
-    networks:
-      - GLhost
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -d postgres"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
 
   # auth
   auth-service:
     container_name: auth-service
     build: ./
-    depends_on:
-      - postgres-db
     ports:
       - "2020:2020"
       - "3030-3030"
@@ -94,7 +68,7 @@ services:
 networks:
   GLhost:
     external: true
-    name: medicine
+    name: nasiya-network
     driver: bridge
 
 # Docker Volumes
