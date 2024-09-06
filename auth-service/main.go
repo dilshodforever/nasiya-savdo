@@ -5,15 +5,15 @@ import (
 	"log"
 	"net"
 
+	"github.com/dilshodforever/nasiya-savdo/api"
+	"github.com/dilshodforever/nasiya-savdo/api/handler"
+	"github.com/dilshodforever/nasiya-savdo/config"
+	pb "github.com/dilshodforever/nasiya-savdo/genprotos"
+	"github.com/dilshodforever/nasiya-savdo/kafka"
+	"github.com/dilshodforever/nasiya-savdo/service"
+	"github.com/dilshodforever/nasiya-savdo/storage/postgres"
+	r "github.com/dilshodforever/nasiya-savdo/storage/redis"
 	"github.com/redis/go-redis/v9"
-	"gitlab.com/lingualeap/auth/api"
-	"gitlab.com/lingualeap/auth/api/handler"
-	"gitlab.com/lingualeap/auth/config"
-	pb "gitlab.com/lingualeap/auth/genprotos/users"
-	"gitlab.com/lingualeap/auth/kafka"
-	"gitlab.com/lingualeap/auth/service"
-	"gitlab.com/lingualeap/auth/storage/postgres"
-	r "gitlab.com/lingualeap/auth/storage/redis"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -25,15 +25,16 @@ func main() {
 		log.Fatal("Error while connection on db: ", err.Error())
 	}
 
-	liss, err := net.Listen("tcp", cnf.GrpcUserPort)
+	liss, err := net.Listen("tcp", cnf.GrpcPort)
 	if err != nil {
 		log.Fatal("Error while connection on tcp: ", err.Error())
 	}
+
 	udb := service.NewUserService(db)
 
 	cus := kafka.NewKafkaConsumerManager()
-	broker := []string{"kafka:9092"}
-	cus.RegisterConsumer(broker, "user", "u", kafka.UserCreateHandler(udb))
+	broker := []string{"redis:9092"}
+	cus.RegisterConsumer(broker, "user-create", "user", kafka.UserCreateHandler(udb))
 
 	s := grpc.NewServer()
 	pb.RegisterUserServiceServer(s, service.NewUserService(db))
@@ -44,7 +45,7 @@ func main() {
 		}
 	}()
 
-	userConn, err := grpc.NewClient(fmt.Sprintf("auth-ll%s", cnf.GrpcUserPort), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	userConn, err := grpc.NewClient(fmt.Sprintf("auth-service%s", cnf.GrpcPort), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatal("Error while NewClient: ", err.Error())
 	}

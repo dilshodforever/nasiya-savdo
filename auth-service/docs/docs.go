@@ -30,7 +30,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "User"
+                    "Auth"
                 ],
                 "summary": "Change Password",
                 "parameters": [
@@ -152,7 +152,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "User"
+                    "Auth"
                 ],
                 "summary": "Forgot Password",
                 "parameters": [
@@ -162,7 +162,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/users.ForgotPass"
+                            "$ref": "#/definitions/genprotos.ForgotPass"
                         }
                     }
                 ],
@@ -204,7 +204,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Get Profil Successful",
                         "schema": {
-                            "$ref": "#/definitions/users.User"
+                            "$ref": "#/definitions/genprotos.User"
                         }
                     },
                     "400": {
@@ -237,6 +237,11 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "name": "address",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
                         "name": "email",
                         "in": "query"
                     },
@@ -251,18 +256,8 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "type": "string",
-                        "name": "native_language",
-                        "in": "query"
-                    },
-                    {
                         "type": "integer",
                         "name": "offset",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "name": "user_name",
                         "in": "query"
                     }
                 ],
@@ -270,7 +265,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Get All Successful",
                         "schema": {
-                            "$ref": "#/definitions/users.AllUsers"
+                            "$ref": "#/definitions/genprotos.AllUsers"
                         }
                     },
                     "400": {
@@ -313,7 +308,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Get By ID Successful",
                         "schema": {
-                            "$ref": "#/definitions/users.User"
+                            "$ref": "#/definitions/genprotos.User"
                         }
                     },
                     "400": {
@@ -335,7 +330,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "User"
+                    "Auth"
                 ],
                 "summary": "Login User",
                 "parameters": [
@@ -345,7 +340,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/users.UserLogin"
+                            "$ref": "#/definitions/genprotos.UserLogin"
                         }
                     }
                 ],
@@ -365,6 +360,40 @@ const docTemplate = `{
                 }
             }
         },
+        "/user/refresh-token": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "refresh an existing Token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "refresh Toekn",
+                "responses": {
+                    "200": {
+                        "description": "refresh Successful",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Error while refreshed token",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/user/register": {
             "post": {
                 "description": "Register a new user",
@@ -375,7 +404,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "User"
+                    "Auth"
                 ],
                 "summary": "Register User",
                 "parameters": [
@@ -385,7 +414,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/users.UserReq"
+                            "$ref": "#/definitions/genprotos.UserReq"
                         }
                     }
                 ],
@@ -420,7 +449,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "User"
+                    "Auth"
                 ],
                 "summary": "Reset Password",
                 "parameters": [
@@ -482,7 +511,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/users.User"
+                            "$ref": "#/definitions/genprotos.User"
                         }
                     }
                 ],
@@ -527,7 +556,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/users.User"
+                            "$ref": "#/definitions/genprotos.User"
                         }
                     }
                 ],
@@ -549,6 +578,97 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "genprotos.AllUsers": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "users": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/genprotos.User"
+                    }
+                }
+            }
+        },
+        "genprotos.ForgotPass": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                }
+            }
+        },
+        "genprotos.User": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "integer"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "full_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "password_hash": {
+                    "type": "string"
+                },
+                "phone_number": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "genprotos.UserLogin": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "genprotos.UserReq": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "full_name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "phone_number": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
         "handler.changePass": {
             "type": "object",
             "properties": {
@@ -567,85 +687,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "resetToken": {
-                    "type": "string"
-                }
-            }
-        },
-        "users.AllUsers": {
-            "type": "object",
-            "properties": {
-                "count": {
-                    "type": "integer"
-                },
-                "users": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/users.User"
-                    }
-                }
-            }
-        },
-        "users.ForgotPass": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
-                }
-            }
-        },
-        "users.User": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "full_name": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "native_language": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                },
-                "role": {
-                    "type": "string"
-                },
-                "user_name": {
-                    "type": "string"
-                }
-            }
-        },
-        "users.UserLogin": {
-            "type": "object",
-            "properties": {
-                "password": {
-                    "type": "string"
-                },
-                "user_name": {
-                    "type": "string"
-                }
-            }
-        },
-        "users.UserReq": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "full_name": {
-                    "type": "string"
-                },
-                "native_language": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                },
-                "user_name": {
                     "type": "string"
                 }
             }

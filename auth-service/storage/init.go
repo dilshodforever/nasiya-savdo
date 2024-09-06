@@ -1,7 +1,7 @@
 package postgres
 
 import (
-	pb "gitlab.com/lingualeap/auth/genprotos/users"
+	pb "github.com/dilshodforever/nasiya-savdo/genprotos"
 )
 
 type InitRoot interface {
@@ -18,4 +18,7 @@ type User interface {
 	ChangePassword(changePass *pb.ChangePass) (*pb.Void, error)
 	ForgotPassword(forgotPass *pb.ForgotPass) (*pb.Void, error)
 	ResetPassword(resetPass *pb.ResetPass) (*pb.Void, error)
+	// SaveToken(token *pb.Token) (*pb.Void, error)
+	// GetToken(void *pb.ById) (*pb.Token, error)
+	// UpdateToken(token *pb.Token) (*pb.Void, error)
 }

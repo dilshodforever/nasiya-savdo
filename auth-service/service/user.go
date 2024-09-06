@@ -4,8 +4,8 @@ import (
 	"context"
 	"log"
 
-	pb "gitlab.com/lingualeap/auth/genprotos/users"
-	s "gitlab.com/lingualeap/auth/storage"
+	pb "github.com/dilshodforever/nasiya-savdo/genprotos"
+	s "github.com/dilshodforever/nasiya-savdo/storage"
 )
 
 type UserService struct {
@@ -97,3 +97,30 @@ func (c *UserService) ResetPassword(ctx context.Context, resetPass *pb.ResetPass
 	}
 	return void, nil
 }
+
+// func (c *UserService) SaveToken(ctx context.Context, token *pb.Token) (*pb.Void, error) {
+// 	void, err := c.stg.User().SaveToken(token)
+// 	if err != nil {
+// 		log.Print(err)
+// 		return nil, err
+// 	}
+// 	return void, nil
+// }
+
+// func (c *UserService) GetToken(ctx context.Context, id *pb.ById) (*pb.Token, error) {
+// 	token, err := c.stg.User().GetToken(id)
+// 	if err != nil {
+// 		log.Print(err)
+// 		return nil, err
+// 	}
+// 	return token, nil
+// }
+
+// func (c *UserService) UpdateToken(ctx context.Context, token *pb.Token) (*pb.Void, error) {
+// 	void, err := c.stg.User().UpdateToken(token)
+// 	if err != nil {
+// 		log.Print(err)
+// 		return nil, err
+// 	}
+// 	return void, nil
+// }

@@ -1,11 +1,3 @@
-p, unauthorized, /swagger/index.html, GET
-p, unauthorized, /swagger/swagger-ui.css, GET
-p, unauthorized, /swagger/swagger-ui-bundle.js, GET
-p, unauthorized, /swagger/favicon-32x32.png, GET
-p, unauthorized, /swagger/favicon-16x16.png, GET
-p, unauthorized, /swagger/swagger-ui-standalone-preset.js, GET
-p, unauthorized, /swagger/swagger/doc.json, GET
-p, unauthorized, /swagger/doc.json, GET
 p, unauthorized, /swagger/*any, GET
 p, unauthorized, /user/login, POST
 p, unauthorized, /user/register, POST
@@ -16,6 +8,7 @@ p, user, /user/delete_profil, DELETE
 p, user, /user/change-password, POST
 p, user, /user/forgot-password, POST
 p, user, /user/reset-password, POST
+p, user, /user/refresh-token, GET
 
 g, admin, user
 p, admin, /user/register, POST
@@ -23,3 +16,5 @@ p, admin, /user/getall, GET
 p, admin, /user/getbyid/:id, GET
 p, admin, /user/update/:id, PUT
 p, admin, /user/delete/:id, DELETE
+
+g, user, admin

@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/dilshodforever/nasiya-savdo/config"
+	e "github.com/dilshodforever/nasiya-savdo/email"
 	"github.com/redis/go-redis/v9"
-	"gitlab.com/lingualeap/auth/config"
-	e "gitlab.com/lingualeap/auth/email"
 )
 
 type InMemoryStorageI interface {

@@ -7,10 +7,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/dilshodforever/nasiya-savdo/config"
+	pb "github.com/dilshodforever/nasiya-savdo/genprotos"
 	"github.com/golang-jwt/jwt"
 	"github.com/spf13/cast"
-	"gitlab.com/lingualeap/auth/config"
-	pb "gitlab.com/lingualeap/auth/genprotos/users"
 )
 
 type JWTHandler struct {
@@ -30,16 +30,36 @@ type Tokens struct {
 
 var tokenKey = config.Load().TokenKey
 
+func GenereteAccsessJWTToken(user *pb.User) *Tokens {
+	accessToken := jwt.New(jwt.SigningMethodHS256)
+
+	claims := accessToken.Claims.(jwt.MapClaims)
+	claims["id"] = user.Id
+	claims["full_name"] = user.FullName
+	claims["email"] = user.Email
+	claims["phone_number"] = user.PhoneNumber
+	claims["iat"] = time.Now().Unix()
+	claims["exp"] = time.Now().Add(60 * time.Minute).Unix()
+	access, err := accessToken.SignedString([]byte(tokenKey))
+	if err != nil {
+		log.Fatal("error while genereting access token : ", err)
+	}
+
+	return &Tokens{
+		AccessToken: access,
+	}
+}
+
 func GenereteJWTToken(user *pb.User) *Tokens {
 	accessToken := jwt.New(jwt.SigningMethodHS256)
 	refreshToken := jwt.New(jwt.SigningMethodHS256)
 
 	claims := accessToken.Claims.(jwt.MapClaims)
 	claims["id"] = user.Id
-	claims["user_name"] = user.UserName
+	claims["full_name"] = user.FullName
 	claims["email"] = user.Email
-	claims["native_language"] = user.NativeLanguage
-	claims["role"] = user.Role
+	claims["phone_number"] = user.PhoneNumber
+	claims["role"] = "admin"
 	claims["iat"] = time.Now().Unix()
 	claims["exp"] = time.Now().Add(60 * time.Minute).Unix()
 	access, err := accessToken.SignedString([]byte(tokenKey))
@@ -49,12 +69,12 @@ func GenereteJWTToken(user *pb.User) *Tokens {
 
 	rftclaims := refreshToken.Claims.(jwt.MapClaims)
 	rftclaims["id"] = user.Id
-	rftclaims["user_name"] = user.UserName
+	rftclaims["full_name"] = user.FullName
 	rftclaims["email"] = user.Email
-	rftclaims["native_language"] = user.NativeLanguage
-	rftclaims["role"] = user.Role
+	rftclaims["phone_number"] = user.PhoneNumber
+	rftclaims["role"] = "admin"
 	rftclaims["iat"] = time.Now().Unix()
-	rftclaims["exp"] = time.Now().Add(24 * time.Hour).Unix()
+	rftclaims["exp"] = time.Now().Add(30 * 24 * time.Hour).Unix()
 	refresh, err := refreshToken.SignedString([]byte(tokenKey))
 	if err != nil {
 		log.Fatal("error while genereting refresh token : ", err)

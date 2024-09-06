@@ -8,7 +8,7 @@ import (
 	"net/smtp"
 	"os"
 
-	"gitlab.com/lingualeap/auth/config"
+	"github.com/dilshodforever/nasiya-savdo/config"
 )
 
 type SendEmailRequest struct {

@@ -1,9 +1,9 @@
 package handler
 
 import (
-	pb "gitlab.com/lingualeap/auth/genprotos/users"
-	"gitlab.com/lingualeap/auth/kafka"
-	r "gitlab.com/lingualeap/auth/storage/redis"
+	pb "github.com/dilshodforever/nasiya-savdo/genprotos"
+	"github.com/dilshodforever/nasiya-savdo/kafka"
+	r "github.com/dilshodforever/nasiya-savdo/storage/redis"
 )
 
 type Handler struct {

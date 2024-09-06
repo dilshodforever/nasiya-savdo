@@ -1,7 +1,6 @@
 version: '3.8'
 
 services:
-
   # zookeeper
   zookeeper:
     image: confluentinc/cp-zookeeper:7.4.4
@@ -12,7 +11,7 @@ services:
     ports:
       - 22181:2181
     networks:
-      - mynetwork
+      - GLhost
   
   # kafka
   kafka:
@@ -23,7 +22,7 @@ services:
     ports:
       - 29092:29092
     networks:
-      - mynetwork
+      - GLhost
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
@@ -32,48 +31,74 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
-  # redis
-  redis:
-    image: redis:latest
-    container_name: redis
-    restart: always
-    ports:
-      - "6378:6378"
-    volumes:
-      - redis_data:/data
-
   # migrate
   migrate:
     image: migrate/migrate
     networks:
-      - mynetwork
+      - GLhost
     volumes:
       - ./migrations:/migrations
     command: [ "-path", "/migrations", "-database",  
-                "postgres://postgres:1234@postgres-nasiya:5432/nasia?sslmode=disable", 
+                "postgres://postgres:root@postgres:5432/medicine_auth?sslmode=disable", 
                 "up" ]
+    depends_on:
+      - postgres-db
 
-  # auth-ll
-  auth-ll:
-    container_name: auth-ll
+  # postgres
+  postgres-db:
+    container_name: postgres
+    image: postgres:latest
+    environment:
+      PGUSER: postgres
+      POSTGRES_PASSWORD: root
+      PGDATA: /data/postgres
+      POSTGRES_DB: medicine_auth
+    volumes:
+      - db:/post-database/post-memory
+    ports:
+      - "5434:5432"
+    networks:
+      - GLhost
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d postgres"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # auth
+  auth-service:
+    container_name: auth-service
     build: ./
     depends_on:
-      - zookeeper
-      - kafka
+      - postgres-db
     ports:
-      - "8081:8081"
-      - "8082:8082"
+      - "2020:2020"
+      - "3030-3030"
     networks:
-      - mynetwork
+      - GLhost
+
+  # redis
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - GLhost
+
 
 # Docker Networks
 networks:
-  mynetwork:
+  GLhost:
     external: true
-    name: nasiya-network
+    name: medicine
     driver: bridge
 
 # Docker Volumes
 volumes:
   db:
-  redis_data:
+  redis-data:
+    driver: local

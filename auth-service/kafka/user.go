@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"log"
 
-	pb "gitlab.com/lingualeap/auth/genprotos/users"
-	"gitlab.com/lingualeap/auth/service"
+	pb "github.com/dilshodforever/nasiya-savdo/genprotos"
+	"github.com/dilshodforever/nasiya-savdo/service"
 )
 
 func UserCreateHandler(userServ *service.UserService) func(message []byte) {

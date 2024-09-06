@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 
-	"gitlab.com/lingualeap/auth/config"
-	u "gitlab.com/lingualeap/auth/storage"
+	"github.com/dilshodforever/nasiya-savdo/config"
+	u "github.com/dilshodforever/nasiya-savdo/storage"
 
 	_ "github.com/lib/pq"
 )

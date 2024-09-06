@@ -1,5 +1,64 @@
 basePath: /
 definitions:
+  genprotos.AllUsers:
+    properties:
+      count:
+        type: integer
+      users:
+        items:
+          $ref: '#/definitions/genprotos.User'
+        type: array
+    type: object
+  genprotos.ForgotPass:
+    properties:
+      email:
+        type: string
+    type: object
+  genprotos.User:
+    properties:
+      address:
+        type: string
+      created_at:
+        type: string
+      deleted_at:
+        type: integer
+      email:
+        type: string
+      full_name:
+        type: string
+      id:
+        type: string
+      password_hash:
+        type: string
+      phone_number:
+        type: string
+      updated_at:
+        type: string
+      username:
+        type: string
+    type: object
+  genprotos.UserLogin:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  genprotos.UserReq:
+    properties:
+      address:
+        type: string
+      email:
+        type: string
+      full_name:
+        type: string
+      password:
+        type: string
+      phone_number:
+        type: string
+      username:
+        type: string
+    type: object
   handler.changePass:
     properties:
       currentPassword:
@@ -12,57 +71,6 @@ definitions:
       newPassword:
         type: string
       resetToken:
-        type: string
-    type: object
-  users.AllUsers:
-    properties:
-      count:
-        type: integer
-      users:
-        items:
-          $ref: '#/definitions/users.User'
-        type: array
-    type: object
-  users.ForgotPass:
-    properties:
-      email:
-        type: string
-    type: object
-  users.User:
-    properties:
-      email:
-        type: string
-      full_name:
-        type: string
-      id:
-        type: string
-      native_language:
-        type: string
-      password:
-        type: string
-      role:
-        type: string
-      user_name:
-        type: string
-    type: object
-  users.UserLogin:
-    properties:
-      password:
-        type: string
-      user_name:
-        type: string
-    type: object
-  users.UserReq:
-    properties:
-      email:
-        type: string
-      full_name:
-        type: string
-      native_language:
-        type: string
-      password:
-        type: string
-      user_name:
         type: string
     type: object
 info:
@@ -98,7 +106,7 @@ paths:
       - BearerAuth: []
       summary: Change Password
       tags:
-      - User
+      - Auth
   /user/delete/{id}:
     delete:
       consumes:
@@ -158,7 +166,7 @@ paths:
         name: ForgotPass
         required: true
         schema:
-          $ref: '#/definitions/users.ForgotPass'
+          $ref: '#/definitions/genprotos.ForgotPass'
       produces:
       - application/json
       responses:
@@ -174,7 +182,7 @@ paths:
       - BearerAuth: []
       summary: Forgot Password
       tags:
-      - User
+      - Auth
   /user/get_profil:
     get:
       consumes:
@@ -186,7 +194,7 @@ paths:
         "200":
           description: Get Profil Successful
           schema:
-            $ref: '#/definitions/users.User'
+            $ref: '#/definitions/genprotos.User'
         "400":
           description: Error while retrieving user
           schema:
@@ -203,6 +211,9 @@ paths:
       description: Get all users
       parameters:
       - in: query
+        name: address
+        type: string
+      - in: query
         name: email
         type: string
       - in: query
@@ -212,21 +223,15 @@ paths:
         name: limit
         type: integer
       - in: query
-        name: native_language
-        type: string
-      - in: query
         name: offset
         type: integer
-      - in: query
-        name: user_name
-        type: string
       produces:
       - application/json
       responses:
         "200":
           description: Get All Successful
           schema:
-            $ref: '#/definitions/users.AllUsers'
+            $ref: '#/definitions/genprotos.AllUsers'
         "400":
           description: Error while retrieving users
           schema:
@@ -253,7 +258,7 @@ paths:
         "200":
           description: Get By ID Successful
           schema:
-            $ref: '#/definitions/users.User'
+            $ref: '#/definitions/genprotos.User'
         "400":
           description: Error while retrieving user
           schema:
@@ -274,7 +279,7 @@ paths:
         name: Create
         required: true
         schema:
-          $ref: '#/definitions/users.UserLogin'
+          $ref: '#/definitions/genprotos.UserLogin'
       produces:
       - application/json
       responses:
@@ -288,7 +293,28 @@ paths:
             type: string
       summary: Login User
       tags:
-      - User
+      - Auth
+  /user/refresh-token:
+    get:
+      consumes:
+      - application/json
+      description: refresh an existing Token
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: refresh Successful
+          schema:
+            type: string
+        "400":
+          description: Error while refreshed token
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: refresh Toekn
+      tags:
+      - Auth
   /user/register:
     post:
       consumes:
@@ -300,7 +326,7 @@ paths:
         name: Create
         required: true
         schema:
-          $ref: '#/definitions/users.UserReq'
+          $ref: '#/definitions/genprotos.UserReq'
       produces:
       - application/json
       responses:
@@ -314,7 +340,7 @@ paths:
             type: string
       summary: Register User
       tags:
-      - User
+      - Auth
   /user/reset-password:
     post:
       consumes:
@@ -342,7 +368,7 @@ paths:
       - BearerAuth: []
       summary: Reset Password
       tags:
-      - User
+      - Auth
   /user/update/{id}:
     put:
       consumes:
@@ -359,7 +385,7 @@ paths:
         name: Update
         required: true
         schema:
-          $ref: '#/definitions/users.User'
+          $ref: '#/definitions/genprotos.User'
       produces:
       - application/json
       responses:
@@ -387,7 +413,7 @@ paths:
         name: Update
         required: true
         schema:
-          $ref: '#/definitions/users.User'
+          $ref: '#/definitions/genprotos.User'
       produces:
       - application/json
       responses:

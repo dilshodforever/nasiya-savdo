@@ -5,13 +5,12 @@ import (
 	"fmt"
 	"math/rand"
 	"net/http"
-	"strconv"
 	"time"
 
+	token "github.com/dilshodforever/nasiya-savdo/api/token"
+	"github.com/dilshodforever/nasiya-savdo/config"
+	pb "github.com/dilshodforever/nasiya-savdo/genprotos"
 	"github.com/gin-gonic/gin"
-	token "gitlab.com/lingualeap/auth/api/token"
-	"gitlab.com/lingualeap/auth/config"
-	pb "gitlab.com/lingualeap/auth/genprotos/users"
 )
 
 type changePass struct {
@@ -27,14 +26,14 @@ type resetPass struct {
 // RegisterUser handles the creation of a new user
 // @Summary Register User
 // @Description Register a new user
-// @Tags User
+// @Tags Auth
 // @Accept json
 // @Produce json
 // @Param Create body pb.UserReq true "Create"
 // @Success 201 {string} string "Create Successful"
 // @Failure 400 {string} string "Error while creating user"
 // @Router /user/register [post]
-func (h *Handler) RegisterUser(ctx *gin.Context) {
+func (h *Handler) Register(ctx *gin.Context) {
 	user := pb.UserReq{}
 	err := ctx.BindJSON(&user)
 	if err != nil {
@@ -48,7 +47,7 @@ func (h *Handler) RegisterUser(ctx *gin.Context) {
 		return
 	}
 
-	h.producer.ProduceMessages("user", req)
+	h.producer.ProduceMessages("user-create", req)
 
 	ctx.JSON(http.StatusCreated, "Success!!!")
 }
@@ -117,15 +116,13 @@ func (h *Handler) DeleteUser(ctx *gin.Context) {
 // @Failure 400 {string} string "Error while retrieving users"
 // @Router /user/getall [get]
 func (h *Handler) GetAllUser(ctx *gin.Context) {
-	user := &pb.UserFilter{}
-	user.UserName = ctx.Query("user_name")
-	user.Email = ctx.Query("email")
-	l, _ := strconv.Atoi(ctx.Query("limit"))
-	user.Limit = int32(l)
-	o, _ := strconv.Atoi(ctx.Query("offset"))
-	user.Offset = int32(o)
+	filter := pb.UserFilter{}
+	err := ctx.BindQuery(&filter)
+	if err != nil {
+		ctx.JSON(400, err.Error())
+	}
 
-	res, err := h.User.GetAll(ctx, user)
+	res, err := h.User.GetAll(ctx, &filter)
 	if err != nil {
 		ctx.JSON(400, err.Error())
 		return
@@ -160,7 +157,7 @@ func (h *Handler) GetbyIdUser(ctx *gin.Context) {
 // LoginUser handles user login
 // @Summary Login User
 // @Description Login a user
-// @Tags User
+// @Tags Auth
 // @Accept json
 // @Produce json
 // @Param Create body pb.UserLogin true "Create"
@@ -182,13 +179,16 @@ func (h *Handler) LoginUser(ctx *gin.Context) {
 	}
 
 	t := token.GenereteJWTToken(res)
+
+	h.redis.Set(res.Id, t.RefreshToken, 30*24*time.Hour)
+
 	ctx.JSON(200, t)
 }
 
 // ChangePassword handles changing user password
 // @Summary Change Password
 // @Description Change user password
-// @Tags User
+// @Tags Auth
 // @Accept json
 // @Security BearerAuth
 // @Produce json
@@ -203,6 +203,7 @@ func (h *Handler) ChangePassword(ctx *gin.Context) {
 		ctx.JSON(400, err.Error())
 		return
 	}
+
 	changePass := pb.ChangePass{CurrentPassword: changePas.CurrentPassword, NewPassword: changePas.NewPassword}
 	cnf := config.Load()
 	id, _ := token.GetIdFromToken(ctx.Request, &cnf)
@@ -220,7 +221,7 @@ func (h *Handler) ChangePassword(ctx *gin.Context) {
 // ForgotPassword handles initiating the forgot password process
 // @Summary Forgot Password
 // @Description Initiate forgot password process
-// @Tags User
+// @Tags Auth
 // @Accept json
 // @Security BearerAuth
 // @Produce json
@@ -242,11 +243,12 @@ func (h *Handler) ForgotPassword(ctx *gin.Context) {
 		ctx.JSON(400, err.Error())
 		return
 	}
-	// _, err = h.User.ForgotPassword(ctx, &forgotPass)
-	// if err != nil {
-	// 	ctx.JSON(400, err.Error())
-	// 	return
-	// }
+
+	_, err = h.User.ForgotPassword(ctx, &forgotPass)
+	if err != nil {
+		ctx.JSON(400, err.Error())
+		return
+	}
 
 	ctx.JSON(200, "Email message has been sent")
 }
@@ -254,7 +256,7 @@ func (h *Handler) ForgotPassword(ctx *gin.Context) {
 // ResetPassword handles resetting the user password
 // @Summary Reset Password
 // @Description Reset user password
-// @Tags User
+// @Tags Auth
 // @Accept json
 // @Security BearerAuth
 // @Produce json
@@ -269,6 +271,7 @@ func (h *Handler) ResetPassword(ctx *gin.Context) {
 		ctx.JSON(400, err.Error())
 		return
 	}
+
 	resetPass := pb.ResetPass{ResetToken: resetPas.ResetToken, NewPassword: resetPas.NewPassword}
 	cnf := config.Load()
 	id, _ := token.GetIdFromToken(ctx.Request, &cnf)
@@ -368,4 +371,42 @@ func (h *Handler) DeleteProfil(ctx *gin.Context) {
 	}
 
 	ctx.JSON(200, "Success!!!")
+}
+
+// RefreshToekn handles the deletion of a Token
+// @Summary refresh Toekn
+// @Description refresh an existing Token
+// @Tags Auth
+// @Accept json
+// @Security BearerAuth
+// @Produce json
+// @Success 200 {string} string "refresh Successful"
+// @Failure 400 {string} string "Error while refreshed token"
+// @Router /user/refresh-token [get]
+func (h *Handler) RefreshToken(ctx *gin.Context) {
+	cnf := config.Load()
+	id, _ := token.GetIdFromToken(ctx.Request, &cnf)
+	tok, err := h.redis.Get(id)
+	if err != nil {
+		ctx.JSON(400, err.Error())
+		return
+	}
+
+	_, err = token.ExtractClaim(&cnf, tok)
+	if err != nil {
+		ctx.JSON(400, err.Error())
+		return
+	}
+
+	user, err := h.User.GetById(ctx, &pb.ById{Id: id})
+	if err != nil {
+		ctx.JSON(400, err.Error())
+		return
+	}
+
+	access := token.GenereteAccsessJWTToken(user).AccessToken
+
+	ctx.Request.Header.Set("Authorization", access)
+
+	ctx.JSON(200, gin.H{"new access token: ": access})
 }

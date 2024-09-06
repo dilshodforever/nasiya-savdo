@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"fmt"
 	"net/http"
 	"strings"
 
@@ -10,8 +9,8 @@ import (
 	"github.com/casbin/casbin/v2"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
-	"gitlab.com/lingualeap/auth/api/token"
-	"gitlab.com/lingualeap/auth/config"
+	"github.com/dilshodforever/nasiya-savdo/api/token"
+	"github.com/dilshodforever/nasiya-savdo/config"
 )
 
 type JwtRoleAuth struct {
@@ -73,7 +72,6 @@ func (a *JwtRoleAuth) CheckPermission(ctx *gin.Context) (bool, error) {
 	}
 	method := ctx.Request.Method
 	path := ctx.FullPath()
-	fmt.Println(role, path, method)
 	allowed, err := a.enforcer.Enforce(role, path, method)
 	if err != nil {
 		log.Println("Error while comparing role from csv list: ", err)
