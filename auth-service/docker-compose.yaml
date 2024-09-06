@@ -31,16 +31,16 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
-  # migrate
-  migrate:
-    image: migrate/migrate
-    networks:
-      - GLhost
-    volumes:
-      - ./migrations:/migrations
-    command: [ "-path", "/migrations", "-database",  
-                "postgres://postgres:root@postgres:5432/nasia?sslmode=disable", 
-                "up" ]
+  # # migrate
+  # migrate:
+  #   image: migrate/migrate
+  #   networks:
+  #     - GLhost
+  #   volumes:
+  #     - ./migrations:/migrations
+  #   command: [ "-path", "/migrations", "-database",  
+  #               "postgres://postgres:root@postgres:5432/nasia?sslmode=disable", 
+  #               "up" ]
 
   # auth
   auth-service:
