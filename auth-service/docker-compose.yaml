@@ -47,7 +47,7 @@ services:
     container_name: auth-service
     build: ./
     ports:
-      - "2020:2020"
+      - "8081:8081"
       - "3030-3030"
     networks:
       - GLhost
