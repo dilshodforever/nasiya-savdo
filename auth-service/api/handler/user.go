@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/rand"
 	"net/http"
+	"strconv"
 	"time"
 
 	token "github.com/dilshodforever/nasiya-savdo/api/token"
@@ -116,10 +117,12 @@ func (h *Handler) DeleteUser(ctx *gin.Context) {
 // @Failure 400 {string} string "Error while retrieving users"
 // @Router /user/getall [get]
 func (h *Handler) GetAllUser(ctx *gin.Context) {
-	filter := pb.UserFilter{}
-	err := ctx.BindQuery(&filter)
-	if err != nil {
-		ctx.JSON(400, err.Error())
+	filter := pb.UserFilter{
+		Limit:    parseQueryInt32(ctx, "limit", 10), // Default limit 10
+		Offset:   parseQueryInt32(ctx, "offset", 0), // Default offset 0
+		FullName: ctx.Query("full_name"),
+		Email:    ctx.Query("email"),
+		Address:  ctx.Query("address"),
 	}
 
 	res, err := h.User.GetAll(ctx, &filter)
@@ -129,6 +132,19 @@ func (h *Handler) GetAllUser(ctx *gin.Context) {
 	}
 
 	ctx.JSON(200, res)
+}
+
+func parseQueryInt32(ctx *gin.Context, key string, defaultValue int32) int32 {
+	valueStr := ctx.Query(key)
+	if valueStr == "" {
+		return defaultValue
+	}
+
+	value, err := strconv.Atoi(valueStr)
+	if err != nil {
+		return defaultValue
+	}
+	return int32(value)
 }
 
 // GetByIdUser handles retrieving a user by ID

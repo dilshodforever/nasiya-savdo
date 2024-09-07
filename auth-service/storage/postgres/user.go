@@ -86,8 +86,9 @@ func (p *UserStorage) GetAll(filter *pb.UserFilter) (*pb.AllUsers, error) {
 	}
 
 	// Apply limit and offset
-	// query += fmt.Sprintf(" LIMIT $%d OFFSET $%d", count, count+1)
-	// params = append(params, filter.Limit, filter.Offset)
+	fmt.Println(filter.Limit, filter.Offset)
+	query += fmt.Sprintf(" LIMIT $%d OFFSET $%d", count, count+1)
+	params = append(params, filter.Limit, filter.Offset)
 
 	rows, err := p.db.QueryContext(context.Background(), query, params...)
 	if err != nil {
