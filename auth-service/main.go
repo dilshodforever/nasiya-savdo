@@ -33,7 +33,7 @@ func main() {
 	udb := service.NewUserService(db)
 
 	cus := kafka.NewKafkaConsumerManager()
-	broker := []string{"redis:9092"}
+	broker := []string{"kafka:9092"}
 	cus.RegisterConsumer(broker, "user-create", "user", kafka.UserCreateHandler(udb))
 
 	s := grpc.NewServer()
