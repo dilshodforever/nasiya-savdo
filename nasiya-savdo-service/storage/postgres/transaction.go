@@ -248,6 +248,7 @@ func (p *TransactionStorage) CheckTransactions(req *pb.CheckRequest) (*pb.CheckR
 		log.Printf("Error executing query: %v", err)
 		return nil, err
 	}
+
 	defer rows.Close()
 
 	for rows.Next() {
@@ -310,6 +311,8 @@ func (p *TransactionStorage) CheckTransactions(req *pb.CheckRequest) (*pb.CheckR
 
 
 
+
+
 func (p *TransactionStorage) TestNotification(req *pb.Testresponse) (*pb.Testrequest, error) {
 	kafka:=connect.ConnectToKafka()
 	kafkasender.CreateNotification(kafka, model.Send{
@@ -317,8 +320,13 @@ func (p *TransactionStorage) TestNotification(req *pb.Testresponse) (*pb.Testreq
 		Message:    "Payment due this month for contract " + "contractID",
 		ContractId: "2222222",
 	})
+	
 	return &pb.Testrequest{Message: "Success"}, nil
 }
+
+
+
+
 
 // V1
 

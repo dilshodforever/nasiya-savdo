@@ -15,9 +15,11 @@ type ExchangeStorage struct {
 	db *sql.DB
 }
 
+
 func NewExchangeStorage(db *sql.DB) *ExchangeStorage {
 	return &ExchangeStorage{db: db}
 }
+
 
 func (p *ExchangeStorage) CreateExchange(req *pb.CreateExchangeRequest) (*pb.ExchangeResponse, error) {
 	id := uuid.NewString()
@@ -64,6 +66,7 @@ func (p *ExchangeStorage) CreateExchange(req *pb.CreateExchangeRequest) (*pb.Exc
 	}, nil
 }
 
+
 func (p *ExchangeStorage) GetExchange(req *pb.ExchangeIdRequest) (*pb.GetExchangeResponse, error) {
 	query := `
 		SELECT id, product_id, amount, price, status, contract_id, created_at, updated_at, deleted_at
@@ -89,8 +92,9 @@ func (p *ExchangeStorage) GetExchange(req *pb.ExchangeIdRequest) (*pb.GetExchang
 	return &exchange, nil
 }
 
+
 func (p *ExchangeStorage) UpdateExchange(req *pb.UpdateExchangeRequest) (*pb.ExchangeResponse, error) {
-	// Initialize a map to hold the fields that need to be updated
+	
 	update := map[string]interface{}{}
 	if req.ProductId != "" {
 		update["product_id"] = req.ProductId
@@ -167,6 +171,8 @@ func (p *ExchangeStorage) DeleteExchange(req *pb.ExchangeIdRequest) (*pb.Exchang
 	}, nil
 }
 
+
+
 func (p *ExchangeStorage) ListExchanges(req *pb.GetAllExchangeRequest) (*pb.GetAllExchangeResponse, error) {
 	exchanges := pb.GetAllExchangeResponse{}
 	query := `
@@ -201,6 +207,7 @@ func (p *ExchangeStorage) ListExchanges(req *pb.GetAllExchangeRequest) (*pb.GetA
 			&exchange.Id, &exchange.ProductId, &exchange.Amount, &exchange.Price, &exchange.Status,
 			&contractId, &exchange.CreatedAt, &exchange.UpdatedAt, &exchange.DeletedAt,
 		)
+
 		if err != nil {
 			log.Println(err)
 			return nil, err
