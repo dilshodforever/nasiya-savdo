@@ -7,6 +7,7 @@ import (
 	"github.com/dilshodforever/nasiya-savdo/api/handler"
 	"github.com/dilshodforever/nasiya-savdo/api/middleware"
 	_ "github.com/dilshodforever/nasiya-savdo/docs"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	files "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -32,6 +33,13 @@ func NewGin(h *handler.Handler) *gin.Engine {
 	}
 
 	r := gin.Default()
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+	}))
 
 	r.Use(middleware.NewAuth(e))
 

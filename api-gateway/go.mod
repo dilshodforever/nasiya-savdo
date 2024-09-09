@@ -4,6 +4,7 @@ go 1.22.1
 
 require (
 	github.com/casbin/casbin/v2 v2.97.0
+	github.com/gin-contrib/cors v1.7.2
 	github.com/gin-gonic/gin v1.10.0
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/golang-jwt/jwt v3.2.2+incompatible

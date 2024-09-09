@@ -2,6 +2,7 @@ package api
 
 import (
 	"github.com/casbin/casbin/v2"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 
 	"github.com/dilshodforever/nasiya-savdo/api/handler"
@@ -33,6 +34,14 @@ func NewGin(h *handler.Handler) *gin.Engine {
 		panic(err)
 	}
 	router := r.Group("/")
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+	}))
+
 	//router.Use(middleware.NewAuth(ca))
 
 	// Swagger documentation
@@ -96,7 +105,6 @@ func NewGin(h *handler.Handler) *gin.Engine {
 	{
 		minIO.POST("/upload", h.UploadFile)
 	}
-
 
 	return r
 }
