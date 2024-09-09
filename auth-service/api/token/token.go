@@ -30,7 +30,7 @@ type Tokens struct {
 
 var tokenKey = config.Load().TokenKey
 
-func GenereteAccsessJWTToken(user *pb.User) *Tokens {
+func GenereteAccsessJWTToken(user *pb.UserLoginRes) *Tokens {
 	accessToken := jwt.New(jwt.SigningMethodHS256)
 
 	claims := accessToken.Claims.(jwt.MapClaims)
@@ -38,6 +38,8 @@ func GenereteAccsessJWTToken(user *pb.User) *Tokens {
 	claims["full_name"] = user.FullName
 	claims["email"] = user.Email
 	claims["phone_number"] = user.PhoneNumber
+	claims["role"] = "admin"
+	claims["storage_id"] = user.StorageId
 	claims["iat"] = time.Now().Unix()
 	claims["exp"] = time.Now().Add(60 * time.Minute).Unix()
 	access, err := accessToken.SignedString([]byte(tokenKey))
@@ -50,7 +52,7 @@ func GenereteAccsessJWTToken(user *pb.User) *Tokens {
 	}
 }
 
-func GenereteJWTToken(user *pb.User) *Tokens {
+func GenereteJWTToken(user *pb.UserLoginRes) *Tokens {
 	accessToken := jwt.New(jwt.SigningMethodHS256)
 	refreshToken := jwt.New(jwt.SigningMethodHS256)
 
@@ -60,6 +62,7 @@ func GenereteJWTToken(user *pb.User) *Tokens {
 	claims["email"] = user.Email
 	claims["phone_number"] = user.PhoneNumber
 	claims["role"] = "admin"
+	claims["storage_id"] = user.StorageId
 	claims["iat"] = time.Now().Unix()
 	claims["exp"] = time.Now().Add(60 * time.Minute).Unix()
 	access, err := accessToken.SignedString([]byte(tokenKey))
@@ -73,6 +76,7 @@ func GenereteJWTToken(user *pb.User) *Tokens {
 	rftclaims["email"] = user.Email
 	rftclaims["phone_number"] = user.PhoneNumber
 	rftclaims["role"] = "admin"
+	claims["storage_id"] = user.StorageId
 	rftclaims["iat"] = time.Now().Unix()
 	rftclaims["exp"] = time.Now().Add(30 * 24 * time.Hour).Unix()
 	refresh, err := refreshToken.SignedString([]byte(tokenKey))

@@ -10,7 +10,7 @@ type InitRoot interface {
 
 type User interface {
 	Register(user *pb.UserReq) (*pb.Void, error)
-	Login(user *pb.UserLogin) (*pb.User, error)
+	Login(user *pb.UserLogin) (*pb.UserLoginRes, error)
 	GetById(id *pb.ById) (*pb.User, error)
 	GetAll(filter *pb.UserFilter) (*pb.AllUsers, error)
 	Update(user *pb.User) (*pb.Void, error)

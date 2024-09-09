@@ -26,7 +26,7 @@ func (c *UserService) Register(ctx context.Context, user *pb.UserReq) (*pb.Void,
 	return void, nil
 }
 
-func (c *UserService) Login(ctx context.Context, login *pb.UserLogin) (*pb.User, error) {
+func (c *UserService) Login(ctx context.Context, login *pb.UserLogin) (*pb.UserLoginRes, error) {
 	user, err := c.stg.User().Login(login)
 	if err != nil {
 		log.Print(err)

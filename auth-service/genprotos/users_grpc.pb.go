@@ -35,7 +35,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserServiceClient interface {
 	Register(ctx context.Context, in *UserReq, opts ...grpc.CallOption) (*Void, error)
-	Login(ctx context.Context, in *UserLogin, opts ...grpc.CallOption) (*User, error)
+	Login(ctx context.Context, in *UserLogin, opts ...grpc.CallOption) (*UserLoginRes, error)
 	Update(ctx context.Context, in *User, opts ...grpc.CallOption) (*Void, error)
 	Delete(ctx context.Context, in *ById, opts ...grpc.CallOption) (*Void, error)
 	GetById(ctx context.Context, in *ById, opts ...grpc.CallOption) (*User, error)
@@ -63,9 +63,9 @@ func (c *userServiceClient) Register(ctx context.Context, in *UserReq, opts ...g
 	return out, nil
 }
 
-func (c *userServiceClient) Login(ctx context.Context, in *UserLogin, opts ...grpc.CallOption) (*User, error) {
+func (c *userServiceClient) Login(ctx context.Context, in *UserLogin, opts ...grpc.CallOption) (*UserLoginRes, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(User)
+	out := new(UserLoginRes)
 	err := c.cc.Invoke(ctx, UserService_Login_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -148,7 +148,7 @@ func (c *userServiceClient) ResetPassword(ctx context.Context, in *ResetPass, op
 // for forward compatibility
 type UserServiceServer interface {
 	Register(context.Context, *UserReq) (*Void, error)
-	Login(context.Context, *UserLogin) (*User, error)
+	Login(context.Context, *UserLogin) (*UserLoginRes, error)
 	Update(context.Context, *User) (*Void, error)
 	Delete(context.Context, *ById) (*Void, error)
 	GetById(context.Context, *ById) (*User, error)
@@ -166,7 +166,7 @@ type UnimplementedUserServiceServer struct {
 func (UnimplementedUserServiceServer) Register(context.Context, *UserReq) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
 }
-func (UnimplementedUserServiceServer) Login(context.Context, *UserLogin) (*User, error) {
+func (UnimplementedUserServiceServer) Login(context.Context, *UserLogin) (*UserLoginRes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
 }
 func (UnimplementedUserServiceServer) Update(context.Context, *User) (*Void, error) {

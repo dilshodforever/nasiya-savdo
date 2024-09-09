@@ -420,7 +420,13 @@ func (h *Handler) RefreshToken(ctx *gin.Context) {
 		return
 	}
 
-	access := token.GenereteAccsessJWTToken(user).AccessToken
+	u, err := h.User.Login(ctx, &pb.UserLogin{Username: user.Username, Password: user.PasswordHash})
+	if err != nil {
+		ctx.JSON(400, err.Error())
+		return
+	}
+
+	access := token.GenereteAccsessJWTToken(u).AccessToken
 
 	ctx.Request.Header.Set("Authorization", access)
 

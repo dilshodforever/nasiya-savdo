@@ -2,7 +2,6 @@ package storage
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/dilshodforever/nasiya-savdo/config"
@@ -53,7 +52,6 @@ func (r *storageRedis) Del(key string) error {
 
 func (r *storageRedis) SaveToken(email string, token string, exp time.Duration) error {
 	cnf := config.Load()
-	fmt.Println(token)
 	st := e.SendEmailRequest{To: []string{email}, Type: "Verification email", Subject: "Vertification", Code: token}
 	err := e.SendEmail(&cnf, &st)
 	if err != nil {

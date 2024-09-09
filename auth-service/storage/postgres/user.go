@@ -20,15 +20,36 @@ func NewUserStorage(db *sql.DB) *UserStorage {
 }
 
 func (p *UserStorage) Register(user *pb.UserReq) (*pb.Void, error) {
-	id := uuid.NewString()
+	tr, err := p.db.Begin()
+	if err != nil {
+		return nil, err
+	}
+	defer tr.Commit()
+
+	u_id := uuid.NewString()
 	query := `
 		INSERT INTO users (id, full_name, email, address, phone_number, username, password_hash, created_at, updated_at)
 		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
 	`
-	_, err := p.db.ExecContext(context.Background(), query, id, user.FullName, user.Email, user.Address, user.PhoneNumber, user.Username, user.Password, time.Now(), time.Now())
+	_, err = tr.ExecContext(context.Background(), query, u_id, user.FullName, user.Email, user.Address, user.PhoneNumber, user.Username, user.Password, time.Now(), time.Now())
 	if err != nil {
+		tr.Rollback()
 		return nil, err
 	}
+
+	id := uuid.NewString()
+	query = `
+		INSERT INTO storage (id, name, user_id, created_at)
+		VALUES ($1, $2, $3, now())
+		RETURNING id
+	`
+
+	_, err = tr.Exec(query, id, user.FullName+"'s storage", u_id)
+	if err != nil {
+		tr.Rollback()
+		return nil, err
+	}
+
 	return &pb.Void{}, nil
 }
 
@@ -148,14 +169,15 @@ func (p *UserStorage) Delete(id *pb.ById) (*pb.Void, error) {
 	return &pb.Void{}, nil
 }
 
-func (p *UserStorage) Login(login *pb.UserLogin) (*pb.User, error) {
+func (p *UserStorage) Login(login *pb.UserLogin) (*pb.UserLoginRes, error) {
 	query := `
-		SELECT id, full_name, email, address, phone_number, username, password_hash FROM users 
+		SELECT u.id, u.full_name, u.email, u.address, u.phone_number, u.username, s.id
+		FROM users u JOIN storage s ON u.id = s.user_id 
 		WHERE username = $1 AND password_hash = $2 AND deleted_at = 0
 	`
 	row := p.db.QueryRowContext(context.Background(), query, login.Username, login.Password)
 
-	var user pb.User
+	var user pb.UserLoginRes
 
 	err := row.Scan(
 		&user.Id,
@@ -164,7 +186,7 @@ func (p *UserStorage) Login(login *pb.UserLogin) (*pb.User, error) {
 		&user.Address,
 		&user.PhoneNumber,
 		&user.Username,
-		&user.PasswordHash,
+		&user.StorageId,
 	)
 	if err != nil {
 		if err == sql.ErrNoRows {
