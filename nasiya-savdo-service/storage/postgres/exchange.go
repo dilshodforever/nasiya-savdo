@@ -15,11 +15,9 @@ type ExchangeStorage struct {
 	db *sql.DB
 }
 
-
 func NewExchangeStorage(db *sql.DB) *ExchangeStorage {
 	return &ExchangeStorage{db: db}
 }
-
 
 func (p *ExchangeStorage) CreateExchange(req *pb.CreateExchangeRequest) (*pb.ExchangeResponse, error) {
 	id := uuid.NewString()
@@ -66,7 +64,6 @@ func (p *ExchangeStorage) CreateExchange(req *pb.CreateExchangeRequest) (*pb.Exc
 	}, nil
 }
 
-
 func (p *ExchangeStorage) GetExchange(req *pb.ExchangeIdRequest) (*pb.GetExchangeResponse, error) {
 	query := `
 		SELECT id, product_id, amount, price, status, contract_id, created_at, updated_at, deleted_at
@@ -92,9 +89,8 @@ func (p *ExchangeStorage) GetExchange(req *pb.ExchangeIdRequest) (*pb.GetExchang
 	return &exchange, nil
 }
 
-
 func (p *ExchangeStorage) UpdateExchange(req *pb.UpdateExchangeRequest) (*pb.ExchangeResponse, error) {
-	
+
 	update := map[string]interface{}{}
 	if req.ProductId != "" {
 		update["product_id"] = req.ProductId
@@ -171,38 +167,48 @@ func (p *ExchangeStorage) DeleteExchange(req *pb.ExchangeIdRequest) (*pb.Exchang
 	}, nil
 }
 
-
-
 func (p *ExchangeStorage) ListExchanges(req *pb.GetAllExchangeRequest) (*pb.GetAllExchangeResponse, error) {
-	exchanges := pb.GetAllExchangeResponse{}
+	exchanges := pb.GetAllExchangeResponse{
+		AllExchanges: []*pb.GetExchangeResponse{}, // Explicitly initialize to an empty slice
+	}
+
+	// SQL query with corrected JOIN condition
 	query := `
-		SELECT id, product_id, amount, price, status, contract_id, created_at, updated_at, deleted_at
-		FROM exchange
-		WHERE deleted_at = 0
+		SELECT e.id, e.product_id, e.amount, e.price, e.status, e.contract_id, e.created_at, e.updated_at, e.deleted_at
+		FROM exchange as e
+		JOIN products as p ON p.id = e.product_id
+		JOIN storage as s ON s.id = p.storage_id
+		WHERE e.deleted_at = 0
 	`
+
 	var args []interface{}
 	count := 1
 
+	// Adding filtering conditions based on the request
 	if req.ProductId != "" {
-		query += fmt.Sprintf(" AND product_id = $%d", count)
+		query += fmt.Sprintf(" AND e.product_id = $%d", count)
 		args = append(args, req.ProductId)
 		count++
 	}
 	if req.Status != "" {
-		query += fmt.Sprintf(" AND status = $%d", count)
+		query += fmt.Sprintf(" AND e.status = $%d", count)
 		args = append(args, req.Status)
 		count++
 	}
 
+	// Execute the query
 	rows, err := p.db.Query(query, args...)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
+	// Scan through the result set
 	for rows.Next() {
 		var exchange pb.GetExchangeResponse
 		var contractId sql.NullString
+
+		// Scanning data into fields
 		err := rows.Scan(
 			&exchange.Id, &exchange.ProductId, &exchange.Amount, &exchange.Price, &exchange.Status,
 			&contractId, &exchange.CreatedAt, &exchange.UpdatedAt, &exchange.DeletedAt,
@@ -212,15 +218,23 @@ func (p *ExchangeStorage) ListExchanges(req *pb.GetAllExchangeRequest) (*pb.GetA
 			log.Println(err)
 			return nil, err
 		}
-		// Handle the nullable field
+
+		// Handle the nullable contract ID
 		if contractId.Valid {
 			exchange.ContractId = contractId.String
 		} else {
-			exchange.ContractId = "" // Or set it to a default value
+			exchange.ContractId = ""
 		}
 
+		// Append to the list of exchanges
 		exchanges.AllExchanges = append(exchanges.AllExchanges, &exchange)
 	}
 
+	// Check for errors after iterating through rows
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	// Return the list of exchanges
 	return &exchanges, nil
 }

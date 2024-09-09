@@ -41,6 +41,7 @@ CREATE TABLE products (
 
 CREATE TABLE contract (
     id UUID PRIMARY KEY,
+    storage_id UUID REFERENCES storage(id) ON DELETE SET NULL, 
     consumer_name VARCHAR(255) NOT NULL,
     consumer_passport_serial VARCHAR(50),
     consumer_address TEXT,
@@ -79,3 +80,5 @@ CREATE TABLE notification (
     user_id UUID REFERENCES users(id) ON DELETE CASCADE,
     created_at TIMESTAMP DEFAULT NOW()
 );
+
+

@@ -20,6 +20,7 @@ message CreateContractRequest {
     string passport_image = 5;
     string status = 6; // Enum: pending, finished, canceled
     int32 duration = 7;
+    string storage_id =8;
 }
 
 message ContractIdRequest {

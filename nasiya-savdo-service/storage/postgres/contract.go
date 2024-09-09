@@ -22,10 +22,10 @@ func NewContractStorage(db *sql.DB) *ContractStorage {
 func (p *ContractStorage) CreateContract(req *pb.CreateContractRequest) (*pb.ContractResponse, error) {
 	id := uuid.NewString()
 	query := `
-		INSERT INTO contract (id, consumer_name, consumer_passport_serial, consumer_address, consumer_phone_number, passport_image, status, duration, created_at)
-		VALUES ($1, $2, $3, $4, $5, $6,'pending', $7, now())
+		INSERT INTO contract (id, storage_id, consumer_name, consumer_passport_serial, consumer_address, consumer_phone_number, passport_image, status, duration, created_at)
+		VALUES ($1, $2, $3, $4, $5, $6,'pending', $7,$8, now())
 	`
-	_, err := p.db.Exec(query, id, req.ConsumerName, req.ConsumerPassportSerial, req.ConsumerAddress, req.PassportImage, req.Status, req.Duration)
+	_, err := p.db.Exec(query, id, req.StorageId, req.ConsumerName, req.ConsumerPassportSerial, req.ConsumerAddress, req.ConsumerPhoneNumber, req.PassportImage, req.Duration)
 	if err != nil {
 		return nil, err
 	}
