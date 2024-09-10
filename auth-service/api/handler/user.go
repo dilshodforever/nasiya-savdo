@@ -24,6 +24,11 @@ type resetPass struct {
 	NewPassword string
 }
 
+type VerifyReq struct {
+	Email       string
+	VerifyToken string
+}
+
 // RegisterUser handles the creation of a new user
 // @Summary Register User
 // @Description Register a new user
@@ -66,7 +71,13 @@ func (h *Handler) Register(ctx *gin.Context) {
 	// 	ctx.JSON(400, "UserName already verified")
 	// 	return
 	// }
-	
+
+	f := rand.Intn(899999) + 100000
+	err = h.redis.SaveToken(user.Email, fmt.Sprintf("%d", f), time.Minute*2)
+	if err != nil {
+		ctx.JSON(400, err.Error())
+		return
+	}
 
 	req, err := json.Marshal(&user)
 	if err != nil {
@@ -74,7 +85,53 @@ func (h *Handler) Register(ctx *gin.Context) {
 		return
 	}
 
+	err = h.redis.SetUserData(user.Email+"-user", req, time.Minute*5)
+	if err != nil {
+		ctx.JSON(400, err.Error())
+		return
+	}
+
 	h.producer.ProduceMessages("user-create", req)
+
+	ctx.JSON(http.StatusCreated, "Verification code sent to your email!!!")
+}
+
+// VerifyEmail handles the verification of the user's email and creates the user account
+// @Summary Verify User Email
+// @Description Verify the user's email and create the account if the token is valid
+// @Tags Auth
+// @Accept json
+// @Produce json
+// @Param Verify body VerifyReq true "Verification Request"
+// @Success 201 {string} string "User created successfully"
+// @Failure 400 {string} string "Invalid token or verification failed"
+// @Router /user/verify_email [post]
+func (h *Handler) VerifyEmail(ctx *gin.Context) {
+	verifyReq := VerifyReq{}
+	err := ctx.BindJSON(&verifyReq)
+	if err != nil {
+		ctx.JSON(400, "Invalid request data")
+		return
+	}
+
+	storedToken, err := h.redis.Get(verifyReq.Email)
+	if err != nil || storedToken == "" {
+		ctx.JSON(400, "Verification token not found or expired")
+		return
+	}
+
+	if storedToken != verifyReq.VerifyToken {
+		ctx.JSON(400, "Invalid verification token")
+		return
+	}
+
+	userData, err := h.redis.GetUserData(verifyReq.Email + "-user")
+	if err != nil || userData == nil {
+		ctx.JSON(400, "user data not found or expired")
+		return
+	}
+
+	h.producer.ProduceMessages("user-create", userData)
 
 	ctx.JSON(http.StatusCreated, "Success!!!")
 }

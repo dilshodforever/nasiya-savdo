@@ -37,7 +37,7 @@ func IsUserNameUniq(users *pb.AllUsers, userName string) bool {
 }
 
 func IsPhoneValid(phone_number string) bool {
-	rxPhone, _ := regexp.MatchString(`^\+988\d{9}$`, phone_number)
+	rxPhone, _ := regexp.MatchString("^\\+998\\d{9}$", phone_number)
 
 	if rxPhone {
 		return true

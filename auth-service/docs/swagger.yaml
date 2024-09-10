@@ -59,6 +59,13 @@ definitions:
       username:
         type: string
     type: object
+  handler.VerifyReq:
+    properties:
+      email:
+        type: string
+      verifyToken:
+        type: string
+    type: object
   handler.changePass:
     properties:
       currentPassword:
@@ -430,6 +437,33 @@ paths:
       summary: Update Profil
       tags:
       - User
+  /user/verify_email:
+    post:
+      consumes:
+      - application/json
+      description: Verify the user's email and create the account if the token is
+        valid
+      parameters:
+      - description: Verification Request
+        in: body
+        name: Verify
+        required: true
+        schema:
+          $ref: '#/definitions/handler.VerifyReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: User created successfully
+          schema:
+            type: string
+        "400":
+          description: Invalid token or verification failed
+          schema:
+            type: string
+      summary: Verify User Email
+      tags:
+      - Auth
 securityDefinitions:
   BearerAuth:
     in: header

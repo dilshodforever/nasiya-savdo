@@ -46,6 +46,7 @@ func NewGin(h *handler.Handler) *gin.Engine {
 	u := r.Group("/user")
 	{
 		u.POST("/register", h.Register)
+		u.POST("/verify_email",h.VerifyEmail)
 		u.PUT("/update/:id", h.UpdateUser)
 		u.DELETE("/delete/:id", h.DeleteUser)
 		u.GET("/getall", h.GetAllUser)

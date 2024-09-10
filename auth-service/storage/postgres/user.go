@@ -41,7 +41,6 @@ func (p *UserStorage) Register(user *pb.UserReq) (*pb.Void, error) {
 	query = `
 		INSERT INTO storage (id, name, user_id, created_at)
 		VALUES ($1, $2, $3, now())
-		RETURNING id
 	`
 
 	_, err = tr.Exec(query, id, user.FullName+"'s storage", u_id)
@@ -173,7 +172,7 @@ func (p *UserStorage) Login(login *pb.UserLogin) (*pb.UserLoginRes, error) {
 	query := `
 		SELECT u.id, u.full_name, u.email, u.address, u.phone_number, u.username, s.id
 		FROM users u JOIN storage s ON u.id = s.user_id 
-		WHERE username = $1 AND password_hash = $2 AND deleted_at = 0
+		WHERE u.username = $1 AND u.password_hash = $2 AND u.deleted_at = 0
 	`
 	row := p.db.QueryRowContext(context.Background(), query, login.Username, login.Password)
 

@@ -12,7 +12,9 @@ import (
 type InMemoryStorageI interface {
 	Set(key, value string, exp time.Duration) error
 	Get(key string) (string, error)
+	GetUserData(key string) ([]byte, error)
 	Del(key string) error
+	SetUserData(key string, value []byte, exp time.Duration) error
 	SaveToken(email string, token string, exp time.Duration) error
 }
 
@@ -24,6 +26,23 @@ func NewInMemoryStorage(rdb *redis.Client) InMemoryStorageI {
 	return &storageRedis{
 		client: rdb,
 	}
+}
+
+func (r *storageRedis) SetUserData(key string, value []byte, exp time.Duration) error {
+	err := r.client.Set(context.Background(), key, value, exp).Err()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (r *storageRedis) GetUserData(key string) ([]byte, error) {
+	val, err := r.client.Get(context.Background(), key).Bytes()
+	if err != nil {
+		return nil, err
+	}
+
+	return val, nil
 }
 
 func (r *storageRedis) Set(key, value string, exp time.Duration) error {
