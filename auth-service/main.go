@@ -34,7 +34,14 @@ func main() {
 
 	cus := kafka.NewKafkaConsumerManager()
 	broker := []string{"kafka:9092"}
-	cus.RegisterConsumer(broker, "user-create", "user", kafka.UserCreateHandler(udb))
+	err = cus.RegisterConsumer(broker, "user-create", "user", kafka.UserCreateHandler(udb))
+	if err != nil {
+		log.Fatal("Error while create user: ", err.Error())
+	}
+	err = cus.RegisterConsumer(broker, "user-update", "user", kafka.UserUpdateHandler(udb))
+	if err != nil {
+		log.Fatal("Error while update user: ", err.Error())
+	}
 
 	s := grpc.NewServer()
 	pb.RegisterUserServiceServer(s, service.NewUserService(db))

@@ -29,6 +29,10 @@ type VerifyReq struct {
 	VerifyToken string
 }
 
+type Email struct {
+	Email string
+}
+
 // RegisterUser handles the creation of a new user
 // @Summary Register User
 // @Description Register a new user
@@ -91,7 +95,7 @@ func (h *Handler) Register(ctx *gin.Context) {
 		return
 	}
 
-	h.producer.ProduceMessages("user-create", req)
+	// h.producer.ProduceMessages("user-create", req)
 
 	ctx.JSON(http.StatusCreated, "Verification code sent to your email!!!")
 }
@@ -127,13 +131,66 @@ func (h *Handler) VerifyEmail(ctx *gin.Context) {
 
 	userData, err := h.redis.GetUserData(verifyReq.Email + "-user")
 	if err != nil || userData == nil {
-		ctx.JSON(400, "user data not found or expired")
+
+		userData, err = h.redis.GetUserData(verifyReq.Email + "-user-e")
+		if err != nil || userData == nil {
+			ctx.JSON(400, "user data not found or expired")
+			return
+		}
+
+		h.producer.ProduceMessages("user-update", userData)
+
+		ctx.JSON(http.StatusCreated, "Success!!!")
 		return
 	}
 
 	h.producer.ProduceMessages("user-create", userData)
 
 	ctx.JSON(http.StatusCreated, "Success!!!")
+}
+
+// UpdateUserEmail handles updating an existing user
+// @Summary Update Email
+// @Description Update an existing user
+// @Tags Auth
+// @Accept json
+// @Security BearerAuth
+// @Produce json
+// @Param Update body Email true "Update"
+// @Success 200 {string} string "Update Successful"
+// @Failure 400 {string} string "Error while updating user"
+// @Router /user/update_email [put]
+func (h *Handler) UpdateEmail(ctx *gin.Context) {
+	email := Email{}
+	err := ctx.BindJSON(&email)
+	if err != nil {
+		ctx.JSON(400, err.Error())
+		return
+	}
+	user := pb.User{Email: email.Email}
+	cnf := config.Load()
+	user.Id, _ = token.GetIdFromToken(ctx.Request, &cnf)
+
+	f := rand.Intn(899999) + 100000
+	err = h.redis.SaveToken(user.Email, fmt.Sprintf("%d", f), time.Minute*2)
+	if err != nil {
+		ctx.JSON(400, err.Error())
+		return
+	}
+
+	req, err := json.Marshal(&user)
+	if err != nil {
+		ctx.JSON(400, err.Error())
+		return
+	}
+
+	err = h.redis.SetUserData(user.Email+"-user-e", req, time.Minute*5)
+	if err != nil {
+		ctx.JSON(400, err.Error())
+		return
+	}
+
+	ctx.JSON(200, "Verification code sent to your email!!!")
 }
 
 // UpdateUser handles updating an existing user

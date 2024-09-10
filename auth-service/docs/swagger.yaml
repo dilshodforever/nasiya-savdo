@@ -59,6 +59,11 @@ definitions:
       username:
         type: string
     type: object
+  handler.Email:
+    properties:
+      email:
+        type: string
+    type: object
   handler.VerifyReq:
     properties:
       email:
@@ -409,6 +414,34 @@ paths:
       summary: Update User
       tags:
       - User
+  /user/update_email:
+    put:
+      consumes:
+      - application/json
+      description: Update an existing user
+      parameters:
+      - description: Update
+        in: body
+        name: Update
+        required: true
+        schema:
+          $ref: '#/definitions/handler.Email'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Update Successful
+          schema:
+            type: string
+        "400":
+          description: Error while updating user
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Update Email
+      tags:
+      - Auth
   /user/update_profil:
     put:
       consumes:

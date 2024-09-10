@@ -3,8 +3,10 @@ p, unauthorized, /user/login, POST
 p, unauthorized, /user/register, POST
 p, unauthorized, /user/verify_email, POST
 
+p, user, /user/verify_email, POST
 p, user, /user/get_profil, GET
 p, user, /user/update_profil, PUT
+p, user, /user/update_email, PUT
 p, user, /user/delete_profil, DELETE
 p, user, /user/change-password, POST
 p, user, /user/forgot-password, POST

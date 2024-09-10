@@ -62,6 +62,7 @@ func NewGin(h *handler.Handler) *gin.Engine {
 
 	{
 		u.GET("/get_profil", h.GetProfil)
+		u.PUT("/update_email", h.UpdateEmail)
 		u.PUT("/update_profil", h.UpdateProfil)
 		u.DELETE("/delete_profil", h.DeleteProfil)
 	}

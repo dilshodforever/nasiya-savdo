@@ -143,15 +143,48 @@ func (p *UserStorage) GetAll(filter *pb.UserFilter) (*pb.AllUsers, error) {
 }
 
 func (p *UserStorage) Update(user *pb.User) (*pb.Void, error) {
-	query := ` 
-		UPDATE users
-		SET full_name = $2, email = $3, address = $4, phone_number = $5, username = $6, updated_at = $7
-		WHERE id = $1 AND deleted_at = 0
-	`
-	_, err := p.db.ExecContext(context.Background(), query, user.Id, user.FullName, user.Email, user.Address, user.PhoneNumber, user.Username, time.Now())
+	query := `UPDATE users SET `
+	args := []interface{}{}
+	argCount := 1
+
+	if user.FullName != "" {
+		query += fmt.Sprintf("full_name = $%d, ", argCount)
+		args = append(args, user.FullName)
+		argCount++
+	}
+	if user.Email != "" {
+		query += fmt.Sprintf("email = $%d, ", argCount)
+		args = append(args, user.Email)
+		argCount++
+	}
+	if user.Address != "" {
+		query += fmt.Sprintf("address = $%d, ", argCount)
+		args = append(args, user.Address)
+		argCount++
+	}
+	if user.PhoneNumber != "" {
+		query += fmt.Sprintf("phone_number = $%d, ", argCount)
+		args = append(args, user.PhoneNumber)
+		argCount++
+	}
+	if user.Username != "" {
+		query += fmt.Sprintf("username = $%d, ", argCount)
+		args = append(args, user.Username)
+		argCount++
+	}
+
+	query += fmt.Sprintf("updated_at = $%d ", argCount)
+	args = append(args, time.Now())
+	argCount++
+
+	query += fmt.Sprintf("WHERE id = $%d AND deleted_at = 0", argCount)
+	args = append(args, user.Id)
+
+	_, err := p.db.ExecContext(context.Background(), query, args...)
 	if err != nil {
 		return nil, err
 	}
+
 	return &pb.Void{}, nil
 }
 
