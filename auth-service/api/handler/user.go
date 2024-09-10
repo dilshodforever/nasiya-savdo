@@ -41,6 +41,32 @@ func (h *Handler) Register(ctx *gin.Context) {
 		ctx.JSON(400, err.Error())
 		return
 	}
+	// users, err := h.User.GetAll(ctx, &pb.UserFilter{})
+	// if err != nil {
+	// 	ctx.JSON(400, err.Error())
+	// 	return
+	// }
+	// if !IsEmailValid(user.Email) {
+	// 	ctx.JSON(400, "Email is not valid")
+	// 	return
+	// }
+	// if !IsEmailUniq(users, user.Email) {
+	// 	ctx.JSON(400, "Email already verified")
+	// 	return
+	// }
+	// if !IsNameValid(user.FullName) {
+	// 	ctx.JSON(400, "Name has less than 3 letters")
+	// 	return
+	// }
+	// if !IsPhoneValid(user.PhoneNumber) {
+	// 	ctx.JSON(400, "PhoneNumber format is not valid")
+	// 	return
+	// }
+	// if !IsUserNameUniq(users, user.Username) {
+	// 	ctx.JSON(400, "UserName already verified")
+	// 	return
+	// }
+	
 
 	req, err := json.Marshal(&user)
 	if err != nil {
