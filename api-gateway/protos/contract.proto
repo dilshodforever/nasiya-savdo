@@ -20,6 +20,15 @@ message CreateContractRequest {
     string passport_image = 5;
     string status = 6; // Enum: pending, finished, canceled
     int32 duration = 7;
+    string storage_id =8;
+}
+
+message CreateContractRequestSwagger {
+    string consumer_name = 1;
+    string consumer_passport_serial = 2;
+    string consumer_address = 3;
+    string consumer_phone_number = 4;
+    int32 duration = 7;
 }
 
 message ContractIdRequest {

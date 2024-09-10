@@ -12,7 +12,7 @@ definitions:
       success:
         type: boolean
     type: object
-  genprotos.CreateContractRequest:
+  genprotos.CreateContractRequestSwagger:
     properties:
       consumer_address:
         type: string
@@ -24,11 +24,6 @@ definitions:
         type: string
       duration:
         type: integer
-      passport_image:
-        type: string
-      status:
-        description: 'Enum: pending, finished, canceled'
-        type: string
     type: object
   genprotos.CreateExchangeRequest:
     properties:
@@ -44,13 +39,11 @@ definitions:
         description: 'Enum: buy, sell'
         type: string
     type: object
-  genprotos.CreateProductRequest:
+  genprotos.CreateProductRequestSwagger:
     properties:
       color:
         type: string
       date_of_creation:
-        type: string
-      image_url:
         type: string
       made_in:
         type: string
@@ -59,13 +52,6 @@ definitions:
       name:
         type: string
       storage_id:
-        type: string
-    type: object
-  genprotos.CreateStorageRequest:
-    properties:
-      name:
-        type: string
-      user_id:
         type: string
     type: object
   genprotos.CreateTransactionRequest:
@@ -338,7 +324,7 @@ paths:
         name: contract
         required: true
         schema:
-          $ref: '#/definitions/genprotos.CreateContractRequest'
+          $ref: '#/definitions/genprotos.CreateContractRequestSwagger'
       produces:
       - application/json
       responses:
@@ -745,7 +731,7 @@ paths:
         name: product
         required: true
         schema:
-          $ref: '#/definitions/genprotos.CreateProductRequest'
+          $ref: '#/definitions/genprotos.CreateProductRequestSwagger'
       produces:
       - application/json
       responses:
@@ -898,38 +884,6 @@ paths:
       summary: Update Product
       tags:
       - Product
-  /storage/create:
-    post:
-      consumes:
-      - application/json
-      description: Create a new storage record with the specified details
-      parameters:
-      - description: Storage details
-        in: body
-        name: storage
-        required: true
-        schema:
-          $ref: '#/definitions/genprotos.CreateStorageRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Storage created successfully
-          schema:
-            $ref: '#/definitions/genprotos.StorageResponse'
-        "400":
-          description: Invalid input
-          schema:
-            type: string
-        "500":
-          description: Error while creating storage
-          schema:
-            type: string
-      security:
-      - BearerAuth: []
-      summary: Create a new Storage
-      tags:
-      - Storage
   /storage/delete:
     delete:
       consumes:

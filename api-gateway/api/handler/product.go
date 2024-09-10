@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 
+	"github.com/dilshodforever/nasiya-savdo/api/middleware"
 	pb "github.com/dilshodforever/nasiya-savdo/genprotos"
 	"github.com/gin-gonic/gin"
 )
@@ -15,7 +16,7 @@ import (
 // @Accept       json
 // @Produce      json
 // @Security     BearerAuth
-// @Param        product body pb.CreateProductRequest true "Product details"
+// @Param        product body pb.CreateProductRequestSwagger true "Product details"
 // @Success      200 {object} pb.ProductResponse "Product created successfully"
 // @Failure      400 {string} string "Invalid input"
 // @Failure      500 {string} string "Error while creating product"
@@ -26,6 +27,8 @@ func (h *Handler) CreateProduct(ctx *gin.Context) {
 		ctx.JSON(400, gin.H{"error": "Invalid input"})
 		return
 	}
+	storageid:=middleware.GetStorageId(ctx)
+	req.StorageId=storageid
 	res, err := h.ProductService.CreateProduct(context.Background(), &req)
 	if err != nil {
 		log.Print(err)

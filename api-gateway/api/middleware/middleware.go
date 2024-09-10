@@ -84,7 +84,6 @@ func (a *JwtRoleAuth) CheckPermission(r *gin.Context) (bool, error) {
 }
 
 func GetUserId(r *gin.Context) string {
-
 	jwtToken := r.Request.Header.Get("Authorization")
 
 	claims, err := token.ExtractClaim(jwtToken)
@@ -92,5 +91,17 @@ func GetUserId(r *gin.Context) string {
 		panic(err)
 	}
 	id := claims["id"].(string)
+	return id
+}
+
+
+func GetStorageId(r *gin.Context) string {
+	jwtToken := r.Request.Header.Get("Authorization")
+
+	claims, err := token.ExtractClaim(jwtToken)
+	if err != nil {
+		panic(err)
+	}
+	id := claims["storage_id"].(string)
 	return id
 }

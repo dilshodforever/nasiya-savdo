@@ -82,7 +82,7 @@ func NewGin(h *handler.Handler) *gin.Engine {
 	// Storage endpoints
 	storage := router.Group("/storage")
 	{
-		storage.POST("/create", h.CreateStorage)
+		//storage.POST("/create", h.CreateStorage)
 		storage.GET("/get/:id", h.GetStorage)
 		storage.PUT("/update", h.UpdateStorage)
 		storage.DELETE("/delete/:id", h.DeleteStorage)

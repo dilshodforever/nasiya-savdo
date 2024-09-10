@@ -8,32 +8,33 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// CreateStorage handles creating a new storage
-// @Summary      Create a new Storage
-// @Description  Create a new storage record with the specified details
-// @Tags         Storage
-// @Accept       json
-// @Produce      json
-// @Security     BearerAuth
-// @Param        storage body pb.CreateStorageRequest true "Storage details"
-// @Success      200 {object} pb.StorageResponse "Storage created successfully"
-// @Failure      400 {string} string "Invalid input"
-// @Failure      500 {string} string "Error while creating storage"
-// @Router       /storage/create [post]
-func (h *Handler) CreateStorage(ctx *gin.Context) {
-	var req pb.CreateStorageRequest
-	if err := ctx.ShouldBindJSON(&req); err != nil {
-		ctx.JSON(400, gin.H{"error": "Invalid input"})
-		return
-	}
-	res, err := h.StorageService.CreateStorage(context.Background(), &req)
-	if err != nil {
-		log.Print(err)
-		ctx.JSON(500, gin.H{"error": err.Error()})
-		return
-	}
-	ctx.JSON(200, res)
-}
+// // CreateStorage handles creating a new storage
+// // @Summary      Create a new Storage
+// // @Description  Create a new storage record with the specified details
+// // @Tags         Storage
+// // @Accept       json
+// // @Produce      json
+// // @Security     BearerAuth
+// // @Param        storage body pb.CreateStorageRequest true "Storage details"
+// // @Success      200 {object} pb.StorageResponse "Storage created successfully"
+// // @Failure      400 {string} string "Invalid input"
+// // @Failure      500 {string} string "Error while creating storage"
+// // @Router       /storage/create [post]
+// func (h *Handler) CreateStorage(ctx *gin.Context) {
+// 	var req pb.CreateStorageRequest
+// 	if err := ctx.ShouldBindJSON(&req); err != nil {
+// 		ctx.JSON(400, gin.H{"error": "Invalid input"})
+// 		return
+// 	}
+// 	res, err := h.StorageService.CreateStorage(context.Background(), &req)
+// 	if err != nil {
+// 		log.Print(err)
+// 		ctx.JSON(500, gin.H{"error": err.Error()})
+// 		return
+// 	}
+// 	ctx.JSON(200, res)
+// }
+
 
 // GetStorage retrieves a storage by its ID
 // @Summary      Get Storage by ID

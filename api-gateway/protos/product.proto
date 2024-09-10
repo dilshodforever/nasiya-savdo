@@ -16,7 +16,14 @@ message CreateProductRequest {
     string name = 1;
     string color = 2;
     string model = 3;
-    string image_url = 4;
+    string made_in = 5;
+    string date_of_creation = 6;
+}
+
+message CreateProductRequestSwagger {
+    string name = 1;
+    string color = 2;
+    string model = 3;
     string made_in = 5;
     string date_of_creation = 6;
     string storage_id = 7;

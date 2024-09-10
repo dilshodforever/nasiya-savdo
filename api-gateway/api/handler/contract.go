@@ -3,9 +3,11 @@ package handler
 import (
 	"bytes"
 	"fmt"
+
 	"log"
 	"net/http"
 
+	"github.com/dilshodforever/nasiya-savdo/api/middleware"
 	pb "github.com/dilshodforever/nasiya-savdo/genprotos"
 	"github.com/gin-gonic/gin"
 	"github.com/jung-kurt/gofpdf/v2"
@@ -18,7 +20,7 @@ import (
 // @Accept       json
 // @Produce      json
 // @Security     BearerAuth
-// @Param        contract body pb.CreateContractRequest true "Contract details"
+// @Param        contract body pb.CreateContractRequestSwagger true "Contract details"
 // @Success      200 {object} pb.ContractResponse "Contract created successfully"
 // @Failure      400 {string} string "Invalid input"
 // @Failure      500 {string} string "Error while creating contract"
@@ -29,6 +31,8 @@ func (h *Handler) CreateContract(ctx *gin.Context) {
 		ctx.JSON(400, gin.H{"error": "Invalid input"})
 		return
 	}
+	storageid:=middleware.GetStorageId(ctx)
+	req.StorageId=storageid
 	res, err := h.ContractService.CreateContract(ctx, &req)
 	if err != nil {
 		ctx.JSON(500, gin.H{"error": err.Error()})

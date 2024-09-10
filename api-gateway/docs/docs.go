@@ -40,7 +40,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/genprotos.CreateContractRequest"
+                            "$ref": "#/definitions/genprotos.CreateContractRequestSwagger"
                         }
                     }
                 ],
@@ -679,7 +679,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/genprotos.CreateProductRequest"
+                            "$ref": "#/definitions/genprotos.CreateProductRequestSwagger"
                         }
                     }
                 ],
@@ -907,57 +907,6 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Error while updating product",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/storage/create": {
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Create a new storage record with the specified details",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Storage"
-                ],
-                "summary": "Create a new Storage",
-                "parameters": [
-                    {
-                        "description": "Storage details",
-                        "name": "storage",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/genprotos.CreateStorageRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Storage created successfully",
-                        "schema": {
-                            "$ref": "#/definitions/genprotos.StorageResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid input",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Error while creating storage",
                         "schema": {
                             "type": "string"
                         }
@@ -1528,7 +1477,7 @@ const docTemplate = `{
                 }
             }
         },
-        "genprotos.CreateContractRequest": {
+        "genprotos.CreateContractRequestSwagger": {
             "type": "object",
             "properties": {
                 "consumer_address": {
@@ -1545,13 +1494,6 @@ const docTemplate = `{
                 },
                 "duration": {
                     "type": "integer"
-                },
-                "passport_image": {
-                    "type": "string"
-                },
-                "status": {
-                    "description": "Enum: pending, finished, canceled",
-                    "type": "string"
                 }
             }
         },
@@ -1576,16 +1518,13 @@ const docTemplate = `{
                 }
             }
         },
-        "genprotos.CreateProductRequest": {
+        "genprotos.CreateProductRequestSwagger": {
             "type": "object",
             "properties": {
                 "color": {
                     "type": "string"
                 },
                 "date_of_creation": {
-                    "type": "string"
-                },
-                "image_url": {
                     "type": "string"
                 },
                 "made_in": {
@@ -1598,17 +1537,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "storage_id": {
-                    "type": "string"
-                }
-            }
-        },
-        "genprotos.CreateStorageRequest": {
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string"
-                },
-                "user_id": {
                     "type": "string"
                 }
             }
