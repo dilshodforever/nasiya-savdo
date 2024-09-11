@@ -9,7 +9,7 @@ import (
 
 	pb "github.com/dilshodforever/nasiya-savdo/genprotos"
 	"github.com/dilshodforever/nasiya-savdo/kafka"
-	connect"github.com/dilshodforever/nasiya-savdo/kafkaconnect"
+	connect "github.com/dilshodforever/nasiya-savdo/kafkaconnect"
 	"github.com/dilshodforever/nasiya-savdo/kafkasender"
 	"github.com/dilshodforever/nasiya-savdo/model"
 	"github.com/google/uuid"
@@ -25,8 +25,19 @@ func NewTransactionStorage(db *sql.DB, kafka kafka.KafkaProducer) *TransactionSt
 }
 
 func (p *TransactionStorage) CreateTransaction(req *pb.CreateTransactionRequest) (*pb.TransactionResponse, error) {
+	var status string
+	query := `SELECT status FROM contract WHERE id = $1`
+	err := p.db.QueryRow(query, req.ContractId).Scan(&status)
+	if err != nil {
+		log.Printf("Failed to check: %v", err)
+		return nil, fmt.Errorf("failed to check: %v", err)
+	}
+	if status != "pending" {
+		return &pb.TransactionResponse{Message: "This contract was finished"}, nil
+	}
+
 	// Step 1: Retrieve amount and price from the exchange table for the given contract_id
-	query := `SELECT amount, price FROM exchange WHERE contract_id = $1 and deleted_at = 0`
+	query = `SELECT amount, price FROM exchange WHERE contract_id = $1 and deleted_at = 0`
 	rows, err := p.db.Query(query, req.ContractId)
 	if err != nil {
 		log.Printf("Failed to retrieve exchange data: %v", err)
@@ -277,7 +288,7 @@ func (p *TransactionStorage) CheckTransactions(req *pb.CheckRequest) (*pb.CheckR
 		now := time.Now()
 		switch {
 		case dueDate.Year() == now.Year() && dueDate.Month() == now.Month() && dueDate.Day() == now.Day():
-			kafka:=connect.ConnectToKafka()
+			kafka := connect.ConnectToKafka()
 			kafkasender.CreateNotification(kafka, model.Send{
 				Userid:     req.UserId,
 				Message:    "Payment due today for contract " + contractID,
@@ -285,7 +296,7 @@ func (p *TransactionStorage) CheckTransactions(req *pb.CheckRequest) (*pb.CheckR
 			})
 
 		case dueDate.Before(now):
-			kafka:=connect.ConnectToKafka()
+			kafka := connect.ConnectToKafka()
 			kafkasender.CreateNotification(kafka, model.Send{
 				Userid:     req.UserId,
 				Message:    "Payment overdue by 1 month for contract " + contractID,
@@ -293,7 +304,7 @@ func (p *TransactionStorage) CheckTransactions(req *pb.CheckRequest) (*pb.CheckR
 			})
 
 		case dueDate.Month() == now.Month() && dueDate.Day() > now.Day():
-			kafka:=connect.ConnectToKafka()
+			kafka := connect.ConnectToKafka()
 			kafkasender.CreateNotification(kafka, model.Send{
 				Userid:     req.UserId,
 				Message:    "Payment due this month for contract " + contractID,
@@ -309,24 +320,16 @@ func (p *TransactionStorage) CheckTransactions(req *pb.CheckRequest) (*pb.CheckR
 	return &pb.CheckResponse{Message: "Payment checks completed successfully."}, nil
 }
 
-
-
-
-
 func (p *TransactionStorage) TestNotification(req *pb.Testresponse) (*pb.Testrequest, error) {
-	kafka:=connect.ConnectToKafka()
+	kafka := connect.ConnectToKafka()
 	kafkasender.CreateNotification(kafka, model.Send{
 		Userid:     "1111",
 		Message:    "Payment due this month for contract " + "contractID",
 		ContractId: "2222222",
 	})
-	
+
 	return &pb.Testrequest{Message: "Success"}, nil
 }
-
-
-
-
 
 // V1
 
