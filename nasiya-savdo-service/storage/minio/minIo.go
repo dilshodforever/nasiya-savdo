@@ -54,6 +54,5 @@ func (s *MediaServiceServer) UploadFile(ctx context.Context, req *pb.UploadFileR
 		fmt.Println("Failed to generate URL: ", err)
 		return nil, status.Errorf(codes.Internal, "Failed to generate URL")
 	}
-
 	return &pb.UploadFileResponse{Url: presignedURL.String()}, nil
 }

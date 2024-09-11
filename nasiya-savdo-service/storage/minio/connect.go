@@ -16,8 +16,8 @@ type MinIO struct {
 
 func InitMinioClient() (storage.MinIoRoot, error) {
 	endpoint := "minio:9000"
-	accessKeyID := "5Gs4vzm1YdasQUtphPuV"
-	secretAccessKey := "ILSENWnje7qbPHj582u8Enb1g4KKEsPJ0sET3dbq"
+	accessKeyID := "Dior"
+	secretAccessKey := "isakov05@"
 	useSSL := false
 
 	minioClient, err := minio.New(endpoint, &minio.Options{
@@ -27,6 +27,7 @@ func InitMinioClient() (storage.MinIoRoot, error) {
 	if err != nil {
 		log.Fatalln(err)
 	}
+
 	fmt.Println("Connection to MinIO database established!")
 	return &MinIO{
 		client: minioClient,

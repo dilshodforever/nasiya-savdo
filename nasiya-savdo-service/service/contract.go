@@ -61,3 +61,8 @@ func (s *ContractService) ListContracts(ctx context.Context, req *pb.GetAllContr
 	}
 	return resp, nil
 }
+
+
+var A rune ='a'
+var U uint8 = 'b'
+
