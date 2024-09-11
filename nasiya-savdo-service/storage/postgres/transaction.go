@@ -26,8 +26,9 @@ func NewTransactionStorage(db *sql.DB, kafka kafka.KafkaProducer) *TransactionSt
 
 func (p *TransactionStorage) CreateTransaction(req *pb.CreateTransactionRequest) (*pb.TransactionResponse, error) {
 	var status string
-	query := `SELECT status FROM contract WHERE id = $1`
-	err := p.db.QueryRow(query, req.ContractId).Scan(&status)
+	var dur int
+	query := `SELECT status, duration FROM contract WHERE id = $1`
+	err := p.db.QueryRow(query, req.ContractId).Scan(&status, &dur)
 	if err != nil {
 		log.Printf("Failed to check: %v", err)
 		return nil, fmt.Errorf("failed to check: %v", err)
@@ -60,7 +61,7 @@ func (p *TransactionStorage) CreateTransaction(req *pb.CreateTransactionRequest)
 	}
 
 	// Step 2: Calculate duration based on total price and the requested price
-	duration := total / req.Price
+	duration := float64(dur) / (total / req.Price)
 	fmt.Println(duration, total, req.Price)
 
 	// Step 3: Insert the new transaction into the transactions table
@@ -114,7 +115,7 @@ func (p *TransactionStorage) CreateTransaction(req *pb.CreateTransactionRequest)
 		}, nil
 	}
 
-	remainingPending := totalPrice - req.Price
+	remainingPending := total - totalPrice
 	return &pb.TransactionResponse{
 		Message: fmt.Sprintf("Transaction created successfully. Remaining balance: %.2f", remainingPending),
 		Success: true,
