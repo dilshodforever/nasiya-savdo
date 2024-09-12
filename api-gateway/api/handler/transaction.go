@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 
+	"github.com/dilshodforever/nasiya-savdo/api/middleware"
 	pb "github.com/dilshodforever/nasiya-savdo/genprotos"
 	"github.com/gin-gonic/gin"
 )
@@ -157,7 +158,8 @@ func (h *Handler) ListTransactions(ctx *gin.Context) {
 // @Router       /transaction/check [post]
 func (h *Handler) CheckTransactions(ctx *gin.Context) {
 	req := &pb.CheckRequest{}
-
+	req.StorageId = middleware.GetStorageId(ctx)
+	req.UserId=middleware.GetUserId(ctx)
 	res, err := h.TransactionService.CheckTransactions(ctx.Copy(), req)
 	if err != nil {
 		ctx.JSON(500, gin.H{"error": err.Error()})

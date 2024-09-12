@@ -55,6 +55,7 @@ message GetAllTransactionResponse {
 
 message CheckRequest{
     string user_id=1;
+    string storage_id=2;
 }
 
 message CheckResponse{

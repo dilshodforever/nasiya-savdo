@@ -3,6 +3,7 @@ p, user, /contract/get/:id, GET
 p, user, /contract/update, PUT
 p, user, /contract/delete/:id, DELETE
 p, user, /contract/list, GET
+p, user, /contract/getpdf/:id, GET
 
 p, user, /exchange/create, POST
 p, user, /exchange/get/:id, GET
@@ -16,7 +17,6 @@ p, user, /product/update, PUT
 p, user, /product/delete/:id, DELETE
 p, user, /product/list, GET
 
-p, user, /storage/create, POST
 p, user, /storage/get/:id, GET
 p, user, /storage/update, PUT
 p, user, /storage/delete/:id, DELETE
@@ -27,3 +27,7 @@ p, user, /transaction/get/:id, GET
 p, user, /transaction/update, PUT
 p, user, /transaction/delete/:id, DELETE
 p, user, /transaction/list, GET
+p, user, /transaction/check, POST
+p, user, /transaction/test, POST
+
+p, user, /minio/upload, POST

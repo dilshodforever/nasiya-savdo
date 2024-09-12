@@ -252,10 +252,10 @@ func (p *TransactionStorage) CheckTransactions(req *pb.CheckRequest) (*pb.CheckR
 		SELECT c.id, c.created_at, COALESCE(SUM(t.duration), 0) as total_duration
 		FROM contract AS c
 		LEFT JOIN transactions AS t ON t.contract_id = c.id
-		WHERE c.status = 'pending'
+		WHERE c.status = 'pending' and c.storage_id=$1
 		GROUP BY c.id, c.created_at
 	`
-	rows, err := p.db.Query(query)
+	rows, err := p.db.Query(query, req.StorageId)
 	if err != nil {
 		log.Printf("Error executing query: %v", err)
 		return nil, err
@@ -332,6 +332,7 @@ func (p *TransactionStorage) TestNotification(req *pb.Testresponse) (*pb.Testreq
 	return &pb.Testrequest{Message: "Success"}, nil
 }
 
+		
 // V1
 
 // func (p *TransactionStorage) CheckTransactions(req *pb.CheckRequest) (*pb.CheckResponse, error) {
