@@ -2,6 +2,8 @@ p, unauthorized, /swagger/*any, GET
 p, unauthorized, /user/login, POST
 p, unauthorized, /user/register, POST
 p, unauthorized, /user/verify_email, POST
+p, unauthorized, /user/forgot-password, POST
+p, unauthorized, /user/reset-password, POST
 
 p, user, /user/verify_email, POST
 p, user, /user/get_profil, GET
