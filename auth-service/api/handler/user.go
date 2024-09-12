@@ -202,7 +202,7 @@ func (h *Handler) UpdateEmail(ctx *gin.Context) {
 // @Security BearerAuth
 // @Produce json
 // @Param id path string true "User ID"
-// @Param Update body pb.User true "Update"
+// @Param Update body pb.UserUpdateSwagger true "Update"
 // @Success 200 {string} string "Update Successful"
 // @Failure 400 {string} string "Error while updating user"
 // @Router /user/update/{id} [put]

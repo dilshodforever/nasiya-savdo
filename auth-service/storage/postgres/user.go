@@ -153,11 +153,13 @@ func (p *UserStorage) Update(user *pb.User) (*pb.Void, error) {
 		args = append(args, user.FullName)
 		argCount++
 	}
+	
 	if user.Email != "" {
 		query += fmt.Sprintf("email = $%d, ", argCount)
 		args = append(args, user.Email)
 		argCount++
 	}
+	
 	if user.Address != "" {
 		query += fmt.Sprintf("address = $%d, ", argCount)
 		args = append(args, user.Address)
