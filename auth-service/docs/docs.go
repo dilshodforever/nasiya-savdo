@@ -787,6 +787,9 @@ const docTemplate = `{
         "handler.resetPass": {
             "type": "object",
             "properties": {
+                "email": {
+                    "type": "string"
+                },
                 "newPassword": {
                     "type": "string"
                 },

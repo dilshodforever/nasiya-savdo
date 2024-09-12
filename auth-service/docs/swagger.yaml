@@ -80,6 +80,8 @@ definitions:
     type: object
   handler.resetPass:
     properties:
+      email:
+        type: string
       newPassword:
         type: string
       resetToken:

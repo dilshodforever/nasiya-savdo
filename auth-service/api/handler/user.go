@@ -20,6 +20,7 @@ type changePass struct {
 }
 
 type resetPass struct {
+	Email       string
 	ResetToken  string
 	NewPassword string
 }
@@ -428,13 +429,19 @@ func (h *Handler) ResetPassword(ctx *gin.Context) {
 		return
 	}
 
-	resetPass := pb.ResetPass{ResetToken: resetPas.ResetToken, NewPassword: resetPas.NewPassword}
-	cnf := config.Load()
-	id, _ := token.GetIdFromToken(ctx.Request, &cnf)
-	resetPass.Id = id
+	user, err := h.User.GetAll(ctx, &pb.UserFilter{Email: resetPas.Email})
+	if err != nil {
+		ctx.JSON(400, err.Error())
+		return
+	}
+	if user.Users[0].Id == "" {
+		ctx.JSON(400, "user not found")
+		return
+	}
 
-	email, _ := token.GetEmailFromToken(ctx.Request, &cnf)
-	e, err := h.redis.Get(email)
+	resetPass := pb.ResetPass{ResetToken: resetPas.ResetToken, NewPassword: resetPas.NewPassword, Id: user.Users[0].Id}
+
+	e, err := h.redis.Get(resetPas.Email)
 	if err != nil {
 		ctx.JSON(400, err.Error())
 		return
