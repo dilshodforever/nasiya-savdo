@@ -34,7 +34,7 @@ func NewGin(h *handler.Handler) *gin.Engine {
 		panic(err)
 	}
 	router := r.Group("/")
-	r.Use(cors.New(cors.Config{
+	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
