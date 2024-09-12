@@ -511,7 +511,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/genprotos.User"
+                            "$ref": "#/definitions/genprotos.UserUpdateSwagger"
                         }
                     }
                 ],
@@ -601,7 +601,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/genprotos.User"
+                            "$ref": "#/definitions/genprotos.UserUpdateSwagger"
                         }
                     }
                 ],
@@ -744,6 +744,23 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "password": {
+                    "type": "string"
+                },
+                "phone_number": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "genprotos.UserUpdateSwagger": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "full_name": {
                     "type": "string"
                 },
                 "phone_number": {

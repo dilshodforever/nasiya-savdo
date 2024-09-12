@@ -59,6 +59,17 @@ definitions:
       username:
         type: string
     type: object
+  genprotos.UserUpdateSwagger:
+    properties:
+      address:
+        type: string
+      full_name:
+        type: string
+      phone_number:
+        type: string
+      username:
+        type: string
+    type: object
   handler.Email:
     properties:
       email:
@@ -399,7 +410,7 @@ paths:
         name: Update
         required: true
         schema:
-          $ref: '#/definitions/genprotos.User'
+          $ref: '#/definitions/genprotos.UserUpdateSwagger'
       produces:
       - application/json
       responses:
@@ -455,7 +466,7 @@ paths:
         name: Update
         required: true
         schema:
-          $ref: '#/definitions/genprotos.User'
+          $ref: '#/definitions/genprotos.UserUpdateSwagger'
       produces:
       - application/json
       responses:

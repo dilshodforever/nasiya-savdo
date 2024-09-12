@@ -491,7 +491,7 @@ func (h *Handler) GetProfil(ctx *gin.Context) {
 // @Accept json
 // @Security BearerAuth
 // @Produce json
-// @Param Update body pb.User true "Update"
+// @Param Update body pb.UserUpdateSwagger true "Update"
 // @Success 200 {string} string "Update Successful"
 // @Failure 400 {string} string "Error while updating user"
 // @Router /user/update_profil [put]
