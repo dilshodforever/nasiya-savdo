@@ -135,6 +135,8 @@ definitions:
         type: string
       passport_image:
         type: string
+      price:
+        type: number
       status:
         type: string
     type: object

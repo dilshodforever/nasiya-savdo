@@ -46,6 +46,7 @@ message GetContractResponse {
     int32 duration = 8;
     string created_at = 9;
     string deleted_at = 10;
+    double price = 11;
 }
 
 message UpdateContractRequest {

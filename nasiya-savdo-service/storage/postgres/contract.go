@@ -37,6 +37,7 @@ func (p *ContractStorage) CreateContract(req *pb.CreateContractRequest) (*pb.Con
 }
 
 func (p *ContractStorage) GetContract(req *pb.ContractIdRequest) (*pb.GetContractResponse, error) {
+	// Query for the contract details
 	query := `
 		SELECT id, consumer_name, consumer_passport_serial, consumer_address, consumer_phone_number, passport_image, status, duration, created_at, deleted_at
 		FROM contract
@@ -44,21 +45,58 @@ func (p *ContractStorage) GetContract(req *pb.ContractIdRequest) (*pb.GetContrac
 	`
 	var contract pb.GetContractResponse
 	var deletedAt sql.NullString
+	
 	err := p.db.QueryRow(query, req.Id).Scan(
 		&contract.Id, &contract.ConsumerName, &contract.ConsumerPassportSerial, &contract.ConsumerAddress, &contract.ConsumerPhoneNumber,
 		&contract.PassportImage, &contract.Status, &contract.Duration, &contract.CreatedAt, &deletedAt,
 	)
+	
+	if err != nil {
+		log.Printf("Error querying contract with ID %s: %v", req.Id, err)
+		return nil, err
+	}
+	
+	// Handle deleted_at field
 	if deletedAt.Valid {
 		contract.DeletedAt = deletedAt.String
 	} else {
 		contract.DeletedAt = ""
 	}
+	
+	// Query for the exchange details
+	var amount int32
+	var price float64
+	query = `
+		SELECT amount, price 
+		FROM exchange
+		WHERE contract_id = $1 AND deleted_at = 0
+	`
+	rows, err := p.db.Query(query, req.Id)  // Pass req.Id as the parameter
 	if err != nil {
+		log.Printf("Error querying exchange details for contract ID %s: %v", req.Id, err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	// Calculate total price
+	for rows.Next() {
+		err := rows.Scan(&amount, &price)
+		if err != nil {
+			log.Printf("Error scanning exchange details for contract ID %s: %v", req.Id, err)
+			return nil, err
+		}
+		contract.Price += float64(amount) * price
+	}
+
+	// Check for errors during row iteration
+	if err := rows.Err(); err != nil {
+		log.Printf("Error iterating exchange rows for contract ID %s: %v", req.Id, err)
 		return nil, err
 	}
 
 	return &contract, nil
 }
+
 
 func (p *ContractStorage) UpdateContract(req *pb.UpdateContractRequest) (*pb.ContractResponse, error) {
 	update := map[string]interface{}{}
@@ -122,7 +160,7 @@ func (p *ContractStorage) UpdateContract(req *pb.UpdateContractRequest) (*pb.Con
 func (p *ContractStorage) DeleteContract(req *pb.ContractIdRequest) (*pb.ContractResponse, error) {
 	query := `
 		UPDATE contract
-		SET deleted_at = $2
+		SET deleted_at = $2, status='cancled'
 		WHERE id = $1 
 	`
 	_, err := p.db.Exec(query, req.Id, time.Now().Unix())
@@ -183,13 +221,41 @@ func (p *ContractStorage) ListContracts(req *pb.GetAllContractRequest) (*pb.GetA
 			return nil, err
 		}
 
-		// Handle the nullable field
+		
 		if deletedAt.Valid {
 			contract.DeletedAt = deletedAt.String
 		} else {
 			contract.DeletedAt = "" // Or set it to a default value
 		}
+		var amount int32
+		var price float64
+		query = `
+		SELECT amount, price 
+		FROM exchange
+		WHERE contract_id = $1 AND deleted_at = 0
+	    `
+		rows, err := p.db.Query(query, contract.Id)  // Pass req.Id as the parameter
+		if err != nil {
+			log.Printf("Error querying exchange details for contract ID %s: %v", contract.Id, err)
+			return nil, err
+		}
+		defer rows.Close()
 
+		// Calculate total price
+		for rows.Next() {
+			err := rows.Scan(&amount, &price)
+			if err != nil {
+				log.Printf("Error scanning exchange details for contract ID %s: %v", contract.Id, err)
+				return nil, err
+			}
+			contract.Price += float64(amount) * price
+		}
+
+		// Check for errors during row iteration
+		if err := rows.Err(); err != nil {
+			log.Printf("Error iterating exchange rows for contract ID %s: %v", contract.Id, err)
+			return nil, err
+		}
 		contracts.AllContracts = append(contracts.AllContracts, &contract)
 	}
 

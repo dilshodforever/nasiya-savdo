@@ -1666,6 +1666,9 @@ const docTemplate = `{
                 "passport_image": {
                     "type": "string"
                 },
+                "price": {
+                    "type": "number"
+                },
                 "status": {
                     "type": "string"
                 }
