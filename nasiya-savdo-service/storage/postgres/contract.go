@@ -160,7 +160,7 @@ func (p *ContractStorage) UpdateContract(req *pb.UpdateContractRequest) (*pb.Con
 func (p *ContractStorage) DeleteContract(req *pb.ContractIdRequest) (*pb.ContractResponse, error) {
 	query := `
 		UPDATE contract
-		SET deleted_at = $2, status='cancled'
+		SET deleted_at = $2, status='canceled'
 		WHERE id = $1 
 	`
 	_, err := p.db.Exec(query, req.Id, time.Now().Unix())
