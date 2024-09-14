@@ -1,6 +1,8 @@
 package api
 
 import (
+	"fmt"
+
 	"github.com/casbin/casbin/v2"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -42,6 +44,21 @@ func NewGin(h *handler.Handler) *gin.Engine {
 		AllowCredentials: true,
 	}))
 
+	router.Use(func(c *gin.Context) {
+		if c.Request.Method == "OPTIONS" {
+			// Log the request
+			fmt.Println("Received OPTIONS request for:", c.Request.URL.Path)
+			c.Header("Access-Control-Allow-Origin", "*")
+			c.Header("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS")
+			c.Header("Access-Control-Allow-Headers", "Authorization, Content-Type, Accept, Origin")
+			c.Header("Access-Control-Expose-Headers", "Content-Length")
+			c.Header("Access-Control-Allow-Credentials", "true")
+			c.Status(200)
+			return
+		}
+		c.Next()
+	})
+
 	//router.Use(middleware.NewAuth(ca))
 
 	// Swagger documentation
@@ -77,7 +94,7 @@ func NewGin(h *handler.Handler) *gin.Engine {
 		product.PUT("/update", h.UpdateProduct)
 		product.DELETE("/delete/:id", h.DeleteProduct)
 		product.GET("/list", h.ListProducts)
-		product.OPTIONS("/delete/:id", h.DeleteProduct)
+		// product.OPTIONS("/delete/:id", h.DeleteProduct)
 	}
 
 	// Storage endpoints
