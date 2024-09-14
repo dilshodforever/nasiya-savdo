@@ -77,6 +77,7 @@ func NewGin(h *handler.Handler) *gin.Engine {
 		product.PUT("/update", h.UpdateProduct)
 		product.DELETE("/delete/:id", h.DeleteProduct)
 		product.GET("/list", h.ListProducts)
+		product.OPTIONS("/delete/:id", h.DeleteProduct)
 	}
 
 	// Storage endpoints
