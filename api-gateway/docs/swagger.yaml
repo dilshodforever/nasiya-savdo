@@ -161,6 +161,17 @@ definitions:
       updated_at:
         type: string
     type: object
+  genprotos.GetNotificationByidResponse:
+    properties:
+      contract_id:
+        type: string
+      created_at:
+        type: string
+      message:
+        type: string
+      user_id:
+        type: string
+    type: object
   genprotos.GetProductResponse:
     properties:
       color:
@@ -207,6 +218,20 @@ definitions:
         type: string
       price:
         type: number
+    type: object
+  genprotos.ListNotificationResponse:
+    properties:
+      notifications:
+        items:
+          $ref: '#/definitions/genprotos.GetNotificationByidResponse'
+        type: array
+    type: object
+  genprotos.NotificationsResponse:
+    properties:
+      message:
+        type: string
+      success:
+        type: boolean
     type: object
   genprotos.ProductResponse:
     properties:
@@ -722,6 +747,77 @@ paths:
       summary: Upload File
       tags:
       - MinIO
+  /notifications/delete:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a notification by user_id
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Notification deleted successfully
+          schema:
+            $ref: '#/definitions/genprotos.NotificationsResponse'
+        "404":
+          description: Notification not found
+          schema:
+            type: string
+        "500":
+          description: Error while deleting notification
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Delete Notification
+      tags:
+      - Notification
+  /notifications/get:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a notification by user_id
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Notification retrieved successfully
+          schema:
+            $ref: '#/definitions/genprotos.GetNotificationByidResponse'
+        "404":
+          description: Notification not found
+          schema:
+            type: string
+        "500":
+          description: Error while retrieving notification
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get Notification
+      tags:
+      - Notification
+  /notifications/getlist:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of all notifications
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of notifications retrieved successfully
+          schema:
+            $ref: '#/definitions/genprotos.ListNotificationResponse'
+        "500":
+          description: Error while retrieving notifications
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: List Notifications
+      tags:
+      - Notification
   /product/create:
     post:
       consumes:

@@ -2,12 +2,12 @@ syntax = "proto3";
 
 package notifications;
 
-option go_package = "genprotos/notifications";
+option go_package = "genprotos/";
 
 service NotificationtService {
     rpc GetNotification(GetNotificationByidRequest) returns (GetNotificationByidResponse);
     rpc DeleteNotification(GetNotificationByidRequest) returns (NotificationsResponse);
-    rpc ListNotification(Void) returns (ListNotificationResponse);
+    rpc ListNotification(GetNotificationByidRequest) returns (ListNotificationResponse);
 }
 
 message GetNotificationByidRequest {
@@ -17,15 +17,15 @@ message GetNotificationByidRequest {
 message GetNotificationByidResponse{
     string user_id = 1;
     string message = 2;
+    string contract_id =3;
+    string created_at=4;
 }
-
 
 message NotificationsResponse{
     string message =1;
     bool   success =2;
 }
 
-message Void{}
 
 
 message ListNotificationResponse{

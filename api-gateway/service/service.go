@@ -18,11 +18,16 @@ func Connect() {
 		log.Fatal("Error while connecting to ExchangeService: ", err.Error())
 	}
 	defer NasiaConn.Close()
-
+	Notification, err := grpc.NewClient(fmt.Sprintf("notification%s", ":8089"), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Fatal("Error while connecting to ExchangeService: ", err.Error())
+	}
+	defer Notification.Close()
 	rdb := redis.NewClient(&redis.Options{
 		Addr: "redis_api:6379",
 	})
 	inmemory := handler.NewInMemoryStorage(rdb)
+	notification:=genprotos.NewNotificationtServiceClient(Notification)
 	accountClient := genprotos.NewContractServiceClient(NasiaConn)
 	budgetClient := genprotos.NewExchangeServiceClient(NasiaConn)
 	categoryClient := genprotos.NewProductServiceClient(NasiaConn)
@@ -30,7 +35,7 @@ func Connect() {
 	transactionClient := genprotos.NewTransactionServiceClient(NasiaConn)
 	minIOClient := genprotos.NewMediaServiceClient(NasiaConn)
 
-	h := handler.NewHandler(accountClient, budgetClient, categoryClient, goalClient, transactionClient, minIOClient, inmemory)
+	h := handler.NewHandler(accountClient, budgetClient, categoryClient, goalClient, transactionClient, minIOClient, notification,inmemory)
 
 	r := api.NewGin(h)
 	fmt.Println("Server started on port:8080")

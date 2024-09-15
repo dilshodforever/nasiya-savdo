@@ -4,15 +4,15 @@ import (
 	"log"
 	"net"
 
+	pb "github.com/dilshodforever/5-oyimtixon/genprotos"
 	"github.com/dilshodforever/5-oyimtixon/kafka"
-	postgres "github.com/dilshodforever/5-oyimtixon/storage/mongo"
 	"github.com/dilshodforever/5-oyimtixon/service"
-	pb "github.com/dilshodforever/5-oyimtixon/genprotos/notifications"
+	postgres "github.com/dilshodforever/5-oyimtixon/storage/mongo"
 	"google.golang.org/grpc"
 )
 
 func Connection() net.Listener {
-	
+
 	db, err := postgres.NewMongoConnection()
 	if err != nil {
 		log.Fatal("Error while connecting to DB: ", err.Error())
@@ -22,10 +22,10 @@ func Connection() net.Listener {
 	if err != nil {
 		log.Fatal("Error while starting TCP listener: ", err.Error())
 	}
-	notifications:=service.NewNotificationService(db)
+	notifications := service.NewNotificationService(db)
 	s := grpc.NewServer()
 	pb.RegisterNotificationtServiceServer(s, notifications)
-	
+
 	brokers := []string{"kafka:9092"}
 
 	kcm := kafka.NewKafkaConsumerManager()
@@ -38,7 +38,7 @@ func Connection() net.Listener {
 			log.Fatalf("Error registering consumer: %v", err)
 		}
 	}
-	
+
 	log.Printf("Server listening at %v", lis.Addr())
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("Failed to serve: %v", err)

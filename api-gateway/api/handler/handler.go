@@ -11,6 +11,7 @@ type Handler struct {
 	StorageService     pb.StorageServiceClient
 	TransactionService pb.TransactionServiceClient
 	MinIO              pb.MediaServiceClient
+	Notification       pb.NotificationtServiceClient
 	Redis              InMemoryStorageI
 }
 
@@ -21,6 +22,7 @@ func NewHandler(
 	StorageService pb.StorageServiceClient,
 	TransactionService pb.TransactionServiceClient,
 	MinIO pb.MediaServiceClient,
+	Notification pb.NotificationtServiceClient,
 	Redis InMemoryStorageI,
 ) *Handler {
 	return &Handler{
@@ -30,6 +32,7 @@ func NewHandler(
 		StorageService:     StorageService,
 		TransactionService: TransactionService,
 		MinIO:              MinIO,
+		Notification:       Notification,
 		Redis:              Redis,
 	}
 }

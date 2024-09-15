@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 
-	pb "github.com/dilshodforever/5-oyimtixon/genprotos/notifications"
+	pb "github.com/dilshodforever/5-oyimtixon/genprotos"
 	"github.com/dilshodforever/5-oyimtixon/model"
 	s "github.com/dilshodforever/5-oyimtixon/storage"
 )
@@ -54,7 +54,7 @@ func (s *NotificationService) DeleteNotification(ctx context.Context, req *pb.Ge
 }
 
 // ListAccounts lists all notifications
-func (s *NotificationService) ListNotification(ctx context.Context, req *pb.Void) (*pb.ListNotificationResponse, error) {
+func (s *NotificationService) ListNotification(ctx context.Context, req *pb.GetNotificationByidRequest) (*pb.ListNotificationResponse, error) {
 	notifications, err := s.stg.Notification().ListNotification(req)
 	if err != nil {
 		log.Print(err)

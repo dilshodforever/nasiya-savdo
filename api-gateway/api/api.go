@@ -102,6 +102,13 @@ func NewGin(h *handler.Handler) *gin.Engine {
 		transaction.POST("/test", h.TestNotification)
 	}
 
+	notif := router.Group("/notifications")
+	{
+		notif.GET("/get", h.GetNotification)
+		notif.DELETE("/delete", h.DeleteNotification)
+		notif.GET("/getlist", h.ListNotification)
+	}
+	
 	minIO := router.Group("/minio")
 	{
 		minIO.POST("/upload", h.UploadFile)
