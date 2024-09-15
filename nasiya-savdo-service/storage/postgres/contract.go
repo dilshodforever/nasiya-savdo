@@ -173,17 +173,16 @@ func (p *ContractStorage) DeleteContract(req *pb.ContractIdRequest) (*pb.Contrac
 		Success: true,
 	}, nil
 }
-
 func (p *ContractStorage) ListContracts(req *pb.GetAllContractRequest) (*pb.GetAllContractResponse, error) {
 	contracts := pb.GetAllContractResponse{}
 	query := `
 		SELECT id, consumer_name, consumer_passport_serial, consumer_address, consumer_phone_number, passport_image, status, duration, created_at, deleted_at
 		FROM contract
-		WHERE true
+		WHERE storage_id=$1
 	`
 	var args []interface{}
-	count := 1
-
+	count := 2
+	args = append(args, req.StorageId)
 	if req.ConsumerName != "" {
 		query += fmt.Sprintf(" AND consumer_name ILIKE $%d", count)
 		args = append(args, "%"+req.ConsumerName+"%")
@@ -202,6 +201,7 @@ func (p *ContractStorage) ListContracts(req *pb.GetAllContractRequest) (*pb.GetA
 		count++
 	}
 
+	// Execute the contract query
 	rows, err := p.db.Query(query, args...)
 	if err != nil {
 		return nil, err
@@ -221,29 +221,30 @@ func (p *ContractStorage) ListContracts(req *pb.GetAllContractRequest) (*pb.GetA
 			return nil, err
 		}
 
-		
 		if deletedAt.Valid {
 			contract.DeletedAt = deletedAt.String
 		} else {
 			contract.DeletedAt = "" // Or set it to a default value
 		}
-		var amount int32
-		var price float64
-		query = `
-		SELECT amount, price 
-		FROM exchange
-		WHERE contract_id = $1 AND deleted_at = 0
-	    `
-		rows, err := p.db.Query(query, contract.Id)  // Pass req.Id as the parameter
+
+		// Query the exchange details for the contract
+		exchangeQuery := `
+			SELECT amount, price 
+			FROM exchange
+			WHERE contract_id = $1 AND deleted_at = 0
+		`
+		exchangeRows, err := p.db.Query(exchangeQuery, contract.Id) // New variable for exchange query rows
 		if err != nil {
 			log.Printf("Error querying exchange details for contract ID %s: %v", contract.Id, err)
 			return nil, err
 		}
-		defer rows.Close()
+		defer exchangeRows.Close()
 
 		// Calculate total price
-		for rows.Next() {
-			err := rows.Scan(&amount, &price)
+		for exchangeRows.Next() {
+			var amount int32
+			var price float64
+			err := exchangeRows.Scan(&amount, &price)
 			if err != nil {
 				log.Printf("Error scanning exchange details for contract ID %s: %v", contract.Id, err)
 				return nil, err
@@ -251,12 +252,19 @@ func (p *ContractStorage) ListContracts(req *pb.GetAllContractRequest) (*pb.GetA
 			contract.Price += float64(amount) * price
 		}
 
-		// Check for errors during row iteration
-		if err := rows.Err(); err != nil {
+		// Check for errors during exchange row iteration
+		if err := exchangeRows.Err(); err != nil {
 			log.Printf("Error iterating exchange rows for contract ID %s: %v", contract.Id, err)
 			return nil, err
 		}
+
+		// Append the contract to the response list
 		contracts.AllContracts = append(contracts.AllContracts, &contract)
+	}
+
+	// Check for errors during the contract row iteration
+	if err := rows.Err(); err != nil {
+		return nil, err
 	}
 
 	return &contracts, nil

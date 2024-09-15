@@ -28,7 +28,7 @@ func (s *AccountService) CreateNotification(req model.Send) error {
 		"id":      id,
 		"UserId":  req.Userid,
 		"message": req.Message,
-		"contractid":req.ContractId,
+		"ContractId":req.ContractId,
 		"CreatedAt":time.Now().String(),
 		"IsRead": false,
 	})

@@ -143,11 +143,12 @@ func (p *ProductStorage) ListProducts(req *pb.GetAllProductRequest) (*pb.GetAllP
 	queryBuilder.WriteString(`
 		SELECT id, name, color, model, image_url, made_in, date_of_creation, storage_id, created_at, updated_at, deleted_at
 		FROM products
-		WHERE deleted_at = 0
+		WHERE deleted_at = 0 and storage_id=$1
 	`)
 
 	var args []interface{}
-	argCounter := 1
+	argCounter := 2
+	args = append(args, req.StorageId)
 
 	if req.Name != "" {
 		queryBuilder.WriteString(fmt.Sprintf(" AND name ILIKE $%d", argCounter))

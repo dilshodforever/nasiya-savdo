@@ -213,7 +213,7 @@ func (p *TransactionStorage) ListTransactions(req *pb.GetAllTransactionRequest) 
 	query := `
 		SELECT id, contract_id, price, duration, created_at
 		FROM transactions
-		WHERE true
+		WHERE true 
 	`
 	var args []interface{}
 	count := 1

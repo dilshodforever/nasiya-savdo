@@ -23,14 +23,14 @@ func (h *Handler) GetNotification(ctx *gin.Context) {
 	var req pb.GetNotificationByidRequest
 	id := middleware.GetUserId(ctx)
 	req.UserId = id
-	fmt.Println(1111)
+
 	res, err := h.Notification.GetNotification(ctx, &req)
 	if err != nil {
 		ctx.JSON(500, gin.H{"error": err.Error()})
 		fmt.Println(err)
 		return
 	}
-	fmt.Println(2222)
+	
 	ctx.JSON(200, res)
 }
 
