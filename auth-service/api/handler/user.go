@@ -168,6 +168,21 @@ func (h *Handler) UpdateEmail(ctx *gin.Context) {
 		ctx.JSON(400, err.Error())
 		return
 	}
+
+	users, err := h.User.GetAll(ctx, &pb.UserFilter{})
+	if err != nil {
+		ctx.JSON(400, err.Error())
+		return
+	}
+	if !IsEmailValid(email.Email) {
+		ctx.JSON(400, "Email is not valid")
+		return
+	}
+	if !IsEmailUniq(users, email.Email) {
+		ctx.JSON(400, "Email already verified")
+		return
+	}
+
 	user := pb.User{Email: email.Email}
 	cnf := config.Load()
 	user.Id, _ = token.GetIdFromToken(ctx.Request, &cnf)
@@ -211,6 +226,24 @@ func (h *Handler) UpdateUser(ctx *gin.Context) {
 	err := ctx.BindJSON(&user)
 	if err != nil {
 		ctx.JSON(400, err.Error())
+		return
+	}
+
+	users, err := h.User.GetAll(ctx, &pb.UserFilter{})
+	if err != nil {
+		ctx.JSON(400, err.Error())
+		return
+	}
+	if !IsNameValid(user.FullName) {
+		ctx.JSON(400, "Name has less than 3 letters")
+		return
+	}
+	if !IsPhoneValid(user.PhoneNumber) {
+		ctx.JSON(400, "PhoneNumber format is not valid")
+		return
+	}
+	if !IsUserNameUniq(users, user.Username) {
+		ctx.JSON(400, "UserName already verified")
 		return
 	}
 
