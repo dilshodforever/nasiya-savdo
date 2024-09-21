@@ -598,58 +598,39 @@ const docTemplate = `{
                 }
             }
         },
-        "/minio/upload": {
+        "/minio/media": {
             "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Upload a file to MinIO",
+                "description": "Upload a media file",
                 "consumes": [
                     "multipart/form-data"
                 ],
-                "produces": [
-                    "application/json"
-                ],
                 "tags": [
-                    "MinIO"
+                    "media"
                 ],
-                "summary": "Upload File",
+                "summary": "uploadFile",
                 "parameters": [
                     {
                         "type": "file",
-                        "description": "File to upload",
+                        "description": "UploadMediaForm",
                         "name": "file",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Filename",
-                        "name": "filename",
                         "in": "formData",
                         "required": true
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "File uploaded successfully",
+                    "201": {
+                        "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/genprotos.UploadFileResponse"
+                            "type": "string"
                         }
                     },
                     "400": {
-                        "description": "Invalid input",
-                        "schema": {
-                            "type": "string"
-                        }
+                        "description": "Bad Request",
+                        "schema": {}
                     },
                     "500": {
-                        "description": "Error while uploading file",
-                        "schema": {
-                            "type": "string"
-                        }
+                        "description": "Internal Server Error",
+                        "schema": {}
                     }
                 }
             }
@@ -2076,14 +2057,6 @@ const docTemplate = `{
                 },
                 "price": {
                     "type": "number"
-                }
-            }
-        },
-        "genprotos.UploadFileResponse": {
-            "type": "object",
-            "properties": {
-                "url": {
-                    "type": "string"
                 }
             }
         }

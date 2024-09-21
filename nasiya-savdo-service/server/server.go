@@ -6,7 +6,6 @@ import (
 
 	pb "github.com/dilshodforever/nasiya-savdo/genprotos"
 	"github.com/dilshodforever/nasiya-savdo/service"
-	"github.com/dilshodforever/nasiya-savdo/storage/minio"
 	"github.com/dilshodforever/nasiya-savdo/storage/postgres"
 	"google.golang.org/grpc"
 )
@@ -23,10 +22,7 @@ func Connect() {
 		log.Fatal("Error while creating TCP listener: ", err.Error())
 	}
 
-	minIoConn, err := minio.InitMinioClient()
-	if err != nil {
-		log.Fatal("Error while connecting to minio: ", err.Error())
-	}
+
 	// Create a new gRPC server
 	s := grpc.NewServer()
 
@@ -36,7 +32,7 @@ func Connect() {
 	pb.RegisterExchangeServiceServer(s, service.NewExchangeService(db))
 	pb.RegisterStorageServiceServer(s, service.NewStorageService(db))
 	pb.RegisterTransactionServiceServer(s, service.NewTransactionService(db))
-	pb.RegisterMediaServiceServer(s, service.NewMinIOService(minIoConn))
+
 
 	log.Printf("Server listening at %v", lis.Addr())
 

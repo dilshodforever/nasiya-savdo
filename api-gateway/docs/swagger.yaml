@@ -329,11 +329,6 @@ definitions:
       price:
         type: number
     type: object
-  genprotos.UploadFileResponse:
-    properties:
-      url:
-        type: string
-    type: object
 info:
   contact: {}
   description: Dilshod's API Gateway
@@ -711,42 +706,31 @@ paths:
       summary: Update an Exchange
       tags:
       - Exchange
-  /minio/upload:
+  /minio/media:
     post:
       consumes:
       - multipart/form-data
-      description: Upload a file to MinIO
+      description: Upload a media file
       parameters:
-      - description: File to upload
+      - description: UploadMediaForm
         in: formData
         name: file
         required: true
         type: file
-      - description: Filename
-        in: formData
-        name: filename
-        required: true
-        type: string
-      produces:
-      - application/json
       responses:
-        "200":
-          description: File uploaded successfully
+        "201":
+          description: Created
           schema:
-            $ref: '#/definitions/genprotos.UploadFileResponse'
+            type: string
         "400":
-          description: Invalid input
-          schema:
-            type: string
+          description: Bad Request
+          schema: {}
         "500":
-          description: Error while uploading file
-          schema:
-            type: string
-      security:
-      - BearerAuth: []
-      summary: Upload File
+          description: Internal Server Error
+          schema: {}
+      summary: uploadFile
       tags:
-      - MinIO
+      - media
   /notifications/delete:
     delete:
       consumes:

@@ -60,22 +60,6 @@ services:
       timeout: 10s
       retries: 5
 
-  # minio
-  minio:
-    image: minio/minio:latest
-    container_name: minio
-    environment:
-      MINIO_ROOT_USER: Dior
-      MINIO_ROOT_PASSWORD: isakov05@
-    command: server /data --console-address ":9001"
-    ports:
-      - "9000:9000"   
-      - "9001:9001"   
-    volumes:
-      - minio-data:/data
-    networks:
-      - mynetwork
-
 
   # nasiya-service
   nasiya-service:

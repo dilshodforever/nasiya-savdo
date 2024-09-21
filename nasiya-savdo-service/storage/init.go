@@ -1,8 +1,6 @@
 package storage
 
 import (
-	"context"
-
 	pb "github.com/dilshodforever/nasiya-savdo/genprotos"
 )
 
@@ -12,10 +10,6 @@ type InitRoot interface {
 	Exchange() ExchangeStorage
 	Storage() StorageStorage
 	Transaction() TransactionStorage
-}
-
-type MinIoRoot interface {
-	MinIO() MinIOStorage
 }
 
 type ProductStorage interface {
@@ -58,8 +52,4 @@ type TransactionStorage interface {
 	ListTransactions(req *pb.GetAllTransactionRequest) (*pb.GetAllTransactionResponse, error)
 	CheckTransactions(req *pb.CheckRequest) (*pb.CheckResponse, error)
 	TestNotification(req *pb.Testresponse) (*pb.Testrequest, error)
-}
-
-type MinIOStorage interface {
-	UploadFile(ctx context.Context, req *pb.UploadFileRequest) (*pb.UploadFileResponse, error)
 }

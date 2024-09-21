@@ -2,6 +2,7 @@ package handler
 
 import (
 	pb "github.com/dilshodforever/nasiya-savdo/genprotos"
+	"github.com/minio/minio-go/v7"
 )
 
 type Handler struct {
@@ -10,7 +11,7 @@ type Handler struct {
 	ProductService     pb.ProductServiceClient
 	StorageService     pb.StorageServiceClient
 	TransactionService pb.TransactionServiceClient
-	MinIO              pb.MediaServiceClient
+	MinIO              *minio.Client
 	Notification       pb.NotificationtServiceClient
 	Redis              InMemoryStorageI
 }
@@ -21,7 +22,7 @@ func NewHandler(
 	ProductService pb.ProductServiceClient,
 	StorageService pb.StorageServiceClient,
 	TransactionService pb.TransactionServiceClient,
-	MinIO pb.MediaServiceClient,
+	MinIO *minio.Client,
 	Notification pb.NotificationtServiceClient,
 	Redis InMemoryStorageI,
 ) *Handler {

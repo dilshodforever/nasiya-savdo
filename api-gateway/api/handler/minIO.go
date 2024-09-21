@@ -1,62 +1,98 @@
 package handler
 
 import (
+	"context"
 	"fmt"
-	"io"
-	"net/http"
+	"mime/multipart"
+	"path/filepath"
+	"time"
 
-	pb "github.com/dilshodforever/nasiya-savdo/genprotos"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
+	"github.com/minio/minio-go/v7"
 )
 
-// UploadFile handles uploading a file to MinIO
-// @Summary      Upload File
-// @Description  Upload a file to MinIO
-// @Tags         MinIO
-// @Accept       multipart/form-data
-// @Produce      json
-// @Security     BearerAuth
-// @Param        file formData file true "File to upload"
-// @Param        filename formData string true "Filename"
-// @Success      200 {object} pb.UploadFileResponse "File uploaded successfully"
-// @Failure      400 {string} string "Invalid input"
-// @Failure      500 {string} string "Error while uploading file"
-// @Router       /minio/upload [post]
-func (h *Handler) UploadFile(c *gin.Context) {
-	// Fileni olish va defer bilan yopish
-	file, _, err := c.Request.FormFile("file")
+type File struct {
+	File multipart.FileHeader `form:"file" binding:"required"`
+}
+
+// uploadFile
+// @Summary uploadFile
+// @Description Upload a media file
+// @Tags media
+// @Accept multipart/form-data
+// @Param file formData file true "UploadMediaForm"
+// @Success 201 {object} string
+// @Failure 400 {object} error
+// @Failure 500 {object} error
+// @Router /minio/media [post]
+func (h *Handler) Media(c *gin.Context) {
+	var file File
+	err := c.ShouldBind(&file)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "File is required"})
+		c.AbortWithStatusJSON(400, err)
 		return
 	}
-	defer file.Close() // Faylni yopishni ta'minlash
 
-	fileBytes, err := io.ReadAll(file)
+	fileUrl := filepath.Join("./media", file.File.Filename)
+
+	err = c.SaveUploadedFile(&file.File, fileUrl)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to read file"})
+		c.AbortWithError(500, err)
 		return
 	}
 
-	filename := c.Request.FormValue("filename")
-	if filename == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Filename is required"})
-		return
-	}
+	fileExt := filepath.Ext(file.File.Filename)
 
-	// MinIO obyektini to'g'ri initsializatsiya qilinganligini tekshirish
-	if h.MinIO == nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "MinIO service is not initialized"})
-		return
-	}
+	newFile := uuid.NewString() + fileExt
 
-	resp, err := h.MinIO.UploadFile(c, &pb.UploadFileRequest{
-		File:     fileBytes,
-		Filename: filename,
+	policy := fmt.Sprintf(`{
+		"Version": "2012-10-17",
+		"Statement": [
+				{
+						"Effect": "Allow",
+						"Principal": {
+								"AWS": ["*"]
+						},
+						"Action": ["s3:GetObject"],
+						"Resource": ["arn:aws:s3:::%s/*"]
+				}
+		]
+}`, "photos")
+
+	// err = minioClient.MakeBucket(context.Background(), "photos", minio.MakeBucketOptions{})
+	// if err != nil {
+	// 	c.AbortWithError(500, err)
+	// 	return
+	// }
+
+	info, err := h.MinIO.FPutObject(context.Background(), "photos", newFile, fileUrl, minio.PutObjectOptions{
+		ContentType: "image/jpeg",
 	})
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Failed to upload file %v", err)})
+		c.AbortWithError(500, err)
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"url": resp})
+	err = h.MinIO.SetBucketPolicy(context.Background(), "photos", policy)
+	if err != nil {
+		c.AbortWithError(500, err)
+		return
+	}
+
+	println("\n Info Bucket:", info.Bucket)
+
+	objUrl, err := h.MinIO.PresignedGetObject(context.Background(), "photos", newFile, time.Hour*24, nil)
+	if err != nil {
+		c.AbortWithError(500, err)
+		return
+	}
+
+	madeUrl := fmt.Sprintf("http://127.0.0.1:9000/photos/%s", newFile)
+
+	c.JSON(201, gin.H{
+		"url":      objUrl.String(),
+		"made_url": madeUrl,
+	})
+
 }

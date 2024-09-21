@@ -111,7 +111,7 @@ func NewGin(h *handler.Handler) *gin.Engine {
 	
 	minIO := router.Group("/minio")
 	{
-		minIO.POST("/upload", h.UploadFile)
+		minIO.POST("/media", h.Media)
 	}
 
 	return r
