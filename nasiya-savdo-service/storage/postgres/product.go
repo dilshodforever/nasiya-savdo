@@ -151,7 +151,7 @@ func (p *ProductStorage) ListProducts(req *pb.GetAllProductRequest) (*pb.GetAllP
 `
 
 	var args []interface{}
-	argCounter := 2
+	argCounter := 1
 	args = append(args, req.StorageId)
 
 	if req.Name != "" {

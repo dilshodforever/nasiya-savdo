@@ -185,7 +185,7 @@ func (p *ContractStorage) ListContracts(req *pb.GetAllContractRequest) (*pb.GetA
 		FROM contract
 	`
 	var args []interface{}
-	count := 2
+	count := 1
 	args = append(args, req.StorageId)
 	if req.ConsumerName != "" {
 		query += fmt.Sprintf(" AND consumer_name ILIKE $%d", count)
