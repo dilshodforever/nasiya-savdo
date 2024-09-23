@@ -169,11 +169,11 @@ func (p *ProductStorage) ListProducts(req *pb.GetAllProductRequest) (*pb.GetAllP
 		args = append(args, "%"+req.Model+"%")
 		argCounter++
 	}
-	if req.StorageId != "" {
-		query += fmt.Sprintf(" AND storage_id = $%d", argCounter)
-		args = append(args, req.StorageId)
-		argCounter++
-	}
+	// if req.StorageId != "" {
+	// 	query += fmt.Sprintf(" AND storage_id = $%d", argCounter)
+	// 	args = append(args, req.StorageId)
+	// 	argCounter++
+	// }
 
 	rows, err := p.db.Query(query, args...)
 	if err != nil {

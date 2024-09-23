@@ -140,7 +140,7 @@ func (h *Handler) ListContracts(ctx *gin.Context) {
 		Status:       ctx.Query("status"),
 		PasportSeria: ctx.Query("pasport_seria"),
 	}
-	req.StorageId = middleware.GetStorageId(ctx)
+	// req.StorageId = middleware.GetStorageId(ctx)
 	res, err := h.ContractService.ListContracts(ctx, req)
 	if err != nil {
 		ctx.JSON(500, gin.H{"error": err.Error()})

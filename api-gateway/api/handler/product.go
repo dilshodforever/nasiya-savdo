@@ -132,7 +132,7 @@ func (h *Handler) ListProducts(ctx *gin.Context) {
 	req.Name = ctx.Query("name")
 	req.Color = ctx.Query("color")
 	req.Model = ctx.Query("model")
-	req.StorageId = middleware.GetStorageId(ctx)
+	// req.StorageId = middleware.GetStorageId(ctx)
 	res, err := h.ProductService.ListProducts(context.Background(), &req)
 	if err != nil {
 		log.Print(err)
