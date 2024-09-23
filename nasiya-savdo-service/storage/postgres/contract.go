@@ -178,7 +178,7 @@ func (p *ContractStorage) ListContracts(req *pb.GetAllContractRequest) (*pb.GetA
 	query := `
 		SELECT id, consumer_name, consumer_passport_serial, consumer_address, consumer_phone_number, passport_image, status, duration, created_at, deleted_at
 		FROM contract
-		WHERE storage_id=$1
+		WHERE storage_id = $1
 	`
 	var args []interface{}
 	count := 2

@@ -143,7 +143,7 @@ func (p *ProductStorage) ListProducts(req *pb.GetAllProductRequest) (*pb.GetAllP
 	queryBuilder.WriteString(`
 		SELECT id, name, color, model, image_url, made_in, date_of_creation, storage_id, created_at, updated_at, deleted_at
 		FROM products
-		WHERE deleted_at = 0 and storage_id=$1
+		WHERE deleted_at = 0 and storage_id = $1
 	`)
 
 	var args []interface{}

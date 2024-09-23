@@ -31,8 +31,8 @@ func (h *Handler) CreateContract(ctx *gin.Context) {
 		ctx.JSON(400, gin.H{"error": "Invalid input"})
 		return
 	}
-	storageid:=middleware.GetStorageId(ctx)
-	req.StorageId=storageid
+	storageid := middleware.GetStorageId(ctx)
+	req.StorageId = storageid
 	res, err := h.ContractService.CreateContract(ctx, &req)
 	if err != nil {
 		ctx.JSON(500, gin.H{"error": err.Error()})
@@ -140,6 +140,7 @@ func (h *Handler) ListContracts(ctx *gin.Context) {
 		Status:       ctx.Query("status"),
 		PasportSeria: ctx.Query("pasport_seria"),
 	}
+	req.StorageId = middleware.GetStorageId(ctx)
 	res, err := h.ContractService.ListContracts(ctx, req)
 	if err != nil {
 		ctx.JSON(500, gin.H{"error": err.Error()})
