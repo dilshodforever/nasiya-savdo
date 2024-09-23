@@ -175,10 +175,14 @@ func (p *ContractStorage) DeleteContract(req *pb.ContractIdRequest) (*pb.Contrac
 }
 func (p *ContractStorage) ListContracts(req *pb.GetAllContractRequest) (*pb.GetAllContractResponse, error) {
 	contracts := pb.GetAllContractResponse{}
+	// query := `
+	// 	SELECT id, consumer_name, consumer_passport_serial, consumer_address, consumer_phone_number, passport_image, status, duration, created_at, deleted_at
+	// 	FROM contract
+	// 	WHERE storage_id = $1
+	// `
 	query := `
 		SELECT id, consumer_name, consumer_passport_serial, consumer_address, consumer_phone_number, passport_image, status, duration, created_at, deleted_at
 		FROM contract
-		WHERE storage_id = $1
 	`
 	var args []interface{}
 	count := 2

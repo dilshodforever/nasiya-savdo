@@ -138,40 +138,44 @@ func (p *ProductStorage) DeleteProduct(req *pb.ProductIdRequest) (*pb.ProductRes
 
 func (p *ProductStorage) ListProducts(req *pb.GetAllProductRequest) (*pb.GetAllProductResponse, error) {
 	products := pb.GetAllProductResponse{}
-	var queryBuilder strings.Builder
 
-	queryBuilder.WriteString(`
-		SELECT id, name, color, model, image_url, made_in, date_of_creation, storage_id, created_at, updated_at, deleted_at
-		FROM products
-		WHERE deleted_at = 0 and storage_id = $1
-	`)
+	// query`
+	// 	SELECT id, name, color, model, image_url, made_in, date_of_creation, storage_id, created_at, updated_at, deleted_at
+	// 	FROM products
+	// 	WHERE deleted_at = 0 and storage_id = $1
+	// `
+	query := `
+	SELECT id, name, color, model, image_url, made_in, date_of_creation, storage_id, created_at, updated_at, deleted_at
+	FROM products
+	WHERE deleted_at = 0
+`
 
 	var args []interface{}
 	argCounter := 2
 	args = append(args, req.StorageId)
 
 	if req.Name != "" {
-		queryBuilder.WriteString(fmt.Sprintf(" AND name ILIKE $%d", argCounter))
+		query += fmt.Sprintf(" AND name ILIKE $%d", argCounter)
 		args = append(args, "%"+req.Name+"%")
 		argCounter++
 	}
 	if req.Color != "" {
-		queryBuilder.WriteString(fmt.Sprintf(" AND color ILIKE $%d", argCounter))
+		query += fmt.Sprintf(" AND color ILIKE $%d", argCounter)
 		args = append(args, "%"+req.Color+"%")
 		argCounter++
 	}
 	if req.Model != "" {
-		queryBuilder.WriteString(fmt.Sprintf(" AND model ILIKE $%d", argCounter))
+		query += fmt.Sprintf(" AND model ILIKE $%d", argCounter)
 		args = append(args, "%"+req.Model+"%")
 		argCounter++
 	}
 	if req.StorageId != "" {
-		queryBuilder.WriteString(fmt.Sprintf(" AND storage_id = $%d", argCounter))
+		query += fmt.Sprintf(" AND storage_id = $%d", argCounter)
 		args = append(args, req.StorageId)
 		argCounter++
 	}
 
-	rows, err := p.db.Query(queryBuilder.String(), args...)
+	rows, err := p.db.Query(query, args...)
 	if err != nil {
 		return nil, err
 	}
