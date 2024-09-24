@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"mime/multipart"
 	"path/filepath"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -60,12 +59,6 @@ func (h *Handler) Media(c *gin.Context) {
 		]
 }`, "photos")
 
-	// err = minioClient.MakeBucket(context.Background(), "photos", minio.MakeBucketOptions{})
-	// if err != nil {
-	// 	c.AbortWithError(500, err)
-	// 	return
-	// }
-
 	info, err := h.MinIO.FPutObject(context.Background(), "photos", newFile, fileUrl, minio.PutObjectOptions{
 		ContentType: "image/jpeg",
 	})
@@ -82,16 +75,9 @@ func (h *Handler) Media(c *gin.Context) {
 
 	println("\n Info Bucket:", info.Bucket)
 
-	objUrl, err := h.MinIO.PresignedGetObject(context.Background(), "photos", newFile, time.Hour*24, nil)
-	if err != nil {
-		c.AbortWithError(500, err)
-		return
-	}
-
-	madeUrl := fmt.Sprintf("http://127.0.0.1:9000/photos/%s", newFile)
+	madeUrl := fmt.Sprintf("https://solihov.uz/photos/%s", newFile)
 
 	c.JSON(201, gin.H{
-		"url":      objUrl.String(),
 		"made_url": madeUrl,
 	})
 
