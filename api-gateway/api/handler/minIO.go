@@ -61,6 +61,7 @@ func (h *Handler) Media(c *gin.Context) {
 
 	info, err := h.MinIO.FPutObject(context.Background(), "photos", newFile, fileUrl, minio.PutObjectOptions{
 		ContentType: "image/jpeg",
+		
 	})
 	if err != nil {
 		c.AbortWithError(500, err)
@@ -75,7 +76,7 @@ func (h *Handler) Media(c *gin.Context) {
 
 	println("\n Info Bucket:", info.Bucket)
 
-	madeUrl := fmt.Sprintf("https://solihov.uz/photos/%s", newFile)
+	madeUrl := fmt.Sprintf("https://png.solihov.uz/photos/%s", newFile)
 
 	c.JSON(201, gin.H{
 		"made_url": madeUrl,
