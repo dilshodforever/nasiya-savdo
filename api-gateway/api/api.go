@@ -33,8 +33,7 @@ func NewGin(h *handler.Handler) *gin.Engine {
 	if err != nil {
 		panic(err)
 	}
-	router := r.Group("/")
-	router.Use(cors.New(cors.Config{
+	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
@@ -42,14 +41,14 @@ func NewGin(h *handler.Handler) *gin.Engine {
 		AllowCredentials: true,
 	}))
 
-	//router.Use(middleware.NewAuth(ca))
+	//r.Use(middleware.NewAuth(ca))
 
 	// Swagger documentation
 	url := ginSwagger.URL("/swagger/doc.json") // Adjusted path for Swagger docs
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(files.Handler, url))
 
 	// Contract endpoints
-	contract := router.Group("/contract")
+	contract := r.Group("/contract")
 	{
 		contract.POST("/create", h.CreateContract)
 		contract.GET("/get/:id", h.GetContract)
@@ -60,7 +59,7 @@ func NewGin(h *handler.Handler) *gin.Engine {
 	}
 
 	// Exchange endpoints
-	exchange := router.Group("/exchange")
+	exchange := r.Group("/exchange")
 	{
 		exchange.POST("/create", h.CreateExchange)
 		exchange.GET("/get/:id", h.GetExchange)
@@ -70,7 +69,7 @@ func NewGin(h *handler.Handler) *gin.Engine {
 	}
 
 	// Product endpoints
-	product := router.Group("/product")
+	product := r.Group("/product")
 	{
 		product.POST("/create", h.CreateProduct)
 		product.GET("/get/:id", h.GetProduct)
@@ -81,7 +80,7 @@ func NewGin(h *handler.Handler) *gin.Engine {
 	}
 
 	// Storage endpoints
-	storage := router.Group("/storage")
+	storage := r.Group("/storage")
 	{
 		//storage.POST("/create", h.CreateStorage)
 		storage.GET("/get/:id", h.GetStorage)
@@ -91,7 +90,7 @@ func NewGin(h *handler.Handler) *gin.Engine {
 	}
 
 	// Transaction endpoints
-	transaction := router.Group("/transaction")
+	transaction := r.Group("/transaction")
 	{
 		transaction.POST("/create", h.CreateTransaction)
 		transaction.GET("/get/:id", h.GetTransaction)
@@ -102,14 +101,14 @@ func NewGin(h *handler.Handler) *gin.Engine {
 		transaction.POST("/test", h.TestNotification)
 	}
 
-	notif := router.Group("/notifications")
+	notif := r.Group("/notifications")
 	{
 		notif.GET("/get", h.GetNotification)
 		notif.DELETE("/delete", h.DeleteNotification)
 		notif.GET("/getlist", h.ListNotification)
 	}
 	
-	minIO := router.Group("/minio")
+	minIO := r.Group("/minio")
 	{
 		minIO.POST("/media", h.Media)
 	}
