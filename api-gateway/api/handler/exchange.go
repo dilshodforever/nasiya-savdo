@@ -69,19 +69,21 @@ func (h *Handler) GetExchange(ctx *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Security     BearerAuth
+// @Param        id path string true "Exchange ID"
 // @Param        exchange body pb.UpdateExchangeRequest true "Exchange details"
 // @Param        status query string true "Exchange Status" Enums(buy, sell)
 // @Success      200 {object} pb.ExchangeResponse "Exchange updated successfully"
 // @Failure      400 {string} string "Invalid input"
 // @Failure      404 {string} string "Exchange not found"
 // @Failure      500 {string} string "Error while updating exchange"
-// @Router       /exchange/update [put]
+// @Router       /exchange/update/{id} [put]
 func (h *Handler) UpdateExchange(ctx *gin.Context) {
 	var req pb.UpdateExchangeRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(400, gin.H{"error": "Invalid input"})
 		return
 	}
+	req.Id = ctx.Param("id")
 	status := ctx.Query("status") // Query parameter for status
 	req.Status = status           // Directly assigning status if no enum conversion is required
 	res, err := h.ExchangeService.UpdateExchange(context.Background(), &req)

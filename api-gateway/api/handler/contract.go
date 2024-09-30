@@ -75,17 +75,19 @@ func (h *Handler) GetContract(ctx *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Security     BearerAuth
+// @Param        id path string true "Contract ID"
 // @Param        contract body pb.UpdateContractRequest true "Updated contract details"
 // @Success      200 {object} pb.ContractResponse "Contract updated successfully"
 // @Failure      400 {string} string "Invalid input"
 // @Failure      500 {string} string "Error while updating contract"
-// @Router       /contract/update [put]
+// @Router       /contract/update/{id} [put]
 func (h *Handler) UpdateContract(ctx *gin.Context) {
 	var req pb.UpdateContractRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(400, gin.H{"error": "Invalid input"})
 		return
 	}
+	req.Id = ctx.Param("id")
 	res, err := h.ContractService.UpdateContract(ctx, &req)
 	if err != nil {
 		ctx.JSON(500, gin.H{"error": err.Error()})

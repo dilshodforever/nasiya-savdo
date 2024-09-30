@@ -67,18 +67,20 @@ func (h *Handler) GetStorage(ctx *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Security     BearerAuth
+// @Param        id path string true "Storage ID"
 // @Param        storage body pb.UpdateStorageRequest true "Storage details"
 // @Success      200 {object} pb.StorageResponse "Storage updated successfully"
 // @Failure      400 {string} string "Invalid input"
 // @Failure      404 {string} string "Storage not found"
 // @Failure      500 {string} string "Error while updating storage"
-// @Router       /storage/update [put]
+// @Router       /storage/update/{id} [put]
 func (h *Handler) UpdateStorage(ctx *gin.Context) {
 	var req pb.UpdateStorageRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(400, gin.H{"error": "Invalid input"})
 		return
 	}
+	req.Id = ctx.Param("id")
 	res, err := h.StorageService.UpdateStorage(context.Background(), &req)
 	if err != nil {
 		log.Print(err)

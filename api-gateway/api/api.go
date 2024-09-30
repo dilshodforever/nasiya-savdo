@@ -52,7 +52,7 @@ func NewGin(h *handler.Handler) *gin.Engine {
 	{
 		contract.POST("/create", h.CreateContract)
 		contract.GET("/get/:id", h.GetContract)
-		contract.PUT("/update", h.UpdateContract)
+		contract.PUT("/update/:id", h.UpdateContract)
 		contract.DELETE("/delete/:id", h.DeleteContract)
 		contract.GET("/list", h.ListContracts)
 		contract.GET("/getpdf/:id", h.GetContractPdf)
@@ -63,7 +63,7 @@ func NewGin(h *handler.Handler) *gin.Engine {
 	{
 		exchange.POST("/create", h.CreateExchange)
 		exchange.GET("/get/:id", h.GetExchange)
-		exchange.PUT("/update", h.UpdateExchange)
+		exchange.PUT("/update/:id", h.UpdateExchange)
 		exchange.DELETE("/delete/:id", h.DeleteExchange)
 		exchange.GET("/list", h.ListExchanges)
 	}
@@ -73,7 +73,7 @@ func NewGin(h *handler.Handler) *gin.Engine {
 	{
 		product.POST("/create", h.CreateProduct)
 		product.GET("/get/:id", h.GetProduct)
-		product.PUT("/update", h.UpdateProduct)
+		product.PUT("/update/:id", h.UpdateProduct)
 		product.DELETE("/delete/:id", h.DeleteProduct)
 		product.GET("/list", h.ListProducts)
 		product.OPTIONS("")
@@ -84,7 +84,7 @@ func NewGin(h *handler.Handler) *gin.Engine {
 	{
 		//storage.POST("/create", h.CreateStorage)
 		storage.GET("/get/:id", h.GetStorage)
-		storage.PUT("/update", h.UpdateStorage)
+		storage.PUT("/update/:id", h.UpdateStorage)
 		storage.DELETE("/delete/:id", h.DeleteStorage)
 		storage.GET("/list", h.ListStorages)
 	}
@@ -94,7 +94,7 @@ func NewGin(h *handler.Handler) *gin.Engine {
 	{
 		transaction.POST("/create", h.CreateTransaction)
 		transaction.GET("/get/:id", h.GetTransaction)
-		transaction.PUT("/update", h.UpdateTransaction)
+		transaction.PUT("/update/:id", h.UpdateTransaction)
 		transaction.DELETE("/delete/:id", h.DeleteTransaction)
 		transaction.GET("/list", h.ListTransactions)
 		transaction.POST("/check", h.CheckTransactions)

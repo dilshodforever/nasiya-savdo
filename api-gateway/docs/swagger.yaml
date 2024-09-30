@@ -494,12 +494,17 @@ paths:
       summary: List Contracts
       tags:
       - Contract
-  /contract/update:
+  /contract/update/{id}:
     put:
       consumes:
       - application/json
       description: Update an existing contract
       parameters:
+      - description: Contract ID
+        in: path
+        name: id
+        required: true
+        type: string
       - description: Updated contract details
         in: body
         name: contract
@@ -662,12 +667,17 @@ paths:
       summary: List all Exchanges
       tags:
       - Exchange
-  /exchange/update:
+  /exchange/update/{id}:
     put:
       consumes:
       - application/json
       description: Update an existing exchange record with new details
       parameters:
+      - description: Exchange ID
+        in: path
+        name: id
+        required: true
+        type: string
       - description: Exchange details
         in: body
         name: exchange
@@ -934,12 +944,17 @@ paths:
       summary: List Products
       tags:
       - Product
-  /product/update:
+  /product/update/{id}:
     put:
       consumes:
       - application/json
       description: Update an existing product
       parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: string
       - description: Updated product details
         in: body
         name: product
@@ -1059,12 +1074,17 @@ paths:
       summary: List all Storages
       tags:
       - Storage
-  /storage/update:
+  /storage/update/{id}:
     put:
       consumes:
       - application/json
       description: Update an existing storage record with new details
       parameters:
+      - description: Storage ID
+        in: path
+        name: id
+        required: true
+        type: string
       - description: Storage details
         in: body
         name: storage

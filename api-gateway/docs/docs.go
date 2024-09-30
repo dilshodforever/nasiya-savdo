@@ -267,7 +267,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/contract/update": {
+        "/contract/update/{id}": {
             "put": {
                 "security": [
                     {
@@ -286,6 +286,13 @@ const docTemplate = `{
                 ],
                 "summary": "Update Contract",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Contract ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
                     {
                         "description": "Updated contract details",
                         "name": "contract",
@@ -530,7 +537,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/exchange/update": {
+        "/exchange/update/{id}": {
             "put": {
                 "security": [
                     {
@@ -549,6 +556,13 @@ const docTemplate = `{
                 ],
                 "summary": "Update an Exchange",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Exchange ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
                     {
                         "description": "Exchange details",
                         "name": "exchange",
@@ -958,7 +972,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/product/update": {
+        "/product/update/{id}": {
             "put": {
                 "security": [
                     {
@@ -977,6 +991,13 @@ const docTemplate = `{
                 ],
                 "summary": "Update Product",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Product ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
                     {
                         "description": "Updated product details",
                         "name": "product",
@@ -1155,7 +1176,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/storage/update": {
+        "/storage/update/{id}": {
             "put": {
                 "security": [
                     {
@@ -1174,6 +1195,13 @@ const docTemplate = `{
                 ],
                 "summary": "Update a Storage",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Storage ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
                     {
                         "description": "Storage details",
                         "name": "storage",

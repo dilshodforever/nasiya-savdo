@@ -69,17 +69,19 @@ func (h *Handler) GetProduct(ctx *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Security     BearerAuth
+// @Param        id path string true "Product ID"
 // @Param        product body pb.UpdateProductRequest true "Updated product details"
 // @Success      200 {object} pb.ProductResponse "Product updated successfully"
 // @Failure      400 {string} string "Invalid input"
 // @Failure      500 {string} string "Error while updating product"
-// @Router       /product/update [put]
+// @Router       /product/update/{id} [put]
 func (h *Handler) UpdateProduct(ctx *gin.Context) {
 	var req pb.UpdateProductRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(400, gin.H{"error": "Invalid input"})
 		return
 	}
+	req.Id = ctx.Param("id")
 	res, err := h.ProductService.UpdateProduct(context.Background(), &req)
 	if err != nil {
 		log.Print(err)
