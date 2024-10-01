@@ -42,10 +42,12 @@ message GetProductResponse {
     string image_url = 5;
     string made_in = 6;
     string date_of_creation = 7;
-    string storage_id = 8;
-    string created_at = 9;
-    string updated_at = 10;
-    string deleted_at = 11;
+    double price = 8;
+    int32 amount = 9;
+    string storage_id = 10;
+    string created_at = 11;
+    string updated_at = 12;
+    string deleted_at = 13;
 }
 
 message UpdateProductRequest {
@@ -69,6 +71,8 @@ message GetAllProductRequest {
     string color = 2;
     string model = 3;
     string storage_id = 4;
+    int32 limit = 5;
+    int32 offset = 6;
 }
 
 message GetAllProductResponse {

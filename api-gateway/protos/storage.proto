@@ -41,6 +41,8 @@ message StorageResponse {
 message GetAllStorageRequest {
     string name = 1;
     string user_id = 2;
+    int32 limit = 3;
+    int32 offset = 4;
 }
 
 message GetAllStorageResponse {

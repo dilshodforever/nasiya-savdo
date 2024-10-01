@@ -134,6 +134,8 @@ func (h *Handler) ListProducts(ctx *gin.Context) {
 	req.Name = ctx.Query("name")
 	req.Color = ctx.Query("color")
 	req.Model = ctx.Query("model")
+	req.Limit = ParseQueryInt32(ctx, "limit", 10) // Default limit 10
+	req.Offset = ParseQueryInt32(ctx, "offset", 0) // Default offset 0
 	// req.StorageId = middleware.GetStorageId(ctx)
 	res, err := h.ProductService.ListProducts(context.Background(), &req)
 	if err != nil {

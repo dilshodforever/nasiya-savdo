@@ -138,6 +138,8 @@ func (h *Handler) ListExchanges(ctx *gin.Context) {
 	if status != "" {
 		req.Status = status // Directly assigning status if no enum conversion is required
 	}
+	req.Limit = ParseQueryInt32(ctx, "limit", 10) // Default limit 10
+	req.Offset = ParseQueryInt32(ctx, "offset", 0) // Default offset 0
 	res, err := h.ExchangeService.ListExchanges(context.Background(), &req)
 	if err != nil {
 		log.Print(err)

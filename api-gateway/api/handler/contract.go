@@ -3,6 +3,7 @@ package handler
 import (
 	"bytes"
 	"fmt"
+	"strconv"
 
 	"log"
 	"net/http"
@@ -141,7 +142,10 @@ func (h *Handler) ListContracts(ctx *gin.Context) {
 		ConsumerName: ctx.Query("consumer_name"),
 		Status:       ctx.Query("status"),
 		PasportSeria: ctx.Query("pasport_seria"),
+		Limit:        ParseQueryInt32(ctx, "limit", 10), // Default limit 10
+		Offset:       ParseQueryInt32(ctx, "offset", 0), // Default offset 0
 	}
+
 	// req.StorageId = middleware.GetStorageId(ctx)
 	res, err := h.ContractService.ListContracts(ctx, req)
 	if err != nil {
@@ -149,6 +153,19 @@ func (h *Handler) ListContracts(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(200, res)
+}
+
+func ParseQueryInt32(ctx *gin.Context, key string, defaultValue int32) int32 {
+	valueStr := ctx.Query(key)
+	if valueStr == "" {
+		return defaultValue
+	}
+
+	value, err := strconv.Atoi(valueStr)
+	if err != nil {
+		return defaultValue
+	}
+	return int32(value)
 }
 
 // GetContract retrieves a specific contract by ID

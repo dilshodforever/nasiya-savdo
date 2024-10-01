@@ -68,8 +68,10 @@ message ContractResponse {
 message GetAllContractRequest {
     string consumer_name = 1;
     string status = 2;
-    string pasport_seria =3;
-    string storage_id =4;
+    string pasport_seria = 3;
+    string storage_id = 4;
+    int32 limit = 5;
+    int32 offset = 6;
 }
 
 message GetAllContractResponse {

@@ -54,6 +54,90 @@ func (p *ProductStorage) GetProduct(req *pb.ProductIdRequest) (*pb.GetProductRes
 		return nil, err
 	}
 
+	priceQuery := `
+		WITH buy_orders AS (
+			SELECT 
+				id, 
+				product_id, 
+				amount, 
+				price, 
+				created_at
+			FROM 
+				exchange
+			WHERE 
+				status = 'buy' 
+				AND product_id = $1
+				AND deleted_at = 0
+			ORDER BY 
+				created_at ASC
+		),
+		sell_total AS (
+			SELECT 
+				COALESCE(SUM(amount), 0) AS total_sold
+			FROM 
+				exchange
+			WHERE 
+				status = 'sell' 
+				AND product_id = $1
+				AND deleted_at = 0
+		),
+		remaining_buy_orders AS (
+			SELECT 
+				id, 
+				product_id, 
+				amount, 
+				price, 
+				created_at,
+				SUM(amount) OVER (ORDER BY created_at ASC) - (SELECT total_sold FROM sell_total) AS remaining
+			FROM 
+				buy_orders
+		)
+		SELECT 
+			price
+		FROM 
+			remaining_buy_orders
+		WHERE 
+			remaining > 0
+		ORDER BY 
+			created_at
+		LIMIT 1;
+	`
+	
+	var currentPrice sql.NullFloat64
+	var totalAmount int32
+
+	err = p.db.QueryRow(priceQuery, req.Id).Scan(&currentPrice)
+	if err != nil && err != sql.ErrNoRows {
+		return nil, err
+	}
+	
+	query = `
+		SELECT SUM(
+			CASE 
+				WHEN status = 'buy' THEN amount 
+				WHEN status = 'sell' THEN -amount 
+				ELSE 0 
+			END
+		) 
+		FROM exchange 
+		WHERE deleted_at = 0 AND product_id = $1
+	`
+	err = p.db.QueryRow(query, req.Id).Scan(&totalAmount)
+	if err != nil && err != sql.ErrNoRows {
+		return nil, err
+	}
+	
+	if currentPrice.Valid {
+		product.Price = currentPrice.Float64
+	} else {
+		product.Price = 0.0 // agar narx topilmasa
+	}
+	if totalAmount != 0 {
+		product.Amount = totalAmount
+	} else {
+		product.Amount = 0 // agar mahsulot miqdori topilmasa
+	}
+
 	return &product, nil
 }
 func (p *ProductStorage) UpdateProduct(req *pb.UpdateProductRequest) (*pb.ProductResponse, error) {
@@ -145,10 +229,10 @@ func (p *ProductStorage) ListProducts(req *pb.GetAllProductRequest) (*pb.GetAllP
 	// 	WHERE deleted_at = 0 and storage_id = $1
 	// `
 	query := `
-	SELECT id, name, color, model, image_url, made_in, date_of_creation, storage_id, created_at, updated_at, deleted_at
-	FROM products
-	WHERE deleted_at = 0
-`
+		SELECT id, name, color, model, image_url, made_in, date_of_creation, storage_id, created_at, updated_at, deleted_at
+		FROM products
+		WHERE deleted_at = 0
+	`
 
 	var args []interface{}
 	argCounter := 1
@@ -169,6 +253,12 @@ func (p *ProductStorage) ListProducts(req *pb.GetAllProductRequest) (*pb.GetAllP
 		args = append(args, "%"+req.Model+"%")
 		argCounter++
 	}
+
+	if req.Limit != 0 && req.Offset != 0 {
+		query += fmt.Sprintf(" LIMIT $%d OFFSET $%d", argCounter, argCounter+1)
+		args = append(args, req.Limit, req.Offset)
+	}
+
 	// if req.StorageId != "" {
 	// 	query += fmt.Sprintf(" AND storage_id = $%d", argCounter)
 	// 	args = append(args, req.StorageId)
@@ -192,6 +282,91 @@ func (p *ProductStorage) ListProducts(req *pb.GetAllProductRequest) (*pb.GetAllP
 			log.Println("Failed to scan product:", err)
 			return nil, err
 		}
+		
+		priceQuery := `
+			WITH buy_orders AS (
+				SELECT 
+					id, 
+					product_id, 
+					amount, 
+					price, 
+					created_at
+				FROM 
+					exchange
+				WHERE 
+					status = 'buy' 
+					AND product_id = $1
+					AND deleted_at = 0
+				ORDER BY 
+					created_at ASC
+			),
+			sell_total AS (
+				SELECT 
+					COALESCE(SUM(amount), 0) AS total_sold
+				FROM 
+					exchange
+				WHERE 
+					status = 'sell' 
+					AND product_id = $1
+					AND deleted_at = 0
+			),
+			remaining_buy_orders AS (
+				SELECT 
+					id, 
+					product_id, 
+					amount, 
+					price, 
+					created_at,
+					SUM(amount) OVER (ORDER BY created_at ASC) - (SELECT total_sold FROM sell_total) AS remaining
+				FROM 
+					buy_orders
+			)
+			SELECT 
+				price
+			FROM 
+				remaining_buy_orders
+			WHERE 
+				remaining > 0
+			ORDER BY 
+				created_at
+			LIMIT 1;
+		`
+		
+		var currentPrice sql.NullFloat64
+		var totalAmount int32
+
+		err = p.db.QueryRow(priceQuery, product.Id).Scan(&currentPrice)
+		if err != nil && err != sql.ErrNoRows {
+			return nil, err
+		}
+		
+		query = `
+			SELECT SUM(
+				CASE 
+					WHEN status = 'buy' THEN amount 
+					WHEN status = 'sell' THEN -amount 
+					ELSE 0 
+				END
+			) 
+			FROM exchange 
+			WHERE deleted_at = 0 AND product_id = $1
+		`
+		err = p.db.QueryRow(query, product.Id).Scan(&totalAmount)
+		if err != nil && err != sql.ErrNoRows {
+			return nil, err
+		}
+		
+		if currentPrice.Valid {
+			product.Price = currentPrice.Float64
+		} else {
+			product.Price = 0.0 // agar narx topilmasa
+		}
+		if totalAmount != 0 {
+			product.Amount = totalAmount
+		} else {
+			product.Amount = 0 // agar mahsulot miqdori topilmasa
+		}
+
 		products.AllProducts = append(products.AllProducts, &product)
 	}
 

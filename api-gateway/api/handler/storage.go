@@ -130,6 +130,8 @@ func (h *Handler) ListStorages(ctx *gin.Context) {
 	var req pb.GetAllStorageRequest
 	req.Name = ctx.Query("name")
 	req.UserId = ctx.Query("user_id")
+	req.Limit = ParseQueryInt32(ctx, "limit", 10) // Default limit 10
+	req.Offset = ParseQueryInt32(ctx, "offset", 0) // Default offset 0
 	res, err := h.StorageService.ListStorages(context.Background(), &req)
 	if err != nil {
 		log.Print(err)

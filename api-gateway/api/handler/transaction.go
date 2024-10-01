@@ -136,7 +136,8 @@ func (h *Handler) DeleteTransaction(ctx *gin.Context) {
 func (h *Handler) ListTransactions(ctx *gin.Context) {
 	contractID := ctx.Query("contract_id")
 	req := &pb.GetAllTransactionRequest{ContractId: contractID}
-
+	req.Limit = ParseQueryInt32(ctx, "limit", 10) // Default limit 10
+	req.Offset = ParseQueryInt32(ctx, "offset", 0) // Default offset 0
 	res, err := h.TransactionService.ListTransactions(context.Background(), req)
 	if err != nil {
 		log.Print(err)

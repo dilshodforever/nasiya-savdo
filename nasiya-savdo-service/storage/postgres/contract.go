@@ -45,24 +45,24 @@ func (p *ContractStorage) GetContract(req *pb.ContractIdRequest) (*pb.GetContrac
 	`
 	var contract pb.GetContractResponse
 	var deletedAt sql.NullString
-	
+
 	err := p.db.QueryRow(query, req.Id).Scan(
 		&contract.Id, &contract.ConsumerName, &contract.ConsumerPassportSerial, &contract.ConsumerAddress, &contract.ConsumerPhoneNumber,
 		&contract.PassportImage, &contract.Status, &contract.Duration, &contract.CreatedAt, &deletedAt,
 	)
-	
+
 	if err != nil {
 		log.Printf("Error querying contract with ID %s: %v", req.Id, err)
 		return nil, err
 	}
-	
+
 	// Handle deleted_at field
 	if deletedAt.Valid {
 		contract.DeletedAt = deletedAt.String
 	} else {
 		contract.DeletedAt = ""
 	}
-	
+
 	// Query for the exchange details
 	var amount int32
 	var price float64
@@ -71,7 +71,7 @@ func (p *ContractStorage) GetContract(req *pb.ContractIdRequest) (*pb.GetContrac
 		FROM exchange
 		WHERE contract_id = $1 AND deleted_at = 0
 	`
-	rows, err := p.db.Query(query, req.Id)  // Pass req.Id as the parameter
+	rows, err := p.db.Query(query, req.Id) // Pass req.Id as the parameter
 	if err != nil {
 		log.Printf("Error querying exchange details for contract ID %s: %v", req.Id, err)
 		return nil, err
@@ -96,7 +96,6 @@ func (p *ContractStorage) GetContract(req *pb.ContractIdRequest) (*pb.GetContrac
 
 	return &contract, nil
 }
-
 
 func (p *ContractStorage) UpdateContract(req *pb.UpdateContractRequest) (*pb.ContractResponse, error) {
 	update := map[string]interface{}{}
@@ -203,6 +202,11 @@ func (p *ContractStorage) ListContracts(req *pb.GetAllContractRequest) (*pb.GetA
 		query += fmt.Sprintf(" AND status = $%d", count)
 		args = append(args, req.Status)
 		count++
+	}
+
+	if req.Limit != 0 && req.Offset != 0 {
+		query += fmt.Sprintf(" LIMIT $%d OFFSET $%d", count, count+1)
+		args = append(args, req.Limit, req.Offset)
 	}
 
 	// Execute the contract query
