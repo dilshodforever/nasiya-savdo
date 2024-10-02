@@ -129,6 +129,8 @@ func (h *Handler) DeleteTransaction(ctx *gin.Context) {
 // @Produce      json
 // @Security     BearerAuth
 // @Param        contract_id query string false "Contract ID"
+// @Param        limit query string false "Storage ID"
+// @Param        offset query string false "Storage ID"
 // @Success      200 {object} pb.GetAllTransactionResponse "List of transactions"
 // @Failure      400 {string} string "Invalid input"
 // @Failure      500 {string} string "Error while listing transactions"

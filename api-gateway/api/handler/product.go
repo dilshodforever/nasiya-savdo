@@ -126,6 +126,8 @@ func (h *Handler) DeleteProduct(ctx *gin.Context) {
 // @Param        color query string false "Product Color"
 // @Param        model query string false "Product Model"
 // @Param        storage_id query string false "Storage ID"
+// @Param        limit query string false "Storage ID"
+// @Param        offset query string false "Storage ID"
 // @Success      200 {object} pb.GetAllProductResponse "Products retrieved successfully"
 // @Failure      500 {string} string "Error while listing products"
 // @Router       /product/list [get]

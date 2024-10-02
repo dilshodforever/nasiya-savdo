@@ -249,6 +249,18 @@ const docTemplate = `{
                         "description": "Filter by passport seria",
                         "name": "pasport_seria",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Storage ID",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Storage ID",
+                        "name": "offset",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -518,6 +530,18 @@ const docTemplate = `{
                         "type": "string",
                         "description": "Exchange Status",
                         "name": "status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Storage ID",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Storage ID",
+                        "name": "offset",
                         "in": "query"
                     }
                 ],
@@ -954,6 +978,18 @@ const docTemplate = `{
                         "description": "Storage ID",
                         "name": "storage_id",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Storage ID",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Storage ID",
+                        "name": "offset",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -1157,6 +1193,18 @@ const docTemplate = `{
                         "type": "string",
                         "description": "User ID",
                         "name": "user_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Storage ID",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Storage ID",
+                        "name": "offset",
                         "in": "query"
                     }
                 ],
@@ -1403,6 +1451,18 @@ const docTemplate = `{
                         "type": "string",
                         "description": "Contract ID",
                         "name": "contract_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Storage ID",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Storage ID",
+                        "name": "offset",
                         "in": "query"
                     }
                 ],
@@ -1849,6 +1909,9 @@ const docTemplate = `{
         "genprotos.GetProductResponse": {
             "type": "object",
             "properties": {
+                "amount": {
+                    "type": "integer"
+                },
                 "color": {
                     "type": "string"
                 },
@@ -1875,6 +1938,9 @@ const docTemplate = `{
                 },
                 "name": {
                     "type": "string"
+                },
+                "price": {
+                    "type": "number"
                 },
                 "storage_id": {
                     "type": "string"

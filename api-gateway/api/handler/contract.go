@@ -134,6 +134,8 @@ func (h *Handler) DeleteContract(ctx *gin.Context) {
 // @Param        consumer_name query string false "Filter by consumer name"
 // @Param        status query string false "Filter by status"
 // @Param        pasport_seria query string false "Filter by passport seria"
+// @Param        limit query string false "Storage ID"
+// @Param        offset query string false "Storage ID"
 // @Success      200 {object} pb.GetAllContractResponse "List of contracts"
 // @Failure      500 {string} string "Error while retrieving contracts"
 // @Router       /contract/list [get]
