@@ -23,10 +23,6 @@ import (
 func NewGin(h *handler.Handler) *gin.Engine {
 	r := gin.Default()
 
-	r.OPTIONS("/*any", func(c *gin.Context) {
-		c.Status(200)
-	})
-
 	// Middleware setup
 	ca, err := casbin.NewEnforcer("config/model.conf", "config/policy.csv")
 	if err != nil {
