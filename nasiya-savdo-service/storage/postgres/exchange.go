@@ -196,7 +196,7 @@ func (p *ExchangeStorage) ListExchanges(req *pb.GetAllExchangeRequest) (*pb.GetA
 		count++
 	}
 
-	if req.Limit != 0 && req.Offset != 0 {
+	if req.Limit != 0 || req.Offset != 0 {
 		query += fmt.Sprintf(" LIMIT $%d OFFSET $%d", count, count+1)
 		args = append(args, req.Limit, req.Offset)
 	}

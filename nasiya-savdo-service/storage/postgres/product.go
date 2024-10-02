@@ -254,7 +254,7 @@ func (p *ProductStorage) ListProducts(req *pb.GetAllProductRequest) (*pb.GetAllP
 		argCounter++
 	}
 
-	if req.Limit != 0 && req.Offset != 0 {
+	if req.Limit != 0 || req.Offset != 0 {
 		query += fmt.Sprintf(" LIMIT $%d OFFSET $%d", argCounter, argCounter+1)
 		args = append(args, req.Limit, req.Offset)
 	}

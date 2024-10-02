@@ -106,7 +106,7 @@ func (p *UserStorage) GetAll(filter *pb.UserFilter) (*pb.AllUsers, error) {
 	}
 
 	// Apply limit and offset
-	if filter.Limit != 0 && filter.Offset != 0 {
+	if filter.Limit != 0 || filter.Offset != 0 {
 		query += fmt.Sprintf(" LIMIT $%d OFFSET $%d", count, count+1)
 		params = append(params, filter.Limit, filter.Offset)
 	}
