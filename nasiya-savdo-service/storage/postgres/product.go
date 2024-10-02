@@ -333,7 +333,7 @@ func (p *ProductStorage) ListProducts(req *pb.GetAllProductRequest) (*pb.GetAllP
 		`
 		
 		var currentPrice sql.NullFloat64
-		var totalAmount int32
+		var totalAmount sql.NullInt32
 
 		err = p.db.QueryRow(priceQuery, product.Id).Scan(&currentPrice)
 		if err != nil && err != sql.ErrNoRows {
@@ -361,8 +361,8 @@ func (p *ProductStorage) ListProducts(req *pb.GetAllProductRequest) (*pb.GetAllP
 		} else {
 			product.Price = 0.0 // agar narx topilmasa
 		}
-		if totalAmount != 0 {
-			product.Amount = totalAmount
+		if totalAmount.Valid {
+			product.Amount = totalAmount.Int32
 		} else {
 			product.Amount = 0 // agar mahsulot miqdori topilmasa
 		}
