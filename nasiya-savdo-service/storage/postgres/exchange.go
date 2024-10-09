@@ -235,7 +235,7 @@ func (p *ExchangeStorage) ListExchanges(req *pb.GetAllExchangeRequest) (*pb.GetA
 		exchanges.AllExchanges = append(exchanges.AllExchanges, &exchange)
 	}
 
-	query = `SELECT COUNT(1) FROM contract`
+	query = `SELECT COUNT(1) FROM exchange`
 	err = p.db.QueryRow(query).Scan(&count)
 	if err != nil {
 		return nil, err

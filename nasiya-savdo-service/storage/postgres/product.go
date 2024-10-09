@@ -370,7 +370,7 @@ func (p *ProductStorage) ListProducts(req *pb.GetAllProductRequest) (*pb.GetAllP
 		products.AllProducts = append(products.AllProducts, &product)
 	}
 
-	query = `SELECT COUNT(1) FROM contract`
+	query = `SELECT COUNT(1) FROM products`
 	err = p.db.QueryRow(query).Scan(&argCounter)
 	if err != nil {
 		return nil, err
