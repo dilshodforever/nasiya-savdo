@@ -47,5 +47,6 @@ message GetAllStorageRequest {
 
 message GetAllStorageResponse {
     repeated GetStorageResponse all_storages = 1;
-    string message = 2;
+    int32 count = 2;
+    string message = 3;
 }

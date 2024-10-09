@@ -59,5 +59,6 @@ message GetAllExchangeRequest {
 
 message GetAllExchangeResponse {
     repeated GetExchangeResponse all_exchanges = 1;
-    string message = 2;
+    int32 count = 2;
+    string message = 3;
 }

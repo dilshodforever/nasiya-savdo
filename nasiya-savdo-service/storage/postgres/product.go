@@ -370,6 +370,13 @@ func (p *ProductStorage) ListProducts(req *pb.GetAllProductRequest) (*pb.GetAllP
 		products.AllProducts = append(products.AllProducts, &product)
 	}
 
+	query = `SELECT COUNT(1) FROM contract`
+	err = p.db.QueryRow(query).Scan(&argCounter)
+	if err != nil {
+		return nil, err
+	}
+	products.Count = int32(argCounter)
+
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}

@@ -247,6 +247,13 @@ func (p *TransactionStorage) ListTransactions(req *pb.GetAllTransactionRequest) 
 		transactions.AllTransactions = append(transactions.AllTransactions, &transaction)
 	}
 
+	query = `SELECT COUNT(1) FROM contract`
+	err = p.db.QueryRow(query).Scan(&count)
+	if err != nil {
+		return nil, err
+	}
+	transactions.Count = int32(count)
+
 	return &transactions, nil
 }
 

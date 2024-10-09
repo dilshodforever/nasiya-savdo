@@ -52,7 +52,8 @@ message GetAllTransactionRequest {
 
 message GetAllTransactionResponse {
     repeated GetTransactionResponse all_transactions = 1;
-    string message = 2;
+    int32 count = 2;
+    string message = 3;
 }
 
 message CheckRequest{

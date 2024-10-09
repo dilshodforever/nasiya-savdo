@@ -270,6 +270,13 @@ func (p *ContractStorage) ListContracts(req *pb.GetAllContractRequest) (*pb.GetA
 		contracts.AllContracts = append(contracts.AllContracts, &contract)
 	}
 
+	query = `SELECT COUNT(1) FROM contract`
+	err = p.db.QueryRow(query).Scan(&count)
+	if err != nil {
+		return nil, err
+	}
+	contracts.Count = int32(count)
+
 	// Check for errors during the contract row iteration
 	if err := rows.Err(); err != nil {
 		return nil, err

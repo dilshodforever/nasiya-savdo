@@ -77,5 +77,6 @@ message GetAllProductRequest {
 
 message GetAllProductResponse {
     repeated GetProductResponse all_products = 1;
-    string message = 2;
+    int32 count = 2;
+    string message = 3;
 }

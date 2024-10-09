@@ -235,6 +235,13 @@ func (p *ExchangeStorage) ListExchanges(req *pb.GetAllExchangeRequest) (*pb.GetA
 		exchanges.AllExchanges = append(exchanges.AllExchanges, &exchange)
 	}
 
+	query = `SELECT COUNT(1) FROM contract`
+	err = p.db.QueryRow(query).Scan(&count)
+	if err != nil {
+		return nil, err
+	}
+	exchanges.Count = int32(count)
+
 	// Check for errors after iterating through rows
 	if err = rows.Err(); err != nil {
 		return nil, err

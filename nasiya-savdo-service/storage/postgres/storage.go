@@ -159,5 +159,12 @@ func (p *StorageStorage) ListStorages(req *pb.GetAllStorageRequest) (*pb.GetAllS
 		storages.AllStorages = append(storages.AllStorages, &storage)
 	}
 
+	query = `SELECT COUNT(1) FROM contract`
+	err = p.db.QueryRow(query).Scan(&count)
+	if err != nil {
+		return nil, err
+	}
+	storages.Count = int32(count)
+
 	return &storages, nil
 }
