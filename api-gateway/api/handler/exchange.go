@@ -128,8 +128,8 @@ func (h *Handler) DeleteExchange(ctx *gin.Context) {
 // @Security     BearerAuth
 // @Param        product_id query string false "Product ID"
 // @Param        status query string false "Exchange Status" Enums(buy, sell)
-// @Param        limit query string false "Storage ID"
-// @Param        offset query string false "Storage ID"
+// @Param        limit query string false "Limit"
+// @Param        offset query string false "Offset"
 // @Success      200 {object} pb.GetAllExchangeResponse "List of exchanges retrieved successfully"
 // @Failure      500 {string} string "Error while listing exchanges"
 // @Router       /exchange/list [get]

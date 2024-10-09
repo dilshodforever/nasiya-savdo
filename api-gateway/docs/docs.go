@@ -252,13 +252,13 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Storage ID",
+                        "description": "Limit",
                         "name": "limit",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "description": "Storage ID",
+                        "description": "Offset",
                         "name": "offset",
                         "in": "query"
                     }
@@ -534,13 +534,13 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Storage ID",
+                        "description": "Limit",
                         "name": "limit",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "description": "Storage ID",
+                        "description": "Offset",
                         "name": "offset",
                         "in": "query"
                     }
@@ -981,13 +981,13 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Storage ID",
+                        "description": "Limit",
                         "name": "limit",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "description": "Storage ID",
+                        "description": "Offset",
                         "name": "offset",
                         "in": "query"
                     }
@@ -1197,13 +1197,13 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Storage ID",
+                        "description": "Limit",
                         "name": "limit",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "description": "Storage ID",
+                        "description": "Offset",
                         "name": "offset",
                         "in": "query"
                     }
@@ -1455,13 +1455,13 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Storage ID",
+                        "description": "Limit",
                         "name": "limit",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "description": "Storage ID",
+                        "description": "Offset",
                         "name": "offset",
                         "in": "query"
                     }
@@ -1758,6 +1758,9 @@ const docTemplate = `{
                         "$ref": "#/definitions/genprotos.GetContractResponse"
                     }
                 },
+                "count": {
+                    "type": "integer"
+                },
                 "message": {
                     "type": "string"
                 }
@@ -1771,6 +1774,9 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/genprotos.GetExchangeResponse"
                     }
+                },
+                "count": {
+                    "type": "integer"
                 },
                 "message": {
                     "type": "string"
@@ -1786,6 +1792,9 @@ const docTemplate = `{
                         "$ref": "#/definitions/genprotos.GetProductResponse"
                     }
                 },
+                "count": {
+                    "type": "integer"
+                },
                 "message": {
                     "type": "string"
                 }
@@ -1800,6 +1809,9 @@ const docTemplate = `{
                         "$ref": "#/definitions/genprotos.GetStorageResponse"
                     }
                 },
+                "count": {
+                    "type": "integer"
+                },
                 "message": {
                     "type": "string"
                 }
@@ -1813,6 +1825,9 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/genprotos.GetTransactionResponse"
                     }
+                },
+                "count": {
+                    "type": "integer"
                 },
                 "message": {
                     "type": "string"

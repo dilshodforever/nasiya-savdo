@@ -123,8 +123,8 @@ func (h *Handler) DeleteStorage(ctx *gin.Context) {
 // @Security     BearerAuth
 // @Param        name query string false "Storage name"
 // @Param        user_id query string false "User ID"
-// @Param        limit query string false "Storage ID"
-// @Param        offset query string false "Storage ID"
+// @Param        limit query string false "Limit"
+// @Param        offset query string false "Offset"
 // @Success      200 {object} pb.GetAllStorageResponse "List of storages retrieved successfully"
 // @Failure      500 {string} string "Error while listing storages"
 // @Router       /storage/list [get]

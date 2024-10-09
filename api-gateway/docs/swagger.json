@@ -245,13 +245,13 @@
                     },
                     {
                         "type": "string",
-                        "description": "Storage ID",
+                        "description": "Limit",
                         "name": "limit",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "description": "Storage ID",
+                        "description": "Offset",
                         "name": "offset",
                         "in": "query"
                     }
@@ -527,13 +527,13 @@
                     },
                     {
                         "type": "string",
-                        "description": "Storage ID",
+                        "description": "Limit",
                         "name": "limit",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "description": "Storage ID",
+                        "description": "Offset",
                         "name": "offset",
                         "in": "query"
                     }
@@ -974,13 +974,13 @@
                     },
                     {
                         "type": "string",
-                        "description": "Storage ID",
+                        "description": "Limit",
                         "name": "limit",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "description": "Storage ID",
+                        "description": "Offset",
                         "name": "offset",
                         "in": "query"
                     }
@@ -1190,13 +1190,13 @@
                     },
                     {
                         "type": "string",
-                        "description": "Storage ID",
+                        "description": "Limit",
                         "name": "limit",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "description": "Storage ID",
+                        "description": "Offset",
                         "name": "offset",
                         "in": "query"
                     }
@@ -1448,13 +1448,13 @@
                     },
                     {
                         "type": "string",
-                        "description": "Storage ID",
+                        "description": "Limit",
                         "name": "limit",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "description": "Storage ID",
+                        "description": "Offset",
                         "name": "offset",
                         "in": "query"
                     }
@@ -1751,6 +1751,9 @@
                         "$ref": "#/definitions/genprotos.GetContractResponse"
                     }
                 },
+                "count": {
+                    "type": "integer"
+                },
                 "message": {
                     "type": "string"
                 }
@@ -1764,6 +1767,9 @@
                     "items": {
                         "$ref": "#/definitions/genprotos.GetExchangeResponse"
                     }
+                },
+                "count": {
+                    "type": "integer"
                 },
                 "message": {
                     "type": "string"
@@ -1779,6 +1785,9 @@
                         "$ref": "#/definitions/genprotos.GetProductResponse"
                     }
                 },
+                "count": {
+                    "type": "integer"
+                },
                 "message": {
                     "type": "string"
                 }
@@ -1793,6 +1802,9 @@
                         "$ref": "#/definitions/genprotos.GetStorageResponse"
                     }
                 },
+                "count": {
+                    "type": "integer"
+                },
                 "message": {
                     "type": "string"
                 }
@@ -1806,6 +1818,9 @@
                     "items": {
                         "$ref": "#/definitions/genprotos.GetTransactionResponse"
                     }
+                },
+                "count": {
+                    "type": "integer"
                 },
                 "message": {
                     "type": "string"

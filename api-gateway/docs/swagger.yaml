@@ -76,6 +76,8 @@ definitions:
         items:
           $ref: '#/definitions/genprotos.GetContractResponse'
         type: array
+      count:
+        type: integer
       message:
         type: string
     type: object
@@ -85,6 +87,8 @@ definitions:
         items:
           $ref: '#/definitions/genprotos.GetExchangeResponse'
         type: array
+      count:
+        type: integer
       message:
         type: string
     type: object
@@ -94,6 +98,8 @@ definitions:
         items:
           $ref: '#/definitions/genprotos.GetProductResponse'
         type: array
+      count:
+        type: integer
       message:
         type: string
     type: object
@@ -103,6 +109,8 @@ definitions:
         items:
           $ref: '#/definitions/genprotos.GetStorageResponse'
         type: array
+      count:
+        type: integer
       message:
         type: string
     type: object
@@ -112,6 +120,8 @@ definitions:
         items:
           $ref: '#/definitions/genprotos.GetTransactionResponse'
         type: array
+      count:
+        type: integer
       message:
         type: string
     type: object
@@ -482,11 +492,11 @@ paths:
         in: query
         name: pasport_seria
         type: string
-      - description: Storage ID
+      - description: Limit
         in: query
         name: limit
         type: string
-      - description: Storage ID
+      - description: Offset
         in: query
         name: offset
         type: string
@@ -663,11 +673,11 @@ paths:
         in: query
         name: status
         type: string
-      - description: Storage ID
+      - description: Limit
         in: query
         name: limit
         type: string
-      - description: Storage ID
+      - description: Offset
         in: query
         name: offset
         type: string
@@ -948,11 +958,11 @@ paths:
         in: query
         name: storage_id
         type: string
-      - description: Storage ID
+      - description: Limit
         in: query
         name: limit
         type: string
-      - description: Storage ID
+      - description: Offset
         in: query
         name: offset
         type: string
@@ -1086,11 +1096,11 @@ paths:
         in: query
         name: user_id
         type: string
-      - description: Storage ID
+      - description: Limit
         in: query
         name: limit
         type: string
-      - description: Storage ID
+      - description: Offset
         in: query
         name: offset
         type: string
@@ -1325,11 +1335,11 @@ paths:
         in: query
         name: contract_id
         type: string
-      - description: Storage ID
+      - description: Limit
         in: query
         name: limit
         type: string
-      - description: Storage ID
+      - description: Offset
         in: query
         name: offset
         type: string
