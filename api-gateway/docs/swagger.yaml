@@ -572,14 +572,18 @@ paths:
         name: exchange
         required: true
         schema:
-          $ref: '#/definitions/genprotos.CreateExchangeRequest'
+          items:
+            $ref: '#/definitions/genprotos.CreateExchangeRequest'
+          type: array
       produces:
       - application/json
       responses:
         "200":
           description: Exchange created successfully
           schema:
-            $ref: '#/definitions/genprotos.ExchangeResponse'
+            items:
+              $ref: '#/definitions/genprotos.ExchangeResponse'
+            type: array
         "400":
           description: Invalid input
           schema:

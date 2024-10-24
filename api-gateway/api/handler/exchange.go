@@ -16,26 +16,30 @@ import (
 // @Produce      json
 // @Security     BearerAuth
 // @Param        status query string true "Exchange Status" Enums(buy, sell)
-// @Param        exchange body pb.CreateExchangeRequest true "Exchange details"
-// @Success      200 {object} pb.ExchangeResponse "Exchange created successfully"
+// @Param        exchange body []pb.CreateExchangeRequest true "Exchange details"
+// @Success      200 {object} []pb.ExchangeResponse "Exchange created successfully"
 // @Failure      400 {string} string "Invalid input"
 // @Failure      500 {string} string "Error while creating exchange"
 // @Router       /exchange/create [post]
 func (h *Handler) CreateExchange(ctx *gin.Context) {
-	var req pb.CreateExchangeRequest
-	if err := ctx.ShouldBindJSON(&req); err != nil {
+	var reqs []pb.CreateExchangeRequest  // Accept an array of requests
+	if err := ctx.ShouldBindJSON(&reqs); err != nil {
 		ctx.JSON(400, gin.H{"error": "Invalid input"})
 		return
 	}
-	req.Status = ctx.Query("status")
 
-	res, err := h.ExchangeService.CreateExchange(context.Background(), &req)
-	if err != nil {
-		log.Print(err)
-		ctx.JSON(500, gin.H{"error": err.Error()})
-		return
+	for i := 0; i < len(reqs); i++ {
+		reqs[i].Status = ctx.Query("status")
+
+		_, err := h.ExchangeService.CreateExchange(context.Background(), &reqs[i])
+		if err != nil {
+			log.Print(err)
+			ctx.JSON(500, gin.H{"error": err.Error()})
+			return
+		}
 	}
-	ctx.JSON(200, res)
+
+	ctx.JSON(200, gin.H{"message": "Exchanges created successfully"})
 }
 
 // GetExchange retrieves an exchange by its ID

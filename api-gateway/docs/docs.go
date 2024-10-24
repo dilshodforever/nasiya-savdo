@@ -373,7 +373,10 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/genprotos.CreateExchangeRequest"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/genprotos.CreateExchangeRequest"
+                            }
                         }
                     }
                 ],
@@ -381,7 +384,10 @@ const docTemplate = `{
                     "200": {
                         "description": "Exchange created successfully",
                         "schema": {
-                            "$ref": "#/definitions/genprotos.ExchangeResponse"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/genprotos.ExchangeResponse"
+                            }
                         }
                     },
                     "400": {
