@@ -64,7 +64,7 @@ func GenereteJWTToken(user *pb.UserLoginRes) *Tokens {
 	claims["role"] = "admin"
 	claims["storage_id"] = user.StorageId
 	claims["iat"] = time.Now().Unix()
-	claims["exp"] = time.Now().Add(60 * time.Minute).Unix()
+	claims["exp"] = time.Now().Add(24 * time.Hour).Unix()
 	access, err := accessToken.SignedString([]byte(tokenKey))
 	if err != nil {
 		log.Fatal("error while genereting access token : ", err)
