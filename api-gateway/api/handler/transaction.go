@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 
-	"github.com/dilshodforever/nasiya-savdo/api/middleware"
+	//"github.com/dilshodforever/nasiya-savdo/api/middleware"
 	pb "github.com/dilshodforever/nasiya-savdo/genprotos"
 	"github.com/gin-gonic/gin"
 )
@@ -16,7 +16,7 @@ import (
 // @Accept       json
 // @Produce      json
 // @Security     BearerAuth
-// @Param        transaction body pb.CreateTransactionRequest true "Transaction details"
+// @Param        transaction body pb.CreateTransactionRequestSwagger true "Transaction details"
 // @Success      200 {object} pb.TransactionResponse "Transaction created successfully"
 // @Failure      400 {string} string "Invalid input"
 // @Failure      500 {string} string "Error while creating transaction"
@@ -149,46 +149,46 @@ func (h *Handler) ListTransactions(ctx *gin.Context) {
 	ctx.JSON(200, res)
 }
 
-// CheckTransactions handles checking for due payments
-// @Summary      Test Transactions
-// @Description  Check all pending transactions and return a message if any payments are due this month
-// @Tags         Transactions
-// @Accept       json
-// @Produce      json
-// @Security     BearerAuth
-// @Success      200 {object} pb.CheckResponse "Payments due this month"
-// @Failure      500 {string} string "Error while checking transactions"
-// @Router       /transaction/check [post]
-func (h *Handler) CheckTransactions(ctx *gin.Context) {
-	req := &pb.CheckRequest{}
-	req.StorageId = middleware.GetStorageId(ctx)
-	req.UserId=middleware.GetUserId(ctx)
-	res, err := h.TransactionService.CheckTransactions(ctx.Copy(), req)
-	if err != nil {
-		ctx.JSON(500, gin.H{"error": err.Error()})
-		return
-	}
+// // CheckTransactions handles checking for due payments
+// // @Summary      Test Transactions
+// // @Description  Check all pending transactions and return a message if any payments are due this month
+// // @Tags         Transactions
+// // @Accept       json
+// // @Produce      json
+// // @Security     BearerAuth
+// // @Success      200 {object} pb.CheckResponse "Payments due this month"
+// // @Failure      500 {string} string "Error while checking transactions"
+// // @Router       /transaction/check [post]
+// func (h *Handler) CheckTransactions(ctx *gin.Context) {
+// 	req := &pb.CheckRequest{}
+// 	req.StorageId = middleware.GetStorageId(ctx)
+// 	req.UserId=middleware.GetUserId(ctx)
+// 	res, err := h.TransactionService.CheckTransactions(ctx.Copy(), req)
+// 	if err != nil {
+// 		ctx.JSON(500, gin.H{"error": err.Error()})
+// 		return
+// 	}
 
-	ctx.JSON(200, res)
-}
+// 	ctx.JSON(200, res)
+// }
 
-// TestNotification handles checking for due payments
-// @Summary      Test Notification
-// @Description  Check all pending transactions and return a message if any payments are due this month
-// @Tags         Transactions
-// @Accept       json
-// @Produce      json
-// @Security     BearerAuth
-// @Success      200 {object} pb.Testresponse "Payments due this month"
-// @Failure      500 {string} string "Error while checking transactions"
-// @Router       /transaction/test [post]
-func (h *Handler) TestNotification(ctx *gin.Context) {
-	req := &pb.Testresponse{}
-	res, err := h.TransactionService.TestNotification(ctx.Copy(), req)
-	if err != nil {
-		ctx.JSON(500, gin.H{"error": err.Error()})
-		return
-	}
+// // TestNotification handles checking for due payments
+// // @Summary      Test Notification
+// // @Description  Check all pending transactions and return a message if any payments are due this month
+// // @Tags         Transactions
+// // @Accept       json
+// // @Produce      json
+// // @Security     BearerAuth
+// // @Success      200 {object} pb.Testresponse "Payments due this month"
+// // @Failure      500 {string} string "Error while checking transactions"
+// // @Router       /transaction/test [post]
+// func (h *Handler) TestNotification(ctx *gin.Context) {
+// 	req := &pb.Testresponse{}
+// 	res, err := h.TransactionService.TestNotification(ctx.Copy(), req)
+// 	if err != nil {
+// 		ctx.JSON(500, gin.H{"error": err.Error()})
+// 		return
+// 	}
 
-	ctx.JSON(200, res)
-}
+// 	ctx.JSON(200, res)
+// }

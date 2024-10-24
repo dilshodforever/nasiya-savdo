@@ -28,7 +28,8 @@ message CreateContractRequestSwagger {
     string consumer_passport_serial = 2;
     string consumer_address = 3;
     string consumer_phone_number = 4;
-    int32 duration = 7;
+    int32 duration = 5;
+    string passport_image = 6;
 }
 
 message ContractIdRequest {

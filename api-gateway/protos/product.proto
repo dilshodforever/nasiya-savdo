@@ -27,7 +27,7 @@ message CreateProductRequestSwagger {
     string model = 3;
     string made_in = 5;
     string date_of_creation = 6;
-    string storage_id = 7;
+    string image_url = 7;
 }
 
 message ProductIdRequest {

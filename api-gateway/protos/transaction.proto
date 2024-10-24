@@ -20,6 +20,11 @@ message CreateTransactionRequest {
     int32 duration = 3; 
 }
 
+message CreateTransactionRequestSwagger {
+    string contract_id = 1;
+    double price = 2;
+}
+
 message TransactionIdRequest {
     string id = 1;
 }

@@ -34,29 +34,29 @@ func (h *Handler) GetNotification(ctx *gin.Context) {
 	ctx.JSON(200, res)
 }
 
-// DeleteNotification handles deleting a notification by user_id
-// @Summary      Delete Notification
-// @Description  Delete a notification by user_id
-// @Tags         Notification
-// @Accept       json
-// @Produce      json
-// @Security     BearerAuth
-// @Success      200 {object} pb.NotificationsResponse "Notification deleted successfully"
-// @Failure      404 {string} string "Notification not found"
-// @Failure      500 {string} string "Error while deleting notification"
-// @Router       /notifications/delete [delete]
-func (h *Handler) DeleteNotification(ctx *gin.Context) {
-	var req pb.GetNotificationByidRequest
-	id:=middleware.GetUserId(ctx)
-	req.UserId=id
-	res, err := h.Notification.DeleteNotification(ctx, &req)
-	if err != nil {
-		ctx.JSON(500, gin.H{"error": err.Error()})
-		return
-	}
+// // DeleteNotification handles deleting a notification by user_id
+// // @Summary      Delete Notification
+// // @Description  Delete a notification by user_id
+// // @Tags         Notification
+// // @Accept       json
+// // @Produce      json
+// // @Security     BearerAuth
+// // @Success      200 {object} pb.NotificationsResponse "Notification deleted successfully"
+// // @Failure      404 {string} string "Notification not found"
+// // @Failure      500 {string} string "Error while deleting notification"
+// // @Router       /notifications/delete [delete]
+// func (h *Handler) DeleteNotification(ctx *gin.Context) {
+// 	var req pb.GetNotificationByidRequest
+// 	id:=middleware.GetUserId(ctx)
+// 	req.UserId=id
+// 	res, err := h.Notification.DeleteNotification(ctx, &req)
+// 	if err != nil {
+// 		ctx.JSON(500, gin.H{"error": err.Error()})
+// 		return
+// 	}
 
-	ctx.JSON(200, res)
-}
+// 	ctx.JSON(200, res)
+// }
 
 // ListNotification handles listing all notifications
 // @Summary      List Notifications

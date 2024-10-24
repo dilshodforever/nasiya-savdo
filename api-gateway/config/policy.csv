@@ -1,3 +1,5 @@
+p, unauthorized, /swagger/*any, GET
+
 p, user, /contract/create, POST
 p, user, /contract/get/:id, GET
 p, user, /contract/update, PUT

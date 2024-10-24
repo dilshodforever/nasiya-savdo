@@ -19,7 +19,12 @@ message CreateExchangeRequest {
     string status = 4; // Enum: buy, sell
     string contract_id = 5;
 }
-
+message CreateExchangeRequestSwagger{
+    string product_id = 1;
+    int32 amount = 2;
+    double price = 3;
+    string contract_id = 4;
+}
 message ExchangeIdRequest {
     string id = 1;
 }
