@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"math/rand"
 	"net/http"
-	"strconv"
 	"time"
 
 	token "github.com/dilshodforever/nasiya-savdo/api/token"
@@ -153,7 +152,7 @@ func (h *Handler) VerifyEmail(ctx *gin.Context) {
 // UpdateUserEmail handles updating an existing user
 // @Summary Update Email
 // @Description Update an existing user
-// @Tags Auth
+// @Tags User
 // @Accept json
 // @Security BearerAuth
 // @Produce json
@@ -209,6 +208,7 @@ func (h *Handler) UpdateEmail(ctx *gin.Context) {
 	ctx.JSON(200, "Verification code sent to your email!!!")
 }
 
+/*
 // UpdateUser handles updating an existing user
 // @Summary Update User
 // @Description Update an existing user
@@ -343,6 +343,7 @@ func (h *Handler) GetbyIdUser(ctx *gin.Context) {
 
 	ctx.JSON(200, res)
 }
+*/
 
 // LoginUser handles user login
 // @Summary Login User
@@ -372,13 +373,17 @@ func (h *Handler) LoginUser(ctx *gin.Context) {
 
 	h.redis.Set(res.Id, t.RefreshToken, 30*24*time.Hour)
 
-	ctx.JSON(200, t)
+	ctx.JSON(200, gin.H{
+		"Access token":  t.AccessToken,
+		"Refresh token": t.RefreshToken,
+		"Message":       "Login successfuly",
+	})
 }
 
 // ChangePassword handles changing user password
 // @Summary Change Password
 // @Description Change user password
-// @Tags Auth
+// @Tags User
 // @Accept json
 // @Security BearerAuth
 // @Produce json
@@ -405,7 +410,7 @@ func (h *Handler) ChangePassword(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(200, "Password Changed Successfully")
+	ctx.JSON(200, "Password changed successfully")
 }
 
 // ForgotPassword handles initiating the forgot password process
@@ -426,21 +431,33 @@ func (h *Handler) ForgotPassword(ctx *gin.Context) {
 		ctx.JSON(400, err.Error())
 		return
 	}
-
-	f := rand.Intn(899999) + 100000
-	err = h.redis.SaveToken(forgotPass.Email, fmt.Sprintf("%d", f), time.Minute*2)
+	users, err := h.User.GetAll(ctx, &pb.UserFilter{})
 	if err != nil {
 		ctx.JSON(400, err.Error())
 		return
 	}
 
-	_, err = h.User.ForgotPassword(ctx, &forgotPass)
-	if err != nil {
-		ctx.JSON(400, err.Error())
-		return
+	for i := 0; i < len(users.Users); i++ {
+		if users.Users[i].Email == forgotPass.Email {
+			f := rand.Intn(899999) + 100000
+			err = h.redis.SaveToken(forgotPass.Email, fmt.Sprintf("%d", f), time.Minute*2)
+			if err != nil {
+				ctx.JSON(400, err.Error())
+				return
+			}
+
+			_, err = h.User.ForgotPassword(ctx, &forgotPass)
+			if err != nil {
+				ctx.JSON(400, err.Error())
+				return
+			}
+
+			ctx.JSON(200, "Email message has been sent")
+			return
+		}
 	}
 
-	ctx.JSON(200, "Email message has been sent")
+	ctx.JSON(400, "Email not found")
 }
 
 // ResetPassword handles resetting the user password
@@ -543,7 +560,7 @@ func (h *Handler) UpdateProfil(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(200, "Success!!!")
+	ctx.JSON(200, "Updated successfuly!!!")
 }
 
 // DeleteProfil handles the deletion of a Profil
@@ -566,13 +583,13 @@ func (h *Handler) DeleteProfil(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(200, "Success!!!")
+	ctx.JSON(200, "Deleted successfuly!!!")
 }
 
 // RefreshToekn handles the deletion of a Token
 // @Summary refresh Toekn
 // @Description refresh an existing Token
-// @Tags Auth
+// @Tags User
 // @Accept json
 // @Security BearerAuth
 // @Produce json

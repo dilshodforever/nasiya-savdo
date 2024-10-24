@@ -1,14 +1,5 @@
 basePath: /
 definitions:
-  genprotos.AllUsers:
-    properties:
-      count:
-        type: integer
-      users:
-        items:
-          $ref: '#/definitions/genprotos.User'
-        type: array
-    type: object
   genprotos.ForgotPass:
     properties:
       email:
@@ -39,6 +30,8 @@ definitions:
     type: object
   genprotos.UserLogin:
     properties:
+      massage:
+        type: string
       password:
         type: string
       username:
@@ -131,33 +124,6 @@ paths:
       - BearerAuth: []
       summary: Change Password
       tags:
-      - Auth
-  /user/delete/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: Delete an existing user
-      parameters:
-      - description: User ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Delete Successful
-          schema:
-            type: string
-        "400":
-          description: Error while deleting user
-          schema:
-            type: string
-      security:
-      - BearerAuth: []
-      summary: Delete User
-      tags:
       - User
   /user/delete_profil:
     delete:
@@ -229,70 +195,6 @@ paths:
       summary: Get User Profil
       tags:
       - User
-  /user/getall:
-    get:
-      consumes:
-      - application/json
-      description: Get all users
-      parameters:
-      - in: query
-        name: address
-        type: string
-      - in: query
-        name: email
-        type: string
-      - in: query
-        name: full_name
-        type: string
-      - in: query
-        name: limit
-        type: integer
-      - in: query
-        name: offset
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Get All Successful
-          schema:
-            $ref: '#/definitions/genprotos.AllUsers'
-        "400":
-          description: Error while retrieving users
-          schema:
-            type: string
-      security:
-      - BearerAuth: []
-      summary: Get All Users
-      tags:
-      - User
-  /user/getbyid/{id}:
-    get:
-      consumes:
-      - application/json
-      description: Get a user by ID
-      parameters:
-      - description: User ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Get By ID Successful
-          schema:
-            $ref: '#/definitions/genprotos.User'
-        "400":
-          description: Error while retrieving user
-          schema:
-            type: string
-      security:
-      - BearerAuth: []
-      summary: Get User By ID
-      tags:
-      - User
   /user/login:
     post:
       consumes:
@@ -339,7 +241,7 @@ paths:
       - BearerAuth: []
       summary: refresh Toekn
       tags:
-      - Auth
+      - User
   /user/register:
     post:
       consumes:
@@ -394,39 +296,6 @@ paths:
       summary: Reset Password
       tags:
       - Auth
-  /user/update/{id}:
-    put:
-      consumes:
-      - application/json
-      description: Update an existing user
-      parameters:
-      - description: User ID
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: Update
-        in: body
-        name: Update
-        required: true
-        schema:
-          $ref: '#/definitions/genprotos.UserUpdateSwagger'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Update Successful
-          schema:
-            type: string
-        "400":
-          description: Error while updating user
-          schema:
-            type: string
-      security:
-      - BearerAuth: []
-      summary: Update User
-      tags:
-      - User
   /user/update_email:
     put:
       consumes:
@@ -454,7 +323,7 @@ paths:
       - BearerAuth: []
       summary: Update Email
       tags:
-      - Auth
+      - User
   /user/update_profil:
     put:
       consumes:

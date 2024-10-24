@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"regexp"
 
 	pb "github.com/dilshodforever/nasiya-savdo/genprotos"
@@ -19,7 +18,6 @@ func IsEmailValid(email string) bool {
 
 func IsEmailUniq(users *pb.AllUsers, email string) bool {
 	for i := 0; i < len(users.Users); i++ {
-		fmt.Printf("%s %s %T %T ",users.Users[i].Email, email, users.Users[i].Email, email)
 		if users.Users[i].Email == email {
 			return false
 		}

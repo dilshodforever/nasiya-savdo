@@ -54,7 +54,7 @@ message UserReq {
 
 message UserFilter {
     int32 limit = 1;
-    int32 offset = 2;
+    int32 page = 2;
     string full_name = 3;
     string email = 4;
     string address = 5;
@@ -63,6 +63,7 @@ message UserFilter {
 message UserLogin {
     string username = 1;
     string password = 2;
+    string massage = 3;
 }
 
 message UserLoginRes {

@@ -30,7 +30,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Auth"
+                    "User"
                 ],
                 "summary": "Change Password",
                 "parameters": [
@@ -53,49 +53,6 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Error while changing password",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/user/delete/{id}": {
-            "delete": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Delete an existing user",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "User"
-                ],
-                "summary": "Delete User",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Delete Successful",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "400": {
-                        "description": "Error while deleting user",
                         "schema": {
                             "type": "string"
                         }
@@ -216,110 +173,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/getall": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Get all users",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "User"
-                ],
-                "summary": "Get All Users",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "name": "address",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "name": "email",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "name": "full_name",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "name": "limit",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "name": "offset",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Get All Successful",
-                        "schema": {
-                            "$ref": "#/definitions/genprotos.AllUsers"
-                        }
-                    },
-                    "400": {
-                        "description": "Error while retrieving users",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/user/getbyid/{id}": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Get a user by ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "User"
-                ],
-                "summary": "Get User By ID",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Get By ID Successful",
-                        "schema": {
-                            "$ref": "#/definitions/genprotos.User"
-                        }
-                    },
-                    "400": {
-                        "description": "Error while retrieving user",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
         "/user/login": {
             "post": {
                 "description": "Login a user",
@@ -375,7 +228,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Auth"
+                    "User"
                 ],
                 "summary": "refresh Toekn",
                 "responses": {
@@ -479,58 +332,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/update/{id}": {
-            "put": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Update an existing user",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "User"
-                ],
-                "summary": "Update User",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Update",
-                        "name": "Update",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/genprotos.UserUpdateSwagger"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Update Successful",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "400": {
-                        "description": "Error while updating user",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
         "/user/update_email": {
             "put": {
                 "security": [
@@ -546,7 +347,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Auth"
+                    "User"
                 ],
                 "summary": "Update Email",
                 "parameters": [
@@ -663,20 +464,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "genprotos.AllUsers": {
-            "type": "object",
-            "properties": {
-                "count": {
-                    "type": "integer"
-                },
-                "users": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/genprotos.User"
-                    }
-                }
-            }
-        },
         "genprotos.ForgotPass": {
             "type": "object",
             "properties": {
@@ -723,6 +510,9 @@ const docTemplate = `{
         "genprotos.UserLogin": {
             "type": "object",
             "properties": {
+                "massage": {
+                    "type": "string"
+                },
                 "password": {
                     "type": "string"
                 },
