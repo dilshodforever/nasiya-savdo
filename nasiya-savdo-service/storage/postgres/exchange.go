@@ -250,3 +250,5 @@ func (p *ExchangeStorage) ListExchanges(req *pb.GetAllExchangeRequest) (*pb.GetA
 	// Return the list of exchanges
 	return &exchanges, nil
 }
+
+

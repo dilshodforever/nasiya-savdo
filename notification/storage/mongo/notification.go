@@ -45,7 +45,7 @@ func (s *AccountService) GetNotification(req *pb.GetNotificationByidRequest) (*p
 	err := coll.FindOne(ctx.Background(), bson.M{"UserId": req.UserId}).Decode(&notification)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			return nil, fmt.Errorf("notification not found")
+			return nil, fmt.Errorf("sizda hali notificationlar mavjud emas")
 		}
 		log.Printf("Failed to retrieve notification: %v", err)
 		return nil, err
