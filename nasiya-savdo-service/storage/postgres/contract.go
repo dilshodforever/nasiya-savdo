@@ -181,7 +181,7 @@ func (p *ContractStorage) ListContracts(req *pb.GetAllContractRequest) (*pb.GetA
 	// `
 	query := `
 		SELECT id, consumer_name, consumer_passport_serial, consumer_address, consumer_phone_number, passport_image, status, duration, created_at, deleted_at
-		FROM contract
+		FROM contract 
 	`
 	var args []interface{}
 	count := 1
