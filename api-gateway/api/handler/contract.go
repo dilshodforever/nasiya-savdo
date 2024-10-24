@@ -148,7 +148,7 @@ func (h *Handler) ListContracts(ctx *gin.Context) {
 		Offset:       ParseQueryInt32(ctx, "offset", 0), // Default offset 0
 	}
 
-	req.StorageId = middleware.GetStorageId(ctx)
+	//req.StorageId = middleware.GetStorageId(ctx)
 	res, err := h.ContractService.ListContracts(ctx, req)
 	if err != nil {
 		ctx.JSON(500, gin.H{"error": err.Error()})
