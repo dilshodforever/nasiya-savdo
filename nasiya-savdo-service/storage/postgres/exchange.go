@@ -101,9 +101,6 @@ func (p *ExchangeStorage) UpdateExchange(req *pb.UpdateExchangeRequest) (*pb.Exc
 	if req.Price != 0 {
 		update["price"] = req.Price
 	}
-	if req.Status != "" {
-		update["status"] = req.Status
-	}
 
 	if req.ContractId != "" {
 		update["contract_id"] = req.ContractId

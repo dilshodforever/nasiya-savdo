@@ -1,49 +1,33 @@
 syntax = "proto3";
 
-package protos;
+package notifications;
 
 option go_package = "genprotos/";
 
-service NotificationService {
-    rpc CreateNotification (CreateNotificationRequest) returns (NotificationResponse);
-    rpc GetNotification (NotificationIdRequest) returns (GetNotificationResponse);
-    rpc UpdateNotification (UpdateNotificationRequest) returns (NotificationResponse);
-    rpc DeleteNotification (NotificationIdRequest) returns (NotificationResponse);
-    rpc ListNotifications (GetAllNotificationRequest) returns (GetAllNotificationResponse);
+service NotificationtService {
+    rpc GetNotification(GetNotificationByidRequest) returns (GetNotificationByidResponse);
+    rpc DeleteNotification(GetNotificationByidRequest) returns (NotificationsResponse);
+    rpc ListNotification(GetNotificationByidRequest) returns (ListNotificationResponse);
 }
 
-message CreateNotificationRequest {
-    string message = 1;
-    string user_id = 2;
-}
-
-message NotificationIdRequest {
-    string id = 1;
-}
-
-message GetNotificationResponse {
-    string id = 1;
-    string message = 2;
-    string user_id = 3;
-    string created_at = 4;
-}
-
-message UpdateNotificationRequest {
-    string id = 1;
-    string message = 2;
-    string user_id = 3;
-}
-
-message NotificationResponse {
-    string message = 1;
-    bool success = 2;
-}
-
-message GetAllNotificationRequest {
+message GetNotificationByidRequest {
     string user_id = 1;
 }
 
-message GetAllNotificationResponse {
-    repeated GetNotificationResponse all_notifications = 1;
+message GetNotificationByidResponse{
+    string user_id = 1;
     string message = 2;
+    string contract_id =3;
+    string created_at=4;
+}
+
+message NotificationsResponse{
+    string message =1;
+    bool   success =2;
+}
+
+
+
+message ListNotificationResponse{
+    repeated GetNotificationByidResponse notifications = 1;
 }
