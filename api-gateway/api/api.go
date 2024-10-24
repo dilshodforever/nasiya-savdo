@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/dilshodforever/nasiya-savdo/api/handler"
-	"github.com/dilshodforever/nasiya-savdo/api/middleware"
+	//"github.com/dilshodforever/nasiya-savdo/api/middleware"
 	_ "github.com/dilshodforever/nasiya-savdo/docs"
 
 	files "github.com/swaggo/files"
@@ -41,7 +41,7 @@ func NewGin(h *handler.Handler) *gin.Engine {
 		AllowCredentials: true,
 	}))
 
-	r.Use(middleware.NewAuth(ca))
+	//r.Use(middleware.NewAuth(ca))
 
 	// Swagger documentation
 	url := ginSwagger.URL("/swagger/doc.json") // Adjusted path for Swagger docs

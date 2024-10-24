@@ -375,7 +375,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/genprotos.CreateExchangeRequest"
+                                "$ref": "#/definitions/genprotos.CreateExchangeRequestSwagger"
                             }
                         }
                     }
@@ -675,46 +675,6 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {}
-                    }
-                }
-            }
-        },
-        "/notifications/delete": {
-            "delete": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Delete a notification by user_id",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Notification"
-                ],
-                "summary": "Delete Notification",
-                "responses": {
-                    "200": {
-                        "description": "Notification deleted successfully",
-                        "schema": {
-                            "$ref": "#/definitions/genprotos.NotificationsResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Notification not found",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Error while deleting notification",
-                        "schema": {
-                            "type": "string"
-                        }
                     }
                 }
             }
@@ -1072,262 +1032,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/storage/delete": {
-            "delete": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Delete a specific storage record using its ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Storage"
-                ],
-                "summary": "Delete Storage by ID",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Storage ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Storage deleted successfully",
-                        "schema": {
-                            "$ref": "#/definitions/genprotos.StorageResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Storage not found",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Error while deleting storage",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/storage/get/{id}": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Retrieve a specific storage record using its ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Storage"
-                ],
-                "summary": "Get Storage by ID",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Storage ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Storage retrieved successfully",
-                        "schema": {
-                            "$ref": "#/definitions/genprotos.GetStorageResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Storage not found",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Error while retrieving storage",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/storage/list": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Retrieve a list of all storage records with optional filtering by name or user ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Storage"
-                ],
-                "summary": "List all Storages",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Storage name",
-                        "name": "name",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "User ID",
-                        "name": "user_id",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Limit",
-                        "name": "limit",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Offset",
-                        "name": "offset",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "List of storages retrieved successfully",
-                        "schema": {
-                            "$ref": "#/definitions/genprotos.GetAllStorageResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Error while listing storages",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/storage/update/{id}": {
-            "put": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Update an existing storage record with new details",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Storage"
-                ],
-                "summary": "Update a Storage",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Storage ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Storage details",
-                        "name": "storage",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/genprotos.UpdateStorageRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Storage updated successfully",
-                        "schema": {
-                            "$ref": "#/definitions/genprotos.StorageResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid input",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "Storage not found",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Error while updating storage",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/transaction/check": {
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Check all pending transactions and return a message if any payments are due this month",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Transactions"
-                ],
-                "summary": "Test Transactions",
-                "responses": {
-                    "200": {
-                        "description": "Payments due this month",
-                        "schema": {
-                            "$ref": "#/definitions/genprotos.CheckResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Error while checking transactions",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
         "/transaction/create": {
             "post": {
                 "security": [
@@ -1353,7 +1057,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/genprotos.CreateTransactionRequest"
+                            "$ref": "#/definitions/genprotos.CreateTransactionRequestSwagger"
                         }
                     }
                 ],
@@ -1494,40 +1198,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/transaction/test": {
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Check all pending transactions and return a message if any payments are due this month",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Transactions"
-                ],
-                "summary": "Test Notification",
-                "responses": {
-                    "200": {
-                        "description": "Payments due this month",
-                        "schema": {
-                            "$ref": "#/definitions/genprotos.Testresponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Error while checking transactions",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
         "/transaction/{id}": {
             "put": {
                 "security": [
@@ -1647,14 +1317,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "genprotos.CheckResponse": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string"
-                }
-            }
-        },
         "genprotos.ContractResponse": {
             "type": "object",
             "properties": {
@@ -1683,10 +1345,13 @@ const docTemplate = `{
                 },
                 "duration": {
                     "type": "integer"
+                },
+                "passport_image": {
+                    "type": "string"
                 }
             }
         },
-        "genprotos.CreateExchangeRequest": {
+        "genprotos.CreateExchangeRequestSwagger": {
             "type": "object",
             "properties": {
                 "amount": {
@@ -1700,10 +1365,6 @@ const docTemplate = `{
                 },
                 "product_id": {
                     "type": "string"
-                },
-                "status": {
-                    "description": "Enum: buy, sell",
-                    "type": "string"
                 }
             }
         },
@@ -1716,6 +1377,9 @@ const docTemplate = `{
                 "date_of_creation": {
                     "type": "string"
                 },
+                "image_url": {
+                    "type": "string"
+                },
                 "made_in": {
                     "type": "string"
                 },
@@ -1724,20 +1388,14 @@ const docTemplate = `{
                 },
                 "name": {
                     "type": "string"
-                },
-                "storage_id": {
-                    "type": "string"
                 }
             }
         },
-        "genprotos.CreateTransactionRequest": {
+        "genprotos.CreateTransactionRequestSwagger": {
             "type": "object",
             "properties": {
                 "contract_id": {
                     "type": "string"
-                },
-                "duration": {
-                    "type": "integer"
                 },
                 "price": {
                     "type": "number"
@@ -1796,23 +1454,6 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/genprotos.GetProductResponse"
-                    }
-                },
-                "count": {
-                    "type": "integer"
-                },
-                "message": {
-                    "type": "string"
-                }
-            }
-        },
-        "genprotos.GetAllStorageResponse": {
-            "type": "object",
-            "properties": {
-                "all_storages": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/genprotos.GetStorageResponse"
                     }
                 },
                 "count": {
@@ -1971,20 +1612,6 @@ const docTemplate = `{
                 }
             }
         },
-        "genprotos.GetStorageResponse": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "user_id": {
-                    "type": "string"
-                }
-            }
-        },
         "genprotos.GetTransactionResponse": {
             "type": "object",
             "properties": {
@@ -2016,17 +1643,6 @@ const docTemplate = `{
                 }
             }
         },
-        "genprotos.NotificationsResponse": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string"
-                },
-                "success": {
-                    "type": "boolean"
-                }
-            }
-        },
         "genprotos.ProductResponse": {
             "type": "object",
             "properties": {
@@ -2037,20 +1653,6 @@ const docTemplate = `{
                     "type": "boolean"
                 }
             }
-        },
-        "genprotos.StorageResponse": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string"
-                },
-                "success": {
-                    "type": "boolean"
-                }
-            }
-        },
-        "genprotos.Testresponse": {
-            "type": "object"
         },
         "genprotos.TransactionResponse": {
             "type": "object",
@@ -2109,9 +1711,6 @@ const docTemplate = `{
                 },
                 "product_id": {
                     "type": "string"
-                },
-                "status": {
-                    "type": "string"
                 }
             }
         },
@@ -2140,20 +1739,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "storage_id": {
-                    "type": "string"
-                }
-            }
-        },
-        "genprotos.UpdateStorageRequest": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "user_id": {
                     "type": "string"
                 }
             }

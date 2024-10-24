@@ -16,7 +16,7 @@ import (
 // @Produce      json
 // @Security     BearerAuth
 // @Param        status query string true "Exchange Status" Enums(buy, sell)
-// @Param        exchange body []pb.CreateExchangeRequest true "Exchange details"
+// @Param        exchange body []pb.CreateExchangeRequestSwagger true "Exchange details"
 // @Success      200 {object} []pb.ExchangeResponse "Exchange created successfully"
 // @Failure      400 {string} string "Invalid input"
 // @Failure      500 {string} string "Error while creating exchange"
@@ -88,8 +88,6 @@ func (h *Handler) UpdateExchange(ctx *gin.Context) {
 		return
 	}
 	req.Id = ctx.Param("id")
-	status := ctx.Query("status") // Query parameter for status
-	req.Status = status           // Directly assigning status if no enum conversion is required
 	res, err := h.ExchangeService.UpdateExchange(context.Background(), &req)
 	if err != nil {
 		log.Print(err)

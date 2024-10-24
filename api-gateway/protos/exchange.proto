@@ -46,7 +46,6 @@ message UpdateExchangeRequest {
     string product_id = 2;
     int32 amount = 3;
     double price = 4;
-    string status = 5;
     string contract_id = 6;
 }
 
