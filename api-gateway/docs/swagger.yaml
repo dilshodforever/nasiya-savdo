@@ -444,14 +444,6 @@ paths:
         in: query
         name: search
         type: string
-      - description: Filter by status
-        in: query
-        name: status
-        type: string
-      - description: Filter by passport seria
-        in: query
-        name: pasport_seria
-        type: string
       - description: Limit
         in: query
         name: limit
@@ -626,10 +618,6 @@ paths:
       description: Retrieve a list of all exchange records with optional filtering
         by product ID or status
       parameters:
-      - description: Product ID
-        in: query
-        name: product_id
-        type: string
       - description: Exchange Status
         enum:
         - buy
@@ -921,18 +909,6 @@ paths:
       - description: Product Name
         in: query
         name: search
-        type: string
-      - description: Product Color
-        in: query
-        name: color
-        type: string
-      - description: Product Model
-        in: query
-        name: model
-        type: string
-      - description: Storage ID
-        in: query
-        name: storage_id
         type: string
       - description: Limit
         in: query

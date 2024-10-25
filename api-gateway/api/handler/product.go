@@ -123,9 +123,6 @@ func (h *Handler) DeleteProduct(ctx *gin.Context) {
 // @Produce      json
 // @Security     BearerAuth
 // @Param        search query string false "Product Name"
-//// @Param        color query string false "Product Color"
-//// @Param        model query string false "Product Model"
-//// @Param        storage_id query string false "Storage ID"
 // @Param        limit query string false "Limit"
 // @Param        offset query string false "Offset"
 // @Success      200 {object} pb.GetAllProductResponse "Products retrieved successfully"

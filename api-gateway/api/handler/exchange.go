@@ -130,7 +130,6 @@ func (h *Handler) DeleteExchange(ctx *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Security     BearerAuth
-//// @Param        product_id query string false "Product ID"
 // @Param        status query string false "Exchange Status" Enums(buy, sell)
 // @Param        limit query string false "Limit"
 // @Param        offset query string false "Offset"

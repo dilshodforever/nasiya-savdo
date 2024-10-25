@@ -240,18 +240,6 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Filter by status",
-                        "name": "status",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Filter by passport seria",
-                        "name": "pasport_seria",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
                         "description": "Limit",
                         "name": "limit",
                         "in": "query"
@@ -522,12 +510,6 @@ const docTemplate = `{
                 ],
                 "summary": "List all Exchanges",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Product ID",
-                        "name": "product_id",
-                        "in": "query"
-                    },
                     {
                         "enum": [
                             "buy",
@@ -981,24 +963,6 @@ const docTemplate = `{
                         "type": "string",
                         "description": "Product Name",
                         "name": "search",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Product Color",
-                        "name": "color",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Product Model",
-                        "name": "model",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Storage ID",
-                        "name": "storage_id",
                         "in": "query"
                     },
                     {
