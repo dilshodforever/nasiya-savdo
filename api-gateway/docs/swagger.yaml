@@ -62,6 +62,21 @@ definitions:
       success:
         type: boolean
     type: object
+  genprotos.ExchangeStatisticsResponse:
+    properties:
+      net_amount:
+        type: integer
+      net_profit:
+        type: number
+      total_bought:
+        type: integer
+      total_revenue:
+        type: number
+      total_sold:
+        type: integer
+      total_spend:
+        type: number
+    type: object
   genprotos.GetAllContractResponse:
     properties:
       all_contracts:
@@ -646,6 +661,43 @@ paths:
       summary: List all Exchanges
       tags:
       - Exchange
+  /exchange/statistik:
+    get:
+      consumes:
+      - application/json
+      description: Get monthly statistika on total bought, total sold, total spend,
+        total revenue, net amount, and net profit.
+      parameters:
+      - description: Month (1-12)
+        in: query
+        name: month
+        required: true
+        type: integer
+      - description: Year
+        in: query
+        name: year
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Monthly statistika retrieved successfully
+          schema:
+            $ref: '#/definitions/genprotos.ExchangeStatisticsResponse'
+        "400":
+          description: Invalid input parameters
+          schema:
+            type: string
+        "500":
+          description: Error while retrieving statistika
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Retrieve Monthly Statistika
+      tags:
+      - Statistika
   /exchange/update/{id}:
     put:
       consumes:

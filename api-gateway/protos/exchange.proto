@@ -10,6 +10,7 @@ service ExchangeService {
     rpc UpdateExchange (UpdateExchangeRequest) returns (ExchangeResponse);
     rpc DeleteExchange (ExchangeIdRequest) returns (ExchangeResponse);
     rpc ListExchanges (GetAllExchangeRequest) returns (GetAllExchangeResponse);
+    rpc GetStatistika (ExchangeStatisticsRequest) returns (ExchangeStatisticsResponse);
 }
 
 message CreateExchangeRequest {
@@ -65,4 +66,20 @@ message GetAllExchangeResponse {
     repeated GetExchangeResponse all_exchanges = 1;
     int32 count = 2;
     string message = 3;
+}
+
+
+
+message ExchangeStatisticsRequest {
+    int32 month = 1;
+    int32 year = 2;
+}
+
+message ExchangeStatisticsResponse {
+    int32 total_bought = 1;
+    int32 total_sold = 2;
+    double total_spend = 3;
+    double total_revenue = 4;
+    int32 net_amount = 5;
+    double net_profit = 6;
 }

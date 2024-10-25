@@ -152,3 +152,34 @@ func (h *Handler) ListExchanges(ctx *gin.Context) {
 	}
 	ctx.JSON(200, res)
 }
+
+
+// GetStatistika retrieves monthly statistika for exchange activities
+// @Summary      Retrieve Monthly Statistika
+// @Description  Get monthly statistika on total bought, total sold, total spend, total revenue, net amount, and net profit.
+// @Tags         Statistika
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        month query int true "Month (1-12)"
+// @Param        year  query int true "Year"
+// @Success      200 {object} pb.ExchangeStatisticsResponse "Monthly statistika retrieved successfully"
+// @Failure      400 {string} string "Invalid input parameters"
+// @Failure      500 {string} string "Error while retrieving statistika"
+// @Router       /exchange/statistik [get]
+func (h *Handler) GetStatistika(ctx *gin.Context) {
+	var req pb.ExchangeStatisticsRequest
+	if err := ctx.ShouldBindQuery(&req); err != nil {
+		ctx.JSON(400, gin.H{"error": "Invalid input parameters"})
+		return
+	}
+
+	res, err := h.ExchangeService.GetStatistika(context.Background(), &req)
+	if err != nil {
+		log.Print(err)
+		ctx.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+	ctx.JSON(200, res)
+}
+

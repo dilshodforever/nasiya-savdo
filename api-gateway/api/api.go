@@ -66,6 +66,7 @@ func NewGin(h *handler.Handler) *gin.Engine {
 		exchange.PUT("/update/:id", h.UpdateExchange)
 		exchange.DELETE("/delete/:id", h.DeleteExchange)
 		exchange.GET("/list", h.ListExchanges)
+		exchange.GET("/statistik", h.GetStatistika)
 	}
 
 	// Product endpoints

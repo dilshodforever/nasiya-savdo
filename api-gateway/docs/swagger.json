@@ -560,6 +560,62 @@
                 }
             }
         },
+        "/exchange/statistik": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get monthly statistika on total bought, total sold, total spend, total revenue, net amount, and net profit.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Statistika"
+                ],
+                "summary": "Retrieve Monthly Statistika",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Month (1-12)",
+                        "name": "month",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Year",
+                        "name": "year",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Monthly statistika retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/genprotos.ExchangeStatisticsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input parameters",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Error while retrieving statistika",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/exchange/update/{id}": {
             "put": {
                 "security": [
@@ -1403,6 +1459,29 @@
                 },
                 "success": {
                     "type": "boolean"
+                }
+            }
+        },
+        "genprotos.ExchangeStatisticsResponse": {
+            "type": "object",
+            "properties": {
+                "net_amount": {
+                    "type": "integer"
+                },
+                "net_profit": {
+                    "type": "number"
+                },
+                "total_bought": {
+                    "type": "integer"
+                },
+                "total_revenue": {
+                    "type": "number"
+                },
+                "total_sold": {
+                    "type": "integer"
+                },
+                "total_spend": {
+                    "type": "number"
                 }
             }
         },
