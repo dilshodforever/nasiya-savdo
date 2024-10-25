@@ -135,7 +135,7 @@ func (h *Handler) DeleteContract(ctx *gin.Context) {
 ////@Param        status query string false "Filter by status"
 ////@Param        pasport_seria query string false "Filter by passport seria"
 // @Param        limit query string false "Limit"
-// @Param        offset query string false "Offset"
+// @Param        page query string false "Offset"
 // @Success      200 {object} pb.GetAllContractResponse "List of contracts"
 // @Failure      500 {string} string "Error while retrieving contracts"
 // @Router       /contract/list [get]
@@ -145,7 +145,7 @@ func (h *Handler) ListContracts(ctx *gin.Context) {
 		//Status:       ctx.Query("status"),
 		//PasportSeria: ctx.Query("pasport_seria"),
 		Limit:        ParseQueryInt32(ctx, "limit", 10), // Default limit 10
-		Offset:       ParseQueryInt32(ctx, "offset", 0), // Default offset 0
+		Page:       ParseQueryInt32(ctx, "page", 0), // Default offset 0
 	}
 
 	//req.StorageId = middleware.GetStorageId(ctx)

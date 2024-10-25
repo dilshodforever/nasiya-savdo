@@ -259,7 +259,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "Offset",
-                        "name": "offset",
+                        "name": "page",
                         "in": "query"
                     }
                 ],
