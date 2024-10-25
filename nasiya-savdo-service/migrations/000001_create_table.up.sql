@@ -82,3 +82,31 @@ CREATE TABLE notification (
 );
 
 
+
+
+
+INSERT INTO products (
+    id,
+    name,
+    color,
+    model,
+    image_url,
+    made_in,
+    date_of_creation,
+    storage_id,
+    created_at,
+    updated_at,
+    deleted_at
+) VALUES (
+    '4bc42fb2-6e17-495a-b40f-7bceb5801940',      -- Generates a new UUID for the id
+    'Sample Product',        -- Example product name
+    'Red',                   -- Color
+    'Model X',               -- Model
+    'http://example.com/image.jpg', -- Image URL
+    'USA',                   -- Made in location
+    NOW(),                   -- Date of creation
+    '2cb30b45-e877-4872-b8ff-d9aabc33cb69',                    -- Storage ID (set to NULL if no related storage exists)
+    NOW(),                   -- Created at (defaults to current timestamp)
+    NOW(),                   -- Updated at (defaults to current timestamp)
+    0                        -- Deleted at (0 indicates not deleted)
+);
