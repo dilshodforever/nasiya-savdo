@@ -249,3 +249,50 @@ func (p *ExchangeStorage) ListExchanges(req *pb.GetAllExchangeRequest) (*pb.GetA
 }
 
 
+
+
+func (p *ExchangeStorage) GetMonthlyStatistics(req *pb.ExchangeStatisticsRequest) (*pb.ExchangeStatisticsResponse, error) {
+	// Calculate the start and end dates for the given month
+	startDate := time.Date(int(req.Year), time.Month(req.Month), 1, 0, 0, 0, 0, time.UTC)
+	endDate := startDate.AddDate(0, 1, 0)
+
+	// Initialize variables for tracking statistics
+	var totalBought, totalSold int
+	var totalSpend, totalRevenue float64
+
+	// Query for total 'buy' statistics
+	buyQuery := `
+		SELECT COALESCE(SUM(amount), 0) AS total_bought, COALESCE(SUM(amount * price), 0) AS total_spend
+		FROM exchange 
+		WHERE status = 'buy' AND created_at >= $1 AND created_at < $2 AND deleted_at = 0
+	`
+	err := p.db.QueryRow(buyQuery, startDate, endDate).Scan(&totalBought, &totalSpend)
+	if err != nil {
+		return nil, fmt.Errorf("error fetching buy statistics: %v", err)
+	}
+
+	// Query for total 'sell' statistics
+	sellQuery := `
+		SELECT COALESCE(SUM(amount), 0) AS total_sold, COALESCE(SUM(amount * price), 0) AS total_revenue
+		FROM exchange 
+		WHERE status = 'sell' AND created_at >= $1 AND created_at < $2 AND deleted_at = 0
+	`
+	err = p.db.QueryRow(sellQuery, startDate, endDate).Scan(&totalSold, &totalRevenue)
+	if err != nil {
+		return nil, fmt.Errorf("error fetching sell statistics: %v", err)
+	}
+
+	// Calculate net amount and profit
+	netAmount := totalBought - totalSold
+	netProfit := totalRevenue - totalSpend
+
+	// Create and return the response using protobuf types
+	return &pb.ExchangeStatisticsResponse{
+		TotalBought:  int32(totalBought),
+		TotalSold:    int32(totalSold),
+		TotalSpend:   totalSpend,
+		TotalRevenue: totalRevenue,
+		NetAmount:    int32(netAmount),
+		NetProfit:    netProfit,
+	}, nil
+}

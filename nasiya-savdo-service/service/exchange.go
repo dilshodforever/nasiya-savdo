@@ -61,3 +61,12 @@ func (s *ExchangeService) ListExchanges(ctx context.Context, req *pb.GetAllExcha
 	}
 	return resp, nil
 }
+
+func (s *ExchangeService) GetStatistika(ctx context.Context,req *pb.ExchangeStatisticsRequest) (*pb.ExchangeStatisticsResponse, error) {
+	resp, err := s.stg.Exchange().GetMonthlyStatistics(req)
+	if err != nil {
+		log.Print(err)
+		return nil, err
+	}
+	return resp, nil
+}
