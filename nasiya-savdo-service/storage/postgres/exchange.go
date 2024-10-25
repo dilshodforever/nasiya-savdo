@@ -248,23 +248,18 @@ func (p *ExchangeStorage) ListExchanges(req *pb.GetAllExchangeRequest) (*pb.GetA
 	return &exchanges, nil
 }
 
-
 func (p *ExchangeStorage) GetMonthlyStatistics(req *pb.ExchangeStatisticsRequest) (*pb.ExchangeStatisticsResponse, error) {
-	// Validate the year and month values from the request
-	if req.Year <= 0 || req.Month <= 0 || req.Month > 12 {
-		return nil, fmt.Errorf("invalid year (%d) or month (%d) provided", req.Year, req.Month)
-	}
-
-	// Calculate the start and end dates for the given month
+	// Define start and end dates for the given month
+	fmt.Println(req.Month,"\n", req.Year)
 	startDate := time.Date(int(req.Year), time.Month(req.Month), 1, 0, 0, 0, 0, time.UTC)
-	endDate := startDate.AddDate(0, 1, 0) // End of the month
+	endDate := startDate.AddDate(0, 1, 0) // First day of the next month (exclusive)
 
 	// Initialize variables for tracking statistics
 	var totalBought, totalSold int
 	var totalSpend, totalRevenue float64
-	fmt.Println(startDate, "/n", endDate)
+
 	// Log start and end dates for debugging
-	log.Printf("Querying statistics from %s to %s", startDate.Format("2006-01-02"), endDate.Format("2006-01-02"))
+	log.Printf("Querying statistics from %s to %s", startDate.Format(time.RFC3339), endDate.Format(time.RFC3339))
 
 	// Query for total 'buy' statistics
 	buyQuery := `
@@ -277,7 +272,6 @@ func (p *ExchangeStorage) GetMonthlyStatistics(req *pb.ExchangeStatisticsRequest
 		log.Printf("Error fetching buy statistics: %v", err)
 		return nil, fmt.Errorf("error fetching buy statistics: %v", err)
 	}
-	fmt.Println("TotalBought:", totalBought, "\nTotalSpend:", totalSpend)
 
 	// Query for total 'sell' statistics
 	sellQuery := `
@@ -290,7 +284,6 @@ func (p *ExchangeStorage) GetMonthlyStatistics(req *pb.ExchangeStatisticsRequest
 		log.Printf("Error fetching sell statistics: %v", err)
 		return nil, fmt.Errorf("error fetching sell statistics: %v", err)
 	}
-	fmt.Println("TotalSold:", totalSold, "\nTotalRevenue:", totalRevenue)
 
 	// Calculate net amount and profit
 	netAmount := totalBought - totalSold
