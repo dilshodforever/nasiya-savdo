@@ -980,7 +980,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "Product Name",
-                        "name": "name",
+                        "name": "search",
                         "in": "query"
                     },
                     {

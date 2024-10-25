@@ -920,7 +920,7 @@ paths:
       parameters:
       - description: Product Name
         in: query
-        name: name
+        name: search
         type: string
       - description: Product Color
         in: query

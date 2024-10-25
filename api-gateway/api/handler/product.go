@@ -122,7 +122,7 @@ func (h *Handler) DeleteProduct(ctx *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Security     BearerAuth
-// @Param        name query string false "Product Name"
+// @Param        search query string false "Product Name"
 // @Param        color query string false "Product Color"
 // @Param        model query string false "Product Model"
 // @Param        storage_id query string false "Storage ID"
@@ -133,7 +133,7 @@ func (h *Handler) DeleteProduct(ctx *gin.Context) {
 // @Router       /product/list [get]
 func (h *Handler) ListProducts(ctx *gin.Context) {
 	var req pb.GetAllProductRequest
-	req.Name = ctx.Query("name")
+	req.Name = ctx.Query("search")
 	req.Color = ctx.Query("color")
 	req.Model = ctx.Query("model")
 	req.Limit = ParseQueryInt32(ctx, "limit", 10) // Default limit 10
