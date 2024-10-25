@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"strconv"
 
@@ -169,7 +170,7 @@ func (h *Handler) ListExchanges(ctx *gin.Context) {
 // @Router       /exchange/statistik [get]
 func (h *Handler) GetStatistika(ctx *gin.Context) {
 	var req pb.ExchangeStatisticsRequest
-
+	fmt.Println(req.Month,"\n", req.Year)
 	// Parse and validate month
 	month, err := strconv.Atoi(ctx.Query("month"))
 	if err != nil || month < 1 || month > 12 {
