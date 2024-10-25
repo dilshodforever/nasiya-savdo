@@ -273,7 +273,7 @@ func (p *ExchangeStorage) GetMonthlyStatistics(req *pb.ExchangeStatisticsRequest
 		log.Printf("Error fetching buy statistics: %v", err)
 		return nil, fmt.Errorf("error fetching buy statistics: %v", err)
 	}
-
+	fmt.Println("TotalBought: ", totalBought, "\ntotalSpend: ", totalSpend)
 	// Query for total 'sell' statistics
 	sellQuery := `
 		SELECT COALESCE(SUM(amount), 0) AS total_sold, COALESCE(SUM(amount * price), 0) AS total_revenue
@@ -285,11 +285,11 @@ func (p *ExchangeStorage) GetMonthlyStatistics(req *pb.ExchangeStatisticsRequest
 		log.Printf("Error fetching sell statistics: %v", err)
 		return nil, fmt.Errorf("error fetching sell statistics: %v", err)
 	}
-
+	fmt.Println("Totalsold: ", totalSold, "\ntotalrevenue: ", totalRevenue)
 	// Calculate net amount and profit
 	netAmount := totalBought - totalSold
 	netProfit := totalRevenue - totalSpend
-
+	
 	// Create and return the response using protobuf types
 	return &pb.ExchangeStatisticsResponse{
 		TotalBought:  int32(totalBought),
