@@ -72,7 +72,7 @@ message GetAllContractRequest {
     string pasport_seria = 3;
     string storage_id = 4;
     int32 limit = 5;
-    int32 offset = 6;
+    int32 Page = 6;
 }
 
 message GetAllContractResponse {

@@ -173,21 +173,15 @@ func (p *ContractStorage) DeleteContract(req *pb.ContractIdRequest) (*pb.Contrac
 	}, nil
 }
 
-
 func (p *ContractStorage) ListContracts(req *pb.GetAllContractRequest) (*pb.GetAllContractResponse, error) {
 	contracts := pb.GetAllContractResponse{}
-	// query := `
-	// 	SELECT id, consumer_name, consumer_passport_serial, consumer_address, consumer_phone_number, passport_image, status, duration, created_at, deleted_at
-	// 	FROM contract
-	// 	WHERE storage_id = $1
-	// `
 	query := `
 		SELECT id, consumer_name, consumer_passport_serial, consumer_address, consumer_phone_number, passport_image, status, duration, created_at, deleted_at
 		FROM contract 
 	`
 	var args []interface{}
 	count := 1
-	// args = append(args, req.StorageId)
+
 	if req.ConsumerName != "" {
 		query += fmt.Sprintf(" AND consumer_name ILIKE $%d", count)
 		args = append(args, "%"+req.ConsumerName+"%")
@@ -206,10 +200,16 @@ func (p *ContractStorage) ListContracts(req *pb.GetAllContractRequest) (*pb.GetA
 		count++
 	}
 
-	if req.Limit != 0 || req.Offset != 0 {
-		query += fmt.Sprintf(" LIMIT $%d OFFSET $%d", count, count+1)
-		args = append(args, req.Limit, req.Offset)
+	if req.Limit != 0 {
+		query += fmt.Sprintf(" LIMIT $%d", count)
+		args = append(args, req.Limit)
+		count++
 	}
+
+	// Calculate the offset based on the page number
+	offset := (req.Page - 1) * req.Limit
+	query += fmt.Sprintf(" OFFSET $%d", count)
+	args = append(args, offset)
 
 	// Execute the contract query
 	rows, err := p.db.Query(query, args...)
@@ -272,8 +272,8 @@ func (p *ContractStorage) ListContracts(req *pb.GetAllContractRequest) (*pb.GetA
 		contracts.AllContracts = append(contracts.AllContracts, &contract)
 	}
 
-	query = `SELECT COUNT(1) FROM contract`
-	err = p.db.QueryRow(query).Scan(&count)
+	countQuery := `SELECT COUNT(1) FROM contract`
+	err = p.db.QueryRow(countQuery).Scan(&count)
 	if err != nil {
 		return nil, err
 	}
