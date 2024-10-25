@@ -250,15 +250,17 @@ func (p *ExchangeStorage) ListExchanges(req *pb.GetAllExchangeRequest) (*pb.GetA
 
 
 
-
 func (p *ExchangeStorage) GetMonthlyStatistics(req *pb.ExchangeStatisticsRequest) (*pb.ExchangeStatisticsResponse, error) {
 	// Calculate the start and end dates for the given month
 	startDate := time.Date(int(req.Year), time.Month(req.Month), 1, 0, 0, 0, 0, time.UTC)
-	endDate := startDate.AddDate(0, 1, 0)
+	endDate := startDate.AddDate(0, 1, 0) // End of the month
 
 	// Initialize variables for tracking statistics
 	var totalBought, totalSold int
 	var totalSpend, totalRevenue float64
+
+	// Log start and end dates for debugging
+	log.Printf("Querying statistics from %s to %s", startDate.Format("2006-01-02"), endDate.Format("2006-01-02"))
 
 	// Query for total 'buy' statistics
 	buyQuery := `
@@ -268,6 +270,7 @@ func (p *ExchangeStorage) GetMonthlyStatistics(req *pb.ExchangeStatisticsRequest
 	`
 	err := p.db.QueryRow(buyQuery, startDate, endDate).Scan(&totalBought, &totalSpend)
 	if err != nil {
+		log.Printf("Error fetching buy statistics: %v", err)
 		return nil, fmt.Errorf("error fetching buy statistics: %v", err)
 	}
 
@@ -279,6 +282,7 @@ func (p *ExchangeStorage) GetMonthlyStatistics(req *pb.ExchangeStatisticsRequest
 	`
 	err = p.db.QueryRow(sellQuery, startDate, endDate).Scan(&totalSold, &totalRevenue)
 	if err != nil {
+		log.Printf("Error fetching sell statistics: %v", err)
 		return nil, fmt.Errorf("error fetching sell statistics: %v", err)
 	}
 
