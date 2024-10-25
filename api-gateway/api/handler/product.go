@@ -134,8 +134,8 @@ func (h *Handler) DeleteProduct(ctx *gin.Context) {
 func (h *Handler) ListProducts(ctx *gin.Context) {
 	var req pb.GetAllProductRequest
 	req.Name = ctx.Query("search")
-	req.Color = ctx.Query("color")
-	req.Model = ctx.Query("model")
+	// req.Color = ctx.Query("color")
+	// req.Model = ctx.Query("model")
 	req.Limit = ParseQueryInt32(ctx, "limit", 10) // Default limit 10
 	req.Offset = ParseQueryInt32(ctx, "offset", 0) // Default offset 0
 	// req.StorageId = middleware.GetStorageId(ctx)
