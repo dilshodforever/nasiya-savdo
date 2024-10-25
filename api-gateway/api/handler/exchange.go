@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"log"
+	"strconv"
 
 	pb "github.com/dilshodforever/nasiya-savdo/genprotos"
 	"github.com/gin-gonic/gin"
@@ -22,7 +23,7 @@ import (
 // @Failure      500 {string} string "Error while creating exchange"
 // @Router       /exchange/create [post]
 func (h *Handler) CreateExchange(ctx *gin.Context) {
-	var reqs []pb.CreateExchangeRequest  // Accept an array of requests
+	var reqs []pb.CreateExchangeRequest // Accept an array of requests
 	if err := ctx.ShouldBindJSON(&reqs); err != nil {
 		ctx.JSON(400, gin.H{"error": "Invalid input"})
 		return
@@ -142,7 +143,7 @@ func (h *Handler) ListExchanges(ctx *gin.Context) {
 	if status != "" {
 		req.Status = status // Directly assigning status if no enum conversion is required
 	}
-	req.Limit = ParseQueryInt32(ctx, "limit", 10) // Default limit 10
+	req.Limit = ParseQueryInt32(ctx, "limit", 10)  // Default limit 10
 	req.Offset = ParseQueryInt32(ctx, "offset", 0) // Default offset 0
 	res, err := h.ExchangeService.ListExchanges(context.Background(), &req)
 	if err != nil {
@@ -152,7 +153,6 @@ func (h *Handler) ListExchanges(ctx *gin.Context) {
 	}
 	ctx.JSON(200, res)
 }
-
 
 // GetStatistika retrieves monthly statistika for exchange activities
 // @Summary      Retrieve Monthly Statistika
@@ -169,17 +169,30 @@ func (h *Handler) ListExchanges(ctx *gin.Context) {
 // @Router       /exchange/statistik [get]
 func (h *Handler) GetStatistika(ctx *gin.Context) {
 	var req pb.ExchangeStatisticsRequest
-	if err := ctx.ShouldBindQuery(&req); err != nil {
-		ctx.JSON(400, gin.H{"error": "Invalid input parameters"})
+
+	// Parse and validate month
+	month, err := strconv.Atoi(ctx.Query("month"))
+	if err != nil || month < 1 || month > 12 {
+		ctx.JSON(400, gin.H{"error": "Invalid month; must be between 1 and 12"})
 		return
 	}
+	req.Month = int32(month)
 
+	// Parse and validate year
+	year, err := strconv.Atoi(ctx.Query("year"))
+	if err != nil || year < 1 {
+		ctx.JSON(400, gin.H{"error": "Invalid year; must be a positive integer"})
+		return
+	}
+	req.Year = int32(year)
+
+	// Call the service method
 	res, err := h.ExchangeService.GetStatistika(context.Background(), &req)
 	if err != nil {
 		log.Print(err)
-		ctx.JSON(500, gin.H{"error": err.Error()})
+		ctx.JSON(500, gin.H{"error": "Error while retrieving statistika"})
 		return
 	}
+
 	ctx.JSON(200, res)
 }
-
