@@ -442,7 +442,7 @@ paths:
       parameters:
       - description: Filter by consumer name
         in: query
-        name: consumer_name
+        name: search
         type: string
       - description: Filter by status
         in: query

@@ -235,7 +235,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "Filter by consumer name",
-                        "name": "consumer_name",
+                        "name": "search",
                         "in": "query"
                     },
                     {
