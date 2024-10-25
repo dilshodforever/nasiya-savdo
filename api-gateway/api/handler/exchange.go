@@ -130,7 +130,7 @@ func (h *Handler) DeleteExchange(ctx *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Security     BearerAuth
-// @Param        product_id query string false "Product ID"
+//// @Param        product_id query string false "Product ID"
 // @Param        status query string false "Exchange Status" Enums(buy, sell)
 // @Param        limit query string false "Limit"
 // @Param        offset query string false "Offset"
@@ -139,7 +139,7 @@ func (h *Handler) DeleteExchange(ctx *gin.Context) {
 // @Router       /exchange/list [get]
 func (h *Handler) ListExchanges(ctx *gin.Context) {
 	var req pb.GetAllExchangeRequest
-	req.ProductId = ctx.Query("product_id")
+	// req.ProductId = ctx.Query("product_id")
 	status := ctx.Query("status")
 	if status != "" {
 		req.Status = status // Directly assigning status if no enum conversion is required

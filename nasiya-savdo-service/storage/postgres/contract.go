@@ -172,6 +172,8 @@ func (p *ContractStorage) DeleteContract(req *pb.ContractIdRequest) (*pb.Contrac
 		Success: true,
 	}, nil
 }
+
+
 func (p *ContractStorage) ListContracts(req *pb.GetAllContractRequest) (*pb.GetAllContractResponse, error) {
 	contracts := pb.GetAllContractResponse{}
 	// query := `
