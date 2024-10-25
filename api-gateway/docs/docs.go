@@ -246,7 +246,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Offset",
+                        "description": "page",
                         "name": "page",
                         "in": "query"
                     }
@@ -528,8 +528,8 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Offset",
-                        "name": "offset",
+                        "description": "page",
+                        "name": "page",
                         "in": "query"
                     }
                 ],
@@ -973,8 +973,8 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Offset",
-                        "name": "offset",
+                        "description": "page",
+                        "name": "page",
                         "in": "query"
                     }
                 ],
@@ -1191,8 +1191,8 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Offset",
-                        "name": "offset",
+                        "description": "page",
+                        "name": "page",
                         "in": "query"
                     }
                 ],

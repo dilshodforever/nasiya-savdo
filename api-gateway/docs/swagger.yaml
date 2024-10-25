@@ -448,7 +448,7 @@ paths:
         in: query
         name: limit
         type: string
-      - description: Offset
+      - description: page
         in: query
         name: page
         type: string
@@ -629,9 +629,9 @@ paths:
         in: query
         name: limit
         type: string
-      - description: Offset
+      - description: page
         in: query
-        name: offset
+        name: page
         type: string
       produces:
       - application/json
@@ -914,9 +914,9 @@ paths:
         in: query
         name: limit
         type: string
-      - description: Offset
+      - description: page
         in: query
-        name: offset
+        name: page
         type: string
       produces:
       - application/json
@@ -1127,9 +1127,9 @@ paths:
         in: query
         name: limit
         type: string
-      - description: Offset
+      - description: page
         in: query
-        name: offset
+        name: page
         type: string
       produces:
       - application/json

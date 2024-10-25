@@ -132,7 +132,7 @@ func (h *Handler) DeleteExchange(ctx *gin.Context) {
 // @Security     BearerAuth
 // @Param        status query string false "Exchange Status" Enums(buy, sell)
 // @Param        limit query string false "Limit"
-// @Param        offset query string false "Offset"
+// @Param        page query string false "page"
 // @Success      200 {object} pb.GetAllExchangeResponse "List of exchanges retrieved successfully"
 // @Failure      500 {string} string "Error while listing exchanges"
 // @Router       /exchange/list [get]
@@ -144,7 +144,7 @@ func (h *Handler) ListExchanges(ctx *gin.Context) {
 		req.Status = status // Directly assigning status if no enum conversion is required
 	}
 	req.Limit = ParseQueryInt32(ctx, "limit", 10)  // Default limit 10
-	req.Offset = ParseQueryInt32(ctx, "offset", 0) // Default offset 0
+	req.Page = ParseQueryInt32(ctx, "page", 1) // Default offset 0
 	res, err := h.ExchangeService.ListExchanges(context.Background(), &req)
 	if err != nil {
 		log.Print(err)

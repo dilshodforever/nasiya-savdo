@@ -133,7 +133,7 @@ func (h *Handler) DeleteContract(ctx *gin.Context) {
 // @Security     BearerAuth
 // @Param        search query string false "Filter by consumer name"
 // @Param        limit query string false "Limit"
-// @Param        page query string false "Offset"
+// @Param        page query string false "page"
 // @Success      200 {object} pb.GetAllContractResponse "List of contracts"
 // @Failure      500 {string} string "Error while retrieving contracts"
 // @Router       /contract/list [get]

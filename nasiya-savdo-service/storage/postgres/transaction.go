@@ -208,54 +208,56 @@ func (p *TransactionStorage) DeleteTransaction(req *pb.TransactionIdRequest) (*p
 	}, nil
 }
 
-func (p *TransactionStorage) ListTransactions(req *pb.GetAllTransactionRequest) (*pb.GetAllTransactionResponse, error) {
-	transactions := pb.GetAllTransactionResponse{}
-	query := `
-		SELECT id, contract_id, price, duration, created_at
-		FROM transactions
-		WHERE true 
-	`
-	var args []interface{}
-	count := 1
 
-	if req.ContractId != "" {
-		query += fmt.Sprintf(" AND contract_id = $%d", count)
-		args = append(args, req.ContractId)
-		count++
-	}
 
-	if req.Limit != 0 || req.Offset != 0 {
-		query += fmt.Sprintf(" LIMIT $%d OFFSET $%d", count, count+1)
-		args = append(args, req.Limit, req.Offset)
-	}
+// func (p *TransactionStorage) ListTransactions(req *pb.GetAllTransactionRequest) (*pb.GetAllTransactionResponse, error) {
+// 	transactions := pb.GetAllTransactionResponse{}
+// 	query := `
+// 		SELECT id, contract_id, price, duration, created_at
+// 		FROM transactions
+// 		WHERE true 
+// 	`
+// 	var args []interface{}
+// 	count := 1
 
-	rows, err := p.db.Query(query, args...)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
+// 	if req.ContractId != "" {
+// 		query += fmt.Sprintf(" AND contract_id = $%d", count)
+// 		args = append(args, req.ContractId)
+// 		count++
+// 	}
 
-	for rows.Next() {
-		var transaction pb.GetTransactionResponse
-		err := rows.Scan(
-			&transaction.Id, &transaction.ContractId, &transaction.Price, &transaction.Duration, &transaction.CreatedAt,
-		)
-		if err != nil {
-			log.Println(err)
-			return nil, err
-		}
-		transactions.AllTransactions = append(transactions.AllTransactions, &transaction)
-	}
+// 	if req.Limit != 0 || req.Offset != 0 {
+// 		query += fmt.Sprintf(" LIMIT $%d OFFSET $%d", count, count+1)
+// 		args = append(args, req.Limit, req.Offset)
+// 	}
 
-	query = `SELECT COUNT(1) FROM transactions`
-	err = p.db.QueryRow(query).Scan(&count)
-	if err != nil {
-		return nil, err
-	}
-	transactions.Count = int32(count)
+// 	rows, err := p.db.Query(query, args...)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	defer rows.Close()
 
-	return &transactions, nil
-}
+// 	for rows.Next() {
+// 		var transaction pb.GetTransactionResponse
+// 		err := rows.Scan(
+// 			&transaction.Id, &transaction.ContractId, &transaction.Price, &transaction.Duration, &transaction.CreatedAt,
+// 		)
+// 		if err != nil {
+// 			log.Println(err)
+// 			return nil, err
+// 		}
+// 		transactions.AllTransactions = append(transactions.AllTransactions, &transaction)
+// 	}
+
+// 	query = `SELECT COUNT(1) FROM transactions`
+// 	err = p.db.QueryRow(query).Scan(&count)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	transactions.Count = int32(count)
+
+// 	return &transactions, nil
+// }
 
 // V2
 
@@ -408,3 +410,63 @@ func (p *TransactionStorage) TestNotification(req *pb.Testresponse) (*pb.Testreq
 
 // 	return &pb.CheckResponse{Message: "No payments are due today."}, nil
 // }
+
+
+
+
+
+func (p *TransactionStorage) ListTransactions(req *pb.GetAllTransactionRequest) (*pb.GetAllTransactionResponse, error) {
+	transactions := pb.GetAllTransactionResponse{}
+	query := `
+		SELECT id, contract_id, price, duration, created_at
+		FROM transactions
+		WHERE true 
+	`
+	var args []interface{}
+	count := 1
+
+	if req.ContractId != "" {
+		query += fmt.Sprintf(" AND contract_id = $%d", count)
+		args = append(args, req.ContractId)
+		count++
+	}
+
+	// Calculate offset based on Page and Limit
+	if req.Limit != 0 {
+		page := req.Page
+		if page < 1 {
+			page = 1 // Default to the first page if Page is invalid
+		}
+		offset := (page - 1) * req.Limit
+		query += fmt.Sprintf(" LIMIT $%d OFFSET $%d", count, count+1)
+		args = append(args, req.Limit, offset)
+	}
+
+	rows, err := p.db.Query(query, args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var transaction pb.GetTransactionResponse
+		err := rows.Scan(
+			&transaction.Id, &transaction.ContractId, &transaction.Price, &transaction.Duration, &transaction.CreatedAt,
+		)
+		if err != nil {
+			log.Println(err)
+			return nil, err
+		}
+		transactions.AllTransactions = append(transactions.AllTransactions, &transaction)
+	}
+
+	// Count total transactions for pagination
+	query = `SELECT COUNT(1) FROM transactions`
+	err = p.db.QueryRow(query).Scan(&count)
+	if err != nil {
+		return nil, err
+	}
+	transactions.Count = int32(count)
+
+	return &transactions, nil
+}

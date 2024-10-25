@@ -220,14 +220,10 @@ func (p *ProductStorage) DeleteProduct(req *pb.ProductIdRequest) (*pb.ProductRes
 	}, nil
 }
 
+
 func (p *ProductStorage) ListProducts(req *pb.GetAllProductRequest) (*pb.GetAllProductResponse, error) {
 	products := pb.GetAllProductResponse{}
 
-	// query`
-	// 	SELECT id, name, color, model, image_url, made_in, date_of_creation, storage_id, created_at, updated_at, deleted_at
-	// 	FROM products
-	// 	WHERE deleted_at = 0 and storage_id = $1
-	// `
 	query := `
 		SELECT id, name, color, model, image_url, made_in, date_of_creation, storage_id, created_at, updated_at, deleted_at
 		FROM products
@@ -236,7 +232,6 @@ func (p *ProductStorage) ListProducts(req *pb.GetAllProductRequest) (*pb.GetAllP
 
 	var args []interface{}
 	argCounter := 1
-	// args = append(args, req.StorageId)
 
 	if req.Name != "" {
 		query += fmt.Sprintf(" AND name ILIKE $%d", argCounter)
@@ -254,16 +249,16 @@ func (p *ProductStorage) ListProducts(req *pb.GetAllProductRequest) (*pb.GetAllP
 		argCounter++
 	}
 
-	if req.Limit != 0 || req.Offset != 0 {
+	// Pagination logic based on Page and Limit
+	if req.Limit != 0 {
+		page := req.Page
+		if page < 1 {
+			page = 1 // Default to first page if Page is invalid
+		}
+		offset := (page - 1) * req.Limit
 		query += fmt.Sprintf(" LIMIT $%d OFFSET $%d", argCounter, argCounter+1)
-		args = append(args, req.Limit, req.Offset)
+		args = append(args, req.Limit, offset)
 	}
-
-	// if req.StorageId != "" {
-	// 	query += fmt.Sprintf(" AND storage_id = $%d", argCounter)
-	// 	args = append(args, req.StorageId)
-	// 	argCounter++
-	// }
 
 	rows, err := p.db.Query(query, args...)
 	if err != nil {
@@ -359,18 +354,18 @@ func (p *ProductStorage) ListProducts(req *pb.GetAllProductRequest) (*pb.GetAllP
 		if currentPrice.Valid {
 			product.Price = currentPrice.Float64
 		} else {
-			product.Price = 0.0 // agar narx topilmasa
+			product.Price = 0.0 // Default if no price is found
 		}
 		if totalAmount.Valid {
 			product.Amount = totalAmount.Int32
 		} else {
-			product.Amount = 0 // agar mahsulot miqdori topilmasa
+			product.Amount = 0 // Default if no amount is found
 		}
 
 		products.AllProducts = append(products.AllProducts, &product)
 	}
 
-	query = `SELECT COUNT(1) FROM products`
+	query = `SELECT COUNT(1) FROM products WHERE deleted_at = 0`
 	err = p.db.QueryRow(query).Scan(&argCounter)
 	if err != nil {
 		return nil, err
@@ -384,3 +379,171 @@ func (p *ProductStorage) ListProducts(req *pb.GetAllProductRequest) (*pb.GetAllP
 	products.Message = "Products retrieved successfully"
 	return &products, nil
 }
+
+
+
+
+// func (p *ProductStorage) ListProducts(req *pb.GetAllProductRequest) (*pb.GetAllProductResponse, error) {
+// 	products := pb.GetAllProductResponse{}
+
+// 	// query`
+// 	// 	SELECT id, name, color, model, image_url, made_in, date_of_creation, storage_id, created_at, updated_at, deleted_at
+// 	// 	FROM products
+// 	// 	WHERE deleted_at = 0 and storage_id = $1
+// 	// `
+// 	query := `
+// 		SELECT id, name, color, model, image_url, made_in, date_of_creation, storage_id, created_at, updated_at, deleted_at
+// 		FROM products
+// 		WHERE deleted_at = 0
+// 	`
+
+// 	var args []interface{}
+// 	argCounter := 1
+// 	// args = append(args, req.StorageId)
+
+// 	if req.Name != "" {
+// 		query += fmt.Sprintf(" AND name ILIKE $%d", argCounter)
+// 		args = append(args, "%"+req.Name+"%")
+// 		argCounter++
+// 	}
+// 	if req.Color != "" {
+// 		query += fmt.Sprintf(" AND color ILIKE $%d", argCounter)
+// 		args = append(args, "%"+req.Color+"%")
+// 		argCounter++
+// 	}
+// 	if req.Model != "" {
+// 		query += fmt.Sprintf(" AND model ILIKE $%d", argCounter)
+// 		args = append(args, "%"+req.Model+"%")
+// 		argCounter++
+// 	}
+
+// 	if req.Limit != 0 || req.Offset != 0 {
+// 		query += fmt.Sprintf(" LIMIT $%d OFFSET $%d", argCounter, argCounter+1)
+// 		args = append(args, req.Limit, req.Offset)
+// 	}
+
+// 	// if req.StorageId != "" {
+// 	// 	query += fmt.Sprintf(" AND storage_id = $%d", argCounter)
+// 	// 	args = append(args, req.StorageId)
+// 	// 	argCounter++
+// 	// }
+
+// 	rows, err := p.db.Query(query, args...)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	defer rows.Close()
+
+// 	for rows.Next() {
+// 		var product pb.GetProductResponse
+// 		err := rows.Scan(
+// 			&product.Id, &product.Name, &product.Color, &product.Model,
+// 			&product.ImageUrl, &product.MadeIn, &product.DateOfCreation,
+// 			&product.StorageId, &product.CreatedAt, &product.UpdatedAt, &product.DeletedAt,
+// 		)
+// 		if err != nil {
+// 			log.Println("Failed to scan product:", err)
+// 			return nil, err
+// 		}
+		
+// 		priceQuery := `
+// 			WITH buy_orders AS (
+// 				SELECT 
+// 					id, 
+// 					product_id, 
+// 					amount, 
+// 					price, 
+// 					created_at
+// 				FROM 
+// 					exchange
+// 				WHERE 
+// 					status = 'buy' 
+// 					AND product_id = $1
+// 					AND deleted_at = 0
+// 				ORDER BY 
+// 					created_at ASC
+// 			),
+// 			sell_total AS (
+// 				SELECT 
+// 					COALESCE(SUM(amount), 0) AS total_sold
+// 				FROM 
+// 					exchange
+// 				WHERE 
+// 					status = 'sell' 
+// 					AND product_id = $1
+// 					AND deleted_at = 0
+// 			),
+// 			remaining_buy_orders AS (
+// 				SELECT 
+// 					id, 
+// 					product_id, 
+// 					amount, 
+// 					price, 
+// 					created_at,
+// 					SUM(amount) OVER (ORDER BY created_at ASC) - (SELECT total_sold FROM sell_total) AS remaining
+// 				FROM 
+// 					buy_orders
+// 			)
+// 			SELECT 
+// 				price
+// 			FROM 
+// 				remaining_buy_orders
+// 			WHERE 
+// 				remaining > 0
+// 			ORDER BY 
+// 				created_at
+// 			LIMIT 1;
+// 		`
+		
+// 		var currentPrice sql.NullFloat64
+// 		var totalAmount sql.NullInt32
+
+// 		err = p.db.QueryRow(priceQuery, product.Id).Scan(&currentPrice)
+// 		if err != nil && err != sql.ErrNoRows {
+// 			return nil, err
+// 		}
+		
+// 		query = `
+// 			SELECT SUM(
+// 				CASE 
+// 					WHEN status = 'buy' THEN amount 
+// 					WHEN status = 'sell' THEN -amount 
+// 					ELSE 0 
+// 				END
+// 			) 
+// 			FROM exchange 
+// 			WHERE deleted_at = 0 AND product_id = $1
+// 		`
+// 		err = p.db.QueryRow(query, product.Id).Scan(&totalAmount)
+// 		if err != nil && err != sql.ErrNoRows {
+// 			return nil, err
+// 		}
+		
+// 		if currentPrice.Valid {
+// 			product.Price = currentPrice.Float64
+// 		} else {
+// 			product.Price = 0.0 // agar narx topilmasa
+// 		}
+// 		if totalAmount.Valid {
+// 			product.Amount = totalAmount.Int32
+// 		} else {
+// 			product.Amount = 0 // agar mahsulot miqdori topilmasa
+// 		}
+
+// 		products.AllProducts = append(products.AllProducts, &product)
+// 	}
+
+// 	query = `SELECT COUNT(1) FROM products`
+// 	err = p.db.QueryRow(query).Scan(&argCounter)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	products.Count = int32(argCounter)
+
+// 	if err := rows.Err(); err != nil {
+// 		return nil, err
+// 	}
+
+// 	products.Message = "Products retrieved successfully"
+// 	return &products, nil
+// }

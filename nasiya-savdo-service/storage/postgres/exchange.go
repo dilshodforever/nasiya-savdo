@@ -164,6 +164,7 @@ func (p *ExchangeStorage) DeleteExchange(req *pb.ExchangeIdRequest) (*pb.Exchang
 	}, nil
 }
 
+
 func (p *ExchangeStorage) ListExchanges(req *pb.GetAllExchangeRequest) (*pb.GetAllExchangeResponse, error) {
 	exchanges := pb.GetAllExchangeResponse{
 		AllExchanges: []*pb.GetExchangeResponse{}, // Explicitly initialize to an empty slice
@@ -193,9 +194,15 @@ func (p *ExchangeStorage) ListExchanges(req *pb.GetAllExchangeRequest) (*pb.GetA
 		count++
 	}
 
-	if req.Limit != 0 || req.Offset != 0 {
+	// Calculate limit and offset based on page
+	if req.Limit != 0 {
+		page := req.Page
+		if page < 1 {
+			page = 1 // Default to the first page if an invalid page is given
+		}
+		offset := (page - 1) * req.Limit
 		query += fmt.Sprintf(" LIMIT $%d OFFSET $%d", count, count+1)
-		args = append(args, req.Limit, req.Offset)
+		args = append(args, req.Limit, offset)
 	}
 
 	// Execute the query
@@ -232,8 +239,9 @@ func (p *ExchangeStorage) ListExchanges(req *pb.GetAllExchangeRequest) (*pb.GetA
 		exchanges.AllExchanges = append(exchanges.AllExchanges, &exchange)
 	}
 
-	query = `SELECT COUNT(1) FROM exchange`
-	err = p.db.QueryRow(query).Scan(&count)
+	// Query the total count of exchanges for pagination
+	countQuery := `SELECT COUNT(1) FROM exchange`
+	err = p.db.QueryRow(countQuery).Scan(&count)
 	if err != nil {
 		return nil, err
 	}
@@ -247,6 +255,7 @@ func (p *ExchangeStorage) ListExchanges(req *pb.GetAllExchangeRequest) (*pb.GetA
 	// Return the list of exchanges
 	return &exchanges, nil
 }
+
 
 func (p *ExchangeStorage) GetMonthlyStatistics(req *pb.ExchangeStatisticsRequest) (*pb.ExchangeStatisticsResponse, error) {
 	// Define start and end dates for the given month
@@ -299,3 +308,95 @@ func (p *ExchangeStorage) GetMonthlyStatistics(req *pb.ExchangeStatisticsRequest
 		NetProfit:    netProfit,
 	}, nil
 }
+
+
+
+
+
+
+
+// func (p *ExchangeStorage) ListExchanges(req *pb.GetAllExchangeRequest) (*pb.GetAllExchangeResponse, error) {
+// 	exchanges := pb.GetAllExchangeResponse{
+// 		AllExchanges: []*pb.GetExchangeResponse{}, // Explicitly initialize to an empty slice
+// 	}
+
+// 	// SQL query with corrected JOIN condition
+// 	query := `
+// 		SELECT e.id, e.product_id, e.amount, e.price, e.status, e.contract_id, e.created_at, e.updated_at, e.deleted_at
+// 		FROM exchange as e
+// 		JOIN products as p ON p.id = e.product_id
+// 		JOIN storage as s ON s.id = p.storage_id
+// 		WHERE e.deleted_at = 0
+// 	`
+
+// 	var args []interface{}
+// 	count := 1
+
+// 	// Adding filtering conditions based on the request
+// 	if req.ProductId != "" {
+// 		query += fmt.Sprintf(" AND e.product_id = $%d", count)
+// 		args = append(args, req.ProductId)
+// 		count++
+// 	}
+// 	if req.Status != "" {
+// 		query += fmt.Sprintf(" AND e.status = $%d", count)
+// 		args = append(args, req.Status)
+// 		count++
+// 	}
+
+// 	if req.Limit != 0 || req.Offset != 0 {
+// 		query += fmt.Sprintf(" LIMIT $%d OFFSET $%d", count, count+1)
+// 		args = append(args, req.Limit, req.Offset)
+// 	}
+
+// 	// Execute the query
+// 	rows, err := p.db.Query(query, args...)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	defer rows.Close()
+
+// 	// Scan through the result set
+// 	for rows.Next() {
+// 		var exchange pb.GetExchangeResponse
+// 		var contractId sql.NullString
+
+// 		// Scanning data into fields
+// 		err := rows.Scan(
+// 			&exchange.Id, &exchange.ProductId, &exchange.Amount, &exchange.Price, &exchange.Status,
+// 			&contractId, &exchange.CreatedAt, &exchange.UpdatedAt, &exchange.DeletedAt,
+// 		)
+
+// 		if err != nil {
+// 			log.Println(err)
+// 			return nil, err
+// 		}
+
+// 		// Handle the nullable contract ID
+// 		if contractId.Valid {
+// 			exchange.ContractId = contractId.String
+// 		} else {
+// 			exchange.ContractId = ""
+// 		}
+
+// 		// Append to the list of exchanges
+// 		exchanges.AllExchanges = append(exchanges.AllExchanges, &exchange)
+// 	}
+
+// 	query = `SELECT COUNT(1) FROM exchange`
+// 	err = p.db.QueryRow(query).Scan(&count)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	exchanges.Count = int32(count)
+
+// 	// Check for errors after iterating through rows
+// 	if err = rows.Err(); err != nil {
+// 		return nil, err
+// 	}
+
+// 	// Return the list of exchanges
+// 	return &exchanges, nil
+// }
+
+

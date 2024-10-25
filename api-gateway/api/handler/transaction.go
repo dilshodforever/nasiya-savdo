@@ -130,7 +130,7 @@ func (h *Handler) DeleteTransaction(ctx *gin.Context) {
 // @Security     BearerAuth
 // @Param        contract_id query string false "Contract ID"
 // @Param        limit query string false "Limit"
-// @Param        offset query string false "Offset"
+// @Param        page query string false "page"
 // @Success      200 {object} pb.GetAllTransactionResponse "List of transactions"
 // @Failure      400 {string} string "Invalid input"
 // @Failure      500 {string} string "Error while listing transactions"
@@ -139,7 +139,7 @@ func (h *Handler) ListTransactions(ctx *gin.Context) {
 	contractID := ctx.Query("contract_id")
 	req := &pb.GetAllTransactionRequest{ContractId: contractID}
 	req.Limit = ParseQueryInt32(ctx, "limit", 10) // Default limit 10
-	req.Offset = ParseQueryInt32(ctx, "offset", 0) // Default offset 0
+	req.Page = ParseQueryInt32(ctx, "page", 1) // Default offset 0
 	res, err := h.TransactionService.ListTransactions(context.Background(), req)
 	if err != nil {
 		log.Print(err)

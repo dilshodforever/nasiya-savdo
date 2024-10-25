@@ -59,7 +59,7 @@ message GetAllExchangeRequest {
     string product_id = 1;
     string status = 2;
     int32 limit = 3;
-    int32 offset = 4;
+    int32 page = 4;
 }
 
 message GetAllExchangeResponse {
