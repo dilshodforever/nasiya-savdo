@@ -152,6 +152,13 @@ func (p *UserStorage) Update(user *pb.User) (*pb.Void, error) {
 		query += fmt.Sprintf("full_name = $%d, ", argCount)
 		args = append(args, user.FullName)
 		argCount++
+		queryStorage:=`UPDATE storage
+					   SET name = $2	
+					   WHERE user_id=$1`
+		_, err:=p.db.Exec(queryStorage, user.Id, user.FullName+"'s storage")
+		if err!=nil{
+			return nil,err
+		}
 	}
 	
 	if user.Email != "" {
