@@ -153,9 +153,9 @@ func (p *UserStorage) Update(user *pb.User) (*pb.Void, error) {
 		args = append(args, user.FullName)
 		argCount++
 		queryStorage:=`UPDATE storage
-					   SET name = $2	
+					   SET name = $2, updated_at=$3
 					   WHERE user_id=$1`
-		_, err:=p.db.Exec(queryStorage, user.Id, user.FullName+"'s storage")
+		_, err:=p.db.Exec(queryStorage, user.Id, user.FullName+"'s storage", time.Now())
 		if err!=nil{
 			return nil,err
 		}
