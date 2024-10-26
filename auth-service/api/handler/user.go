@@ -374,8 +374,8 @@ func (h *Handler) LoginUser(ctx *gin.Context) {
 	h.redis.Set(res.Id, t.RefreshToken, 30*24*time.Hour)
 
 	ctx.JSON(200, gin.H{
-		"Access token":  t.AccessToken,
-		"Refresh token": t.RefreshToken,
+		"AccessToken":  t.AccessToken,
+		"RefreshToken": t.RefreshToken,
 		"Message":       "Login successfuly",
 	})
 }
