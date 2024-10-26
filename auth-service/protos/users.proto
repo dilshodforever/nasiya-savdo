@@ -63,7 +63,7 @@ message UserFilter {
 message UserLogin {
     string username = 1;
     string password = 2;
-    string massage = 3;
+  
 }
 
 message UserLoginRes {

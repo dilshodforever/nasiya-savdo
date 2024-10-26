@@ -510,9 +510,6 @@ const docTemplate = `{
         "genprotos.UserLogin": {
             "type": "object",
             "properties": {
-                "massage": {
-                    "type": "string"
-                },
                 "password": {
                     "type": "string"
                 },

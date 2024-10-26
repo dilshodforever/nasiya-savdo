@@ -30,8 +30,6 @@ definitions:
     type: object
   genprotos.UserLogin:
     properties:
-      massage:
-        type: string
       password:
         type: string
       username:
