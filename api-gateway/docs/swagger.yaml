@@ -444,6 +444,10 @@ paths:
         in: query
         name: search
         type: string
+      - description: Filter by status
+        in: query
+        name: status
+        type: string
       - description: Limit
         in: query
         name: limit

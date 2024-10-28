@@ -240,6 +240,12 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "description": "Filter by status",
+                        "name": "status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
                         "description": "Limit",
                         "name": "limit",
                         "in": "query"
