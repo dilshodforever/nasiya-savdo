@@ -200,8 +200,6 @@ func (h *Handler) GetContractPdf(ctx *gin.Context) {
 	pdf.Ln(12)
 
 	pdf.SetFont("Arial", "", 12)
-	pdf.Cell(0, 10, fmt.Sprintf("Contract ID: %s", res.Id))
-	pdf.Ln(10)
 	pdf.Cell(0, 10, fmt.Sprintf("Consumer Name: %s", res.ConsumerName))
 	pdf.Ln(10)
 	pdf.Cell(0, 10, fmt.Sprintf("Consumer Passport Serial: %s", res.ConsumerPassportSerial))
