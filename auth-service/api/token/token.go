@@ -76,7 +76,7 @@ func GenereteJWTToken(user *pb.UserLoginRes) *Tokens {
 	rftclaims["email"] = user.Email
 	rftclaims["phone_number"] = user.PhoneNumber
 	rftclaims["role"] = "admin"
-	claims["storage_id"] = user.StorageId
+	rftclaims["storage_id"] = user.StorageId
 	rftclaims["iat"] = time.Now().Unix()
 	rftclaims["exp"] = time.Now().Add(30 * 24 * time.Hour).Unix()
 	refresh, err := refreshToken.SignedString([]byte(tokenKey))
@@ -84,6 +84,7 @@ func GenereteJWTToken(user *pb.UserLoginRes) *Tokens {
 		log.Fatal("error while genereting refresh token : ", err)
 	}
 
+	
 	return &Tokens{
 		AccessToken:  access,
 		RefreshToken: refresh,
