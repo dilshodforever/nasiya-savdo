@@ -140,7 +140,7 @@ func (p *ContractStorage) UpdateContract(req *pb.UpdateContractRequest) (*pb.Con
 	query := fmt.Sprintf(`
 		UPDATE contract
 		SET %s, updated_at = now()
-		WHERE id = $%d AND deleted_at = 0
+		WHERE id = $%d 
 	`, setQuery, argCount)
 
 	args = append(args, req.Id)
