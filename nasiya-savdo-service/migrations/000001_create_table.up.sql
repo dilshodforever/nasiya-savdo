@@ -50,7 +50,8 @@ CREATE TABLE contract (
     status contract_status,
     created_at TIMESTAMP DEFAULT NOW(),
     duration INT,
-    deleted_at TIMESTAMP
+    updated_at TIMESTAMP DEFAULT NOW(),
+    deleted_at BIGINT DEFAULT 0
 );
 
 
