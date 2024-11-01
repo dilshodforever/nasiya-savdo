@@ -162,7 +162,7 @@ func (p *ContractStorage) DeleteContract(req *pb.ContractIdRequest) (*pb.Contrac
 		SET deleted_at = $2, status='canceled'
 		WHERE id = $1 
 	`
-	_, err := p.db.Exec(query, req.Id, time.Now())
+	_, err := p.db.Exec(query, req.Id, time.Now().Unix())
 	if err != nil {
 		return nil, err
 	}
