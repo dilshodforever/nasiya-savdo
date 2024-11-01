@@ -41,7 +41,7 @@ func (p *ContractStorage) GetContract(req *pb.ContractIdRequest) (*pb.GetContrac
 	query := `
 		SELECT id, consumer_name, consumer_passport_serial, consumer_address, consumer_phone_number, passport_image, status, duration, created_at, deleted_at
 		FROM contract
-		WHERE id = $1
+		WHERE id = $1 and deleted_at=0
 	`
 	var contract pb.GetContractResponse
 	var deletedAt sql.NullString
