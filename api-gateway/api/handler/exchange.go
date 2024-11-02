@@ -17,7 +17,6 @@ import (
 // @Accept       json
 // @Produce      json
 // @Security     BearerAuth
-// @Param        status query string true "Exchange Status" Enums(buy, sell)
 // @Param        exchange body []pb.CreateExchangeRequestSwagger true "Exchange details"
 // @Success      200 {object} []pb.ExchangeResponse "Exchange created successfully"
 // @Failure      400 {string} string "Invalid input"
@@ -31,7 +30,7 @@ func (h *Handler) CreateExchange(ctx *gin.Context) {
 	}
 
 	for i := 0; i < len(reqs); i++ {
-		reqs[i].Status = ctx.Query("status")
+		//reqs[i].Status = ctx.Query("status")
 
 		_, err := h.ExchangeService.CreateExchange(context.Background(), &reqs[i])
 		if err != nil {

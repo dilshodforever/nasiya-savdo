@@ -351,17 +351,6 @@ const docTemplate = `{
                 "summary": "Create a new Exchange",
                 "parameters": [
                     {
-                        "enum": [
-                            "buy",
-                            "sell"
-                        ],
-                        "type": "string",
-                        "description": "Exchange Status",
-                        "name": "status",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
                         "description": "Exchange details",
                         "name": "exchange",
                         "in": "body",
@@ -1447,6 +1436,9 @@ const docTemplate = `{
                     "type": "number"
                 },
                 "product_id": {
+                    "type": "string"
+                },
+                "status": {
                     "type": "string"
                 }
             }

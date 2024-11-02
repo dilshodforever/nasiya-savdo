@@ -26,6 +26,7 @@ message CreateExchangeRequestSwagger{
     int32 amount = 2;
     double price = 3;
     string contract_id = 4;
+    string status=5;
 }
 message ExchangeIdRequest {
     string id = 1;

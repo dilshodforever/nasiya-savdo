@@ -32,6 +32,8 @@ definitions:
         type: number
       product_id:
         type: string
+      status:
+        type: string
     type: object
   genprotos.CreateProductRequestSwagger:
     properties:
@@ -533,14 +535,6 @@ paths:
       - application/json
       description: Create a new exchange record with the specified details
       parameters:
-      - description: Exchange Status
-        enum:
-        - buy
-        - sell
-        in: query
-        name: status
-        required: true
-        type: string
       - description: Exchange details
         in: body
         name: exchange
