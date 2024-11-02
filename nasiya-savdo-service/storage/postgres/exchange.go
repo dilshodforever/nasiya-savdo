@@ -316,7 +316,7 @@ func (p *ExchangeStorage) GetExchangeGetbyProductId(req *pb.GetExchangeGetbyProd
 	query := `
 		SELECT amount, price, created_at
 		FROM exchange
-		WHERE product_id = $1 AND deleted_at = 0
+		WHERE product_id = $1 AND status = 'buy' AND deleted_at = 0
 	`
 	args := []interface{}{req.ProductId}
 	count := 2
