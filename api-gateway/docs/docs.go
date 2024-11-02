@@ -555,7 +555,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/exchange/list_by_product_id": {
+        "/exchange/list_product_by/{id}": {
             "get": {
                 "security": [
                     {
@@ -577,8 +577,8 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "Product ID to filter exchanges",
-                        "name": "product_id",
-                        "in": "query",
+                        "name": "id",
+                        "in": "path",
                         "required": true
                     },
                     {

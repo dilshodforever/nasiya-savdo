@@ -210,12 +210,12 @@ func (h *Handler) GetStatistika(ctx *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Security     BearerAuth
-// @Param        product_id query string true "Product ID to filter exchanges"
+// @Param        id path string true "Product ID to filter exchanges"
 // @Param        limit query int false "Limit" default(10)
 // @Param        page query int false "Page" default(1)
 // @Success      200 {object} pb.GetExchangeGetbyProductIdResponse "List of exchanges retrieved successfully"
 // @Failure      500 {string} string "Error while listing exchanges"
-// @Router       /exchange/list_by_product_id [get]
+// @Router       /exchange/list_product_by/{id} [get]
 func (h *Handler) ListExchangesByProductId(ctx *gin.Context) {
 	var req pb.GetExchangeGetbyProductIdRequest
 	req.ProductId = ctx.Query("product_id")

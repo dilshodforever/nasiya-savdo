@@ -671,7 +671,7 @@ paths:
       summary: List all Exchanges
       tags:
       - Exchange
-  /exchange/list_by_product_id:
+  /exchange/list_product_by/{id}:
     get:
       consumes:
       - application/json
@@ -679,8 +679,8 @@ paths:
         pagination
       parameters:
       - description: Product ID to filter exchanges
-        in: query
-        name: product_id
+        in: path
+        name: id
         required: true
         type: string
       - default: 10
