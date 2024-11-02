@@ -276,7 +276,7 @@ func (p *ContractStorage) ListContracts(req *pb.GetAllContractRequest) (*pb.GetA
 		contracts.AllContracts = append(contracts.AllContracts, &contract)
 	}
 
-	countQuery := `SELECT COUNT(1) FROM contract`
+	countQuery := `SELECT COUNT(1) FROM contract where deleted_at=0`
 	err = p.db.QueryRow(countQuery).Scan(&count)
 	if err != nil {
 		return nil, err

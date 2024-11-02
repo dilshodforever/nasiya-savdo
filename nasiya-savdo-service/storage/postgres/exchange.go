@@ -312,7 +312,51 @@ func (p *ExchangeStorage) GetMonthlyStatistics(req *pb.ExchangeStatisticsRequest
 
 
 
+func (p *ExchangeStorage) GetExchangeGetbyProductId(req *pb.GetExchangeGetbyProductIdRequest) (*pb.GetExchangeGetbyProductIdResponse, error) {
+	query := `
+		SELECT amount, price, created_at
+		FROM exchange
+		WHERE product_id = $1 AND deleted_at = 0
+	`
+	args := []interface{}{req.ProductId}
+	count := 2
 
+	// Calculate limit and offset based on page
+	if req.Limit != 0 {
+		page := req.Page
+		if page < 1 {
+			page = 1 // Default to the first page if an invalid page is given
+		}
+		offset := (page - 1) * req.Limit
+		query += fmt.Sprintf(" LIMIT $%d OFFSET $%d", count, count+1)
+		args = append(args, req.Limit, offset)
+	}
+
+	rows, err := p.db.Query(query, args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var response pb.GetExchangeGetbyProductIdResponse
+	for rows.Next() {
+		var exchange pb.GetExchangeGetbyProductIdList
+		err = rows.Scan(&exchange.Amount, &exchange.Price, &exchange.CreatedAt)
+		if err != nil {
+			return nil, err
+		}
+		response.Exchange = append(response.Exchange, &exchange)
+	}
+
+	// Count query for pagination
+	countQuery := `SELECT COUNT(*) FROM exchange WHERE product_id = $1 AND deleted_at = 0`
+	err = p.db.QueryRow(countQuery, req.ProductId).Scan(&response.Count)
+	if err != nil {
+		return nil, err
+	}
+
+	return &response, nil
+}
 
 
 // func (p *ExchangeStorage) ListExchanges(req *pb.GetAllExchangeRequest) (*pb.GetAllExchangeResponse, error) {

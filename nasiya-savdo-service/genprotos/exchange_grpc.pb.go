@@ -28,6 +28,7 @@ type ExchangeServiceClient interface {
 	DeleteExchange(ctx context.Context, in *ExchangeIdRequest, opts ...grpc.CallOption) (*ExchangeResponse, error)
 	ListExchanges(ctx context.Context, in *GetAllExchangeRequest, opts ...grpc.CallOption) (*GetAllExchangeResponse, error)
 	GetStatistika(ctx context.Context, in *ExchangeStatisticsRequest, opts ...grpc.CallOption) (*ExchangeStatisticsResponse, error)
+	GetExchangeGetbyProductId(ctx context.Context, in *GetExchangeGetbyProductIdRequest, opts ...grpc.CallOption) (*GetExchangeGetbyProductIdResponse, error)
 }
 
 type exchangeServiceClient struct {
@@ -92,6 +93,15 @@ func (c *exchangeServiceClient) GetStatistika(ctx context.Context, in *ExchangeS
 	return out, nil
 }
 
+func (c *exchangeServiceClient) GetExchangeGetbyProductId(ctx context.Context, in *GetExchangeGetbyProductIdRequest, opts ...grpc.CallOption) (*GetExchangeGetbyProductIdResponse, error) {
+	out := new(GetExchangeGetbyProductIdResponse)
+	err := c.cc.Invoke(ctx, "/protos.ExchangeService/GetExchangeGetbyProductId", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ExchangeServiceServer is the server API for ExchangeService service.
 // All implementations must embed UnimplementedExchangeServiceServer
 // for forward compatibility
@@ -102,6 +112,7 @@ type ExchangeServiceServer interface {
 	DeleteExchange(context.Context, *ExchangeIdRequest) (*ExchangeResponse, error)
 	ListExchanges(context.Context, *GetAllExchangeRequest) (*GetAllExchangeResponse, error)
 	GetStatistika(context.Context, *ExchangeStatisticsRequest) (*ExchangeStatisticsResponse, error)
+	GetExchangeGetbyProductId(context.Context, *GetExchangeGetbyProductIdRequest) (*GetExchangeGetbyProductIdResponse, error)
 	mustEmbedUnimplementedExchangeServiceServer()
 }
 
@@ -126,6 +137,9 @@ func (UnimplementedExchangeServiceServer) ListExchanges(context.Context, *GetAll
 }
 func (UnimplementedExchangeServiceServer) GetStatistika(context.Context, *ExchangeStatisticsRequest) (*ExchangeStatisticsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetStatistika not implemented")
+}
+func (UnimplementedExchangeServiceServer) GetExchangeGetbyProductId(context.Context, *GetExchangeGetbyProductIdRequest) (*GetExchangeGetbyProductIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetExchangeGetbyProductId not implemented")
 }
 func (UnimplementedExchangeServiceServer) mustEmbedUnimplementedExchangeServiceServer() {}
 
@@ -248,6 +262,24 @@ func _ExchangeService_GetStatistika_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ExchangeService_GetExchangeGetbyProductId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetExchangeGetbyProductIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ExchangeServiceServer).GetExchangeGetbyProductId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protos.ExchangeService/GetExchangeGetbyProductId",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ExchangeServiceServer).GetExchangeGetbyProductId(ctx, req.(*GetExchangeGetbyProductIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ExchangeService_ServiceDesc is the grpc.ServiceDesc for ExchangeService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -278,6 +310,10 @@ var ExchangeService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetStatistika",
 			Handler:    _ExchangeService_GetStatistika_Handler,
+		},
+		{
+			MethodName: "GetExchangeGetbyProductId",
+			Handler:    _ExchangeService_GetExchangeGetbyProductId_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

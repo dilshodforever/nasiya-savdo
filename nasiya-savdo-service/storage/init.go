@@ -35,6 +35,7 @@ type ExchangeStorage interface {
 	DeleteExchange(req *pb.ExchangeIdRequest) (*pb.ExchangeResponse, error)
 	ListExchanges(req *pb.GetAllExchangeRequest) (*pb.GetAllExchangeResponse, error)
 	GetMonthlyStatistics(req *pb.ExchangeStatisticsRequest) (*pb.ExchangeStatisticsResponse, error)
+	GetExchangeGetbyProductId(req *pb.GetExchangeGetbyProductIdRequest) (*pb.GetExchangeGetbyProductIdResponse, error) 
 }
 
 type StorageStorage interface {

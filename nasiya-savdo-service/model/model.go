@@ -1,7 +1,7 @@
 package model
 
 type Send struct {
-	Message string
-	Userid  string
+	Message    string
+	Userid     string
 	ContractId string
 }

@@ -11,6 +11,7 @@ service ExchangeService {
     rpc DeleteExchange (ExchangeIdRequest) returns (ExchangeResponse);
     rpc ListExchanges (GetAllExchangeRequest) returns (GetAllExchangeResponse);
     rpc GetStatistika (ExchangeStatisticsRequest) returns (ExchangeStatisticsResponse);
+    rpc GetExchangeGetbyProductId(GetExchangeGetbyProductIdRequest) returns(GetExchangeGetbyProductIdResponse);
 }
 
 message CreateExchangeRequest {
@@ -61,6 +62,23 @@ message GetAllExchangeRequest {
     int32 limit = 3;
     int32 page = 4;
 }
+message GetExchangeGetbyProductIdRequest{
+    string product_id = 1;
+    int32 limit = 2;
+    int32 page = 3;
+}
+
+message GetExchangeGetbyProductIdList{
+    int32 amount = 1;
+    double price = 2;
+    string created_at = 3; 
+}
+
+message GetExchangeGetbyProductIdResponse{
+    repeated GetExchangeGetbyProductIdList exchange=1;
+    int64 count =2;
+}
+
 
 message GetAllExchangeResponse {
     repeated GetExchangeResponse all_exchanges = 1;

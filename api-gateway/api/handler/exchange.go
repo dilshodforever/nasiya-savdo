@@ -196,3 +196,37 @@ func (h *Handler) GetStatistika(ctx *gin.Context) {
 
 	ctx.JSON(200, res)
 }
+
+
+
+
+
+
+
+// ListExchangesByProductId handles listing exchanges filtered by product ID with pagination
+// @Summary      List Exchanges by Product ID
+// @Description  Retrieve a list of exchange records filtered by Product ID with pagination
+// @Tags         Exchange
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        product_id query string true "Product ID to filter exchanges"
+// @Param        limit query int false "Limit" default(10)
+// @Param        page query int false "Page" default(1)
+// @Success      200 {object} pb.GetExchangeGetbyProductIdResponse "List of exchanges retrieved successfully"
+// @Failure      500 {string} string "Error while listing exchanges"
+// @Router       /exchange/list_by_product_id [get]
+func (h *Handler) ListExchangesByProductId(ctx *gin.Context) {
+	var req pb.GetExchangeGetbyProductIdRequest
+	req.ProductId = ctx.Query("product_id")
+	req.Limit = ParseQueryInt32(ctx, "limit", 10)  // Default limit 10
+	req.Page = ParseQueryInt32(ctx, "page", 1)     // Default page 1
+
+	res, err := h.ExchangeService.GetExchangeGetbyProductId(context.Background(), &req)
+	if err != nil {
+		log.Print(err)
+		ctx.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+	ctx.JSON(200, res)
+}

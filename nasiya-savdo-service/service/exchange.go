@@ -70,3 +70,14 @@ func (s *ExchangeService) GetStatistika(ctx context.Context,req *pb.ExchangeStat
 	}
 	return resp, nil
 }
+
+func (s *ExchangeService) GetExchangeGetbyProductId(ctx context.Context,req *pb.GetExchangeGetbyProductIdRequest) (*pb.GetExchangeGetbyProductIdResponse, error) {
+	resp, err := s.stg.Exchange().GetExchangeGetbyProductId(req)
+	if err != nil {
+		log.Print(err)
+		return nil, err
+	}
+	return resp, nil
+}
+
+
