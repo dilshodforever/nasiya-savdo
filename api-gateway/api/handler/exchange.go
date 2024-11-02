@@ -218,7 +218,7 @@ func (h *Handler) GetStatistika(ctx *gin.Context) {
 // @Router       /exchange/list_product_by/{id} [get]
 func (h *Handler) ListExchangesByProductId(ctx *gin.Context) {
 	var req pb.GetExchangeGetbyProductIdRequest
-	req.ProductId = ctx.Query("product_id")
+	req.ProductId = ctx.Param("product_id")
 	req.Limit = ParseQueryInt32(ctx, "limit", 10)  // Default limit 10
 	req.Page = ParseQueryInt32(ctx, "page", 1)     // Default page 1
 
