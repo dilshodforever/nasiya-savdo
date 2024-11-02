@@ -146,6 +146,24 @@ definitions:
       status:
         type: string
     type: object
+  genprotos.GetExchangeGetbyProductIdList:
+    properties:
+      amount:
+        type: integer
+      created_at:
+        type: string
+      price:
+        type: number
+    type: object
+  genprotos.GetExchangeGetbyProductIdResponse:
+    properties:
+      count:
+        type: integer
+      exchange:
+        items:
+          $ref: '#/definitions/genprotos.GetExchangeGetbyProductIdList'
+        type: array
+    type: object
   genprotos.GetExchangeResponse:
     properties:
       amount:
@@ -651,6 +669,44 @@ paths:
       security:
       - BearerAuth: []
       summary: List all Exchanges
+      tags:
+      - Exchange
+  /exchange/list_by_product_id:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of exchange records filtered by Product ID with
+        pagination
+      parameters:
+      - description: Product ID to filter exchanges
+        in: query
+        name: product_id
+        required: true
+        type: string
+      - default: 10
+        description: Limit
+        in: query
+        name: limit
+        type: integer
+      - default: 1
+        description: Page
+        in: query
+        name: page
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of exchanges retrieved successfully
+          schema:
+            $ref: '#/definitions/genprotos.GetExchangeGetbyProductIdResponse'
+        "500":
+          description: Error while listing exchanges
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: List Exchanges by Product ID
       tags:
       - Exchange
   /exchange/statistik:

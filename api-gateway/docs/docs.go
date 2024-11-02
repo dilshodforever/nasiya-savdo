@@ -555,6 +555,63 @@ const docTemplate = `{
                 }
             }
         },
+        "/exchange/list_by_product_id": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retrieve a list of exchange records filtered by Product ID with pagination",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Exchange"
+                ],
+                "summary": "List Exchanges by Product ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Product ID to filter exchanges",
+                        "name": "product_id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "default": 10,
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "Page",
+                        "name": "page",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of exchanges retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/genprotos.GetExchangeGetbyProductIdResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error while listing exchanges",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/exchange/statistik": {
             "get": {
                 "security": [
@@ -1565,6 +1622,34 @@ const docTemplate = `{
                 },
                 "status": {
                     "type": "string"
+                }
+            }
+        },
+        "genprotos.GetExchangeGetbyProductIdList": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
+                }
+            }
+        },
+        "genprotos.GetExchangeGetbyProductIdResponse": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "exchange": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/genprotos.GetExchangeGetbyProductIdList"
+                    }
                 }
             }
         },
