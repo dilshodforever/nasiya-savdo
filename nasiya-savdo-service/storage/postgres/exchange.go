@@ -50,16 +50,6 @@ func (p *ExchangeStorage) CreateExchange(req *pb.CreateExchangeRequest) (*pb.Exc
 		if err != nil {
 			return nil, err
 		}
-		query = `
-		UPDATE exchange 
-		SET amount = amount - $2 
-		WHERE product_id = $1 and status='buy' and deleted_at=0
-		`
-		_, err = p.db.Exec(query, req.ProductId, req.Amount)
-		if err != nil {
-			return nil, err
-		}
-
 	
 	} else {
 		query := `
