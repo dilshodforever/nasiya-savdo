@@ -23,15 +23,8 @@ func (p *ExchangeStorage) CreateExchange(req *pb.CreateExchangeRequest) (*pb.Exc
 	id := uuid.NewString()
 	if req.Status == `sell` {
 		query := `
-		SELECT SUM(
-			CASE 
-				WHEN status = 'buy' THEN amount 
-				WHEN status = 'sell' THEN -amount 
-				ELSE 0 
-			END
-		) 
-		FROM exchange 
-		WHERE deleted_at = 0 AND product_id = $1`
+		select amount from exchange
+		where deleted_at=0 and product_id=$1`
 		var amount int
 		err := p.db.QueryRow(query, req.ProductId).Scan(&amount)
 		if err != nil {
@@ -50,6 +43,16 @@ func (p *ExchangeStorage) CreateExchange(req *pb.CreateExchangeRequest) (*pb.Exc
 		if err != nil {
 			return nil, err
 		}
+		query = `
+		UPDATE exchange 
+		SET amount = amount - $2 
+		WHERE product_id = $1 and status='buy' and deleted_at=0
+		`
+		_, err = p.db.Exec(query, req.ProductId, req.Amount)
+		if err != nil {
+			return nil, err
+		}
+
 	
 	} else {
 		query := `
