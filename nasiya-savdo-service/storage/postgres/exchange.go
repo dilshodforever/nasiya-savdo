@@ -52,7 +52,7 @@ func (p *ExchangeStorage) CreateExchange(req *pb.CreateExchangeRequest) (*pb.Exc
 		query = `
 		UPDATE exchange 
 		SET amount = amount - $2 
-		WHERE product_id = $1
+		WHERE product_id = $1 and status='buy'
 		`
 		_, err = p.db.Exec(query, req.ProductId, req.Amount)
 		if err != nil {
