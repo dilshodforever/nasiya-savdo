@@ -44,10 +44,22 @@ func (p *ExchangeStorage) CreateExchange(req *pb.CreateExchangeRequest) (*pb.Exc
 			INSERT INTO exchange (id, product_id, amount, price, status, contract_id, created_at, deleted_at)
 			VALUES ($1, $2, $3, $4, $5, $6, now(), 0)
 		`
+
 		_, err = p.db.Exec(query, id, req.ProductId, req.Amount, req.Price, req.Status, req.ContractId)
 		if err != nil {
 			return nil, err
 		}
+		query = `
+		UPDATE exchange 
+		SET amount = amount - $2 
+		WHERE product_id = $1
+		`
+		_, err = p.db.Exec(query, req.ProductId, req.Amount)
+		if err != nil {
+			return nil, err
+		}
+
+	
 	} else {
 		query := `
 			INSERT INTO exchange (id, product_id, amount, price, status,  created_at, deleted_at)

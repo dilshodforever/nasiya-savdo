@@ -262,7 +262,7 @@ func (p *ProductStorage) ListProducts(req *pb.GetAllProductRequest) (*pb.GetAllP
 
 	rows, err := p.db.Query(query, args...)
 	if err != nil {
-		return nil, err
+		return nil, err 
 	}
 	defer rows.Close()
 
