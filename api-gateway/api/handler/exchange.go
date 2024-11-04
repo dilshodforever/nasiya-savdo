@@ -197,11 +197,6 @@ func (h *Handler) GetStatistika(ctx *gin.Context) {
 }
 
 
-
-
-
-
-
 // ListExchangesByProductId handles listing exchanges filtered by product ID with pagination
 // @Summary      List Exchanges by Product ID
 // @Description  Retrieve a list of exchange records filtered by Product ID with pagination

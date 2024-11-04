@@ -240,7 +240,7 @@ func (p *ExchangeStorage) ListExchanges(req *pb.GetAllExchangeRequest) (*pb.GetA
 	}
 
 	// Query the total count of exchanges for pagination
-	countQuery := `SELECT COUNT(1) FROM exchange`
+	countQuery := `SELECT COUNT(1) FROM exchange where deleted_at=0`
 	err = p.db.QueryRow(countQuery).Scan(&count)
 	if err != nil {
 		return nil, err
@@ -314,9 +314,9 @@ func (p *ExchangeStorage) GetMonthlyStatistics(req *pb.ExchangeStatisticsRequest
 
 func (p *ExchangeStorage) GetExchangeGetbyProductId(req *pb.GetExchangeGetbyProductIdRequest) (*pb.GetExchangeGetbyProductIdResponse, error) {
 	query := `
-		SELECT amount, price, created_at
+		SELECT id, amount, price, created_at
 		FROM exchange
-		WHERE product_id = $1 AND status = 'buy' AND deleted_at = 0
+		WHERE product_id = $1 AND deleted_at = 01
 	`
 	args := []interface{}{req.ProductId}
 	count := 2
@@ -341,7 +341,7 @@ func (p *ExchangeStorage) GetExchangeGetbyProductId(req *pb.GetExchangeGetbyProd
 	var response pb.GetExchangeGetbyProductIdResponse
 	for rows.Next() {
 		var exchange pb.GetExchangeGetbyProductIdList
-		err = rows.Scan(&exchange.Amount, &exchange.Price, &exchange.CreatedAt)
+		err = rows.Scan(&exchange.Id,&exchange.Amount, &exchange.Price, &exchange.CreatedAt)
 		if err != nil {
 			return nil, err
 		}

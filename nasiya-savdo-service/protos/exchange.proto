@@ -72,6 +72,7 @@ message GetExchangeGetbyProductIdList{
     int32 amount = 1;
     double price = 2;
     string created_at = 3; 
+    string id=4;
 }
 
 message GetExchangeGetbyProductIdResponse{
