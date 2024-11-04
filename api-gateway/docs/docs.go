@@ -1432,6 +1432,9 @@ const docTemplate = `{
                 "contract_id": {
                     "type": "string"
                 },
+                "exchange_id": {
+                    "type": "string"
+                },
                 "price": {
                     "type": "number"
                 },

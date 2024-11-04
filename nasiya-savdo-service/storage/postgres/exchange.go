@@ -46,9 +46,9 @@ func (p *ExchangeStorage) CreateExchange(req *pb.CreateExchangeRequest) (*pb.Exc
 		query = `
 		UPDATE exchange 
 		SET amount = amount - $2 
-		WHERE product_id = $1 and status='buy' and deleted_at=0
+		WHERE product_id = $1 and status='buy' and deleted_at=0 and id=$3
 		`
-		_, err = p.db.Exec(query, req.ProductId, req.Amount)
+		_, err = p.db.Exec(query, req.ProductId, req.Amount, req.ExchangeId)
 		if err != nil {
 			return nil, err
 		}
