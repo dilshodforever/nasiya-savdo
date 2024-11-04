@@ -24,7 +24,7 @@ func (p *ExchangeStorage) CreateExchange(req *pb.CreateExchangeRequest) (*pb.Exc
 	if req.Status == `sell` {
 		query := `
 		select amount from exchange
-		where deleted_at=0 and product_id=$1`
+		where deleted_at=0 and product_id=$1 and status = 'buy'`
 		var amount int
 		err := p.db.QueryRow(query, req.ProductId).Scan(&amount)
 		if err != nil {
