@@ -154,6 +154,8 @@ definitions:
         type: integer
       created_at:
         type: string
+      id:
+        type: string
       price:
         type: number
     type: object
