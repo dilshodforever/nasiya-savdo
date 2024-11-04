@@ -37,6 +37,7 @@ func (p *ExchangeStorage) CreateExchange(req *pb.CreateExchangeRequest) (*pb.Exc
 		if err != nil {
 			return nil, err
 		}
+		fmt.Println("amount: ", amount, "\n front amount: ", req.Amount)
 		if amount < int(req.Amount) {
 			return nil, fmt.Errorf("insufficient product quantity available")
 		}
