@@ -1,0 +1,55 @@
+name: Hello World
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout our repository
+      uses: actions/checkout@v4
+
+    - name: Deploy
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        key: ${{ secrets.SSH_PASSWORD }}
+        port: ${{ secrets.SSH_PORT }}
+        script: |
+          pwd
+          ls
+          cd ubuntu
+          cd nasiya-savdo
+          git pull origin main
+          
+          cd auth-service
+          sudo docker compose down
+          sudo docker compose up --build -d
+          cd ..
+
+          cd nasiya-savdo-service
+          sudo docker compose down
+          sudo docker compose up --build -d
+          cd ..
+  
+
+          cd notification
+          sudo docker compose down
+          sudo docker compose up --build -d
+          cd ..
+          
+          cd api-gateway
+          sudo docker compose down
+          sudo docker compose up --build -d
+          cd ..
+
+
+
+
