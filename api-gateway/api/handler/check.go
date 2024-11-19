@@ -39,7 +39,8 @@ func getClientDetails(r *http.Request) (string, string, error) {
 	// Qurilma haqida ma'lumot
 	ua := user_agent.New(r.Header.Get("User-Agent"))
 	browserName, browserVersion := ua.Browser()
-	deviceInfo := fmt.Sprintf("OS: %s, Device: %s, Browser: %s %s", ua.OS(), ua.Platform(), browserName, browserVersion)
+	
+	deviceInfo := fmt.Sprintf("OS: %s, Device: %s, Browser: %s %s, Model: %s", ua.OS(), ua.Platform(), browserName, browserVersion,ua.Model())
 
 	// IP manzilni olish
 	clientIP := getClientIP(r)
