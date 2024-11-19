@@ -11,6 +11,7 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/jung-kurt/gofpdf/v2 v2.17.3
 	github.com/minio/minio-go/v7 v7.0.76
+	github.com/mssola/user_agent v0.6.0
 	github.com/spf13/cast v1.6.0
 	github.com/swaggo/files v1.0.1
 	github.com/swaggo/gin-swagger v1.6.0

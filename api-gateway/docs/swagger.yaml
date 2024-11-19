@@ -333,6 +333,27 @@ info:
   title: API Gateway
   version: "1.0"
 paths:
+  /check/location:
+    post:
+      consumes:
+      - application/json
+      description: Check a user with username and password
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Check successful
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Check a user
+      tags:
+      - Auth
   /contract/create:
     post:
       consumes:

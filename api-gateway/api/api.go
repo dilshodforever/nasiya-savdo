@@ -67,7 +67,7 @@ func NewGin(h *handler.Handler) *gin.Engine {
 		exchange.DELETE("/delete/:id", h.DeleteExchange)
 		exchange.GET("/list", h.ListExchanges)
 		exchange.GET("/statistik", h.GetStatistika)
-		exchange.GET("/list_product_by/:id", h.ListExchangesByProductId) 
+		exchange.GET("/list_product_by/:id", h.ListExchangesByProductId)
 	}
 
 	// Product endpoints
@@ -112,6 +112,12 @@ func NewGin(h *handler.Handler) *gin.Engine {
 	minIO := r.Group("/minio")
 	{
 		minIO.POST("/media", h.Media)
+	}
+
+	check := r.Group("/check")
+	{
+		check.POST("/location", h.Check)
+
 	}
 
 	return r
