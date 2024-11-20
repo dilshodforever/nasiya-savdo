@@ -46,7 +46,7 @@ func getClientDetails(r *http.Request) (string, string, error) {
 	clientIP := getClientIP(r)
 
 	// Geolokatsiya ma'lumotlarini olish
-	location, err := getLocationFromIP(clientIP)
+	location, err := GetLocationFromIPWithDetails(clientIP)
 	if err != nil {
 		return deviceInfo, "Unknown", err
 	}
@@ -69,21 +69,30 @@ func getClientIP(r *http.Request) string {
 	return strings.TrimSpace(ip)
 }
 
-// getLocationFromIP fetches geolocation data using an external API.
-func getLocationFromIP(ip string) (string, error) {
-	resp, err := http.Get("http://ip-api.com/json/" + ip)
+
+func GetLocationFromIPWithDetails(ip string) (string, error) {
+	apiKey := "4738305de27795684d5922efff0699df" // O'zingizning API kalitingizni kiriting
+	url := fmt.Sprintf("http://api.ipstack.com/%s?access_key=%s", ip, apiKey)
+
+	resp, err := http.Get(url)
 	if err != nil {
 		return "", err
 	}
 	defer resp.Body.Close()
 
 	var result struct {
-		Country string `json:"country"`
-		City    string `json:"city"`
+		Country     string `json:"country_name"`
+		City        string `json:"city"`
+		Region      string `json:"region_name"`
+		Zip         string `json:"zip"`
+		Latitude    float64 `json:"latitude"`
+		Longitude   float64 `json:"longitude"`
 	}
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return "", err
 	}
 
-	return fmt.Sprintf("%s, %s", result.City, result.Country), nil
+	location := fmt.Sprintf("City: %s, Region: %s, Country: %s, Zip: %s, Latitude: %f, Longitude: %f",
+		result.City, result.Region, result.Country, result.Zip, result.Latitude, result.Longitude)
+	return location, nil
 }
