@@ -47,8 +47,8 @@ services:
     container_name: auth-service
     build: ./
     ports:
-      - "8081:8081"
-      - "3030-3030"
+      - "9003:9003"
+      - "1100-1100"
     networks:
       - GLhost
 
@@ -57,7 +57,7 @@ services:
     image: redis:latest
     container_name: redis
     ports:
-      - "6380:6379"
+      - "6371:6371"
     volumes:
       - redis-data:/data
     networks:

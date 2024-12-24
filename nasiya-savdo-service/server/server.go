@@ -17,7 +17,7 @@ func Connect() {
 	}
 
 	// Create a TCP listener on port 8087
-	lis, err := net.Listen("tcp", ":8087")
+	lis, err := net.Listen("tcp", ":3003")
 	if err != nil {
 		log.Fatal("Error while creating TCP listener: ", err.Error())
 	}

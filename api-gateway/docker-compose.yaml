@@ -5,15 +5,15 @@ services:
     container_name: api-gateway
     build: .
     ports:
-      - "8080:8080"
+      - "3331:3331"
     networks:
       - mynetwork
 
   minio:
     image: docker.io/bitnami/minio:2024
     ports:
-      - '9000:9000'
-      - '9001:9001'
+      - '3330:3330'
+      - '3033:3033'
     volumes:
       - 'minio_data:/data'
     environment:
@@ -21,7 +21,7 @@ services:
       - MINIO_ROOT_PASSWORD=isakov05@
       - MINIO_DEFAULT_BUCKETS=photos
     healthcheck:
-      test: [ "CMD-SHELL", "curl -f http://localhost:9000/minio/health/live || exit 1" ]
+      test: [ "CMD-SHELL", "curl -f http://localhost:3330/minio/health/live || exit 1" ]
       interval: 30s
       timeout: 10s
       retries: 5

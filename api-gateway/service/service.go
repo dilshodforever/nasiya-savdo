@@ -8,21 +8,21 @@ import (
 	"github.com/dilshodforever/nasiya-savdo/api/handler"
 	"github.com/dilshodforever/nasiya-savdo/genprotos"
 	"github.com/go-redis/redis/v8"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 func Connect() {
 	// GRPC connection to different services
-	NasiaConn, err := grpc.NewClient("nasiya-service:8087", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	NasiaConn, err := grpc.NewClient("nasiya-service:3003", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatal("Error while connecting to ContractService: ", err.Error())
 	}
 	defer NasiaConn.Close()
 
-	NotificationConn, err := grpc.NewClient("notification:8089", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	NotificationConn, err := grpc.NewClient("notification:3031", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatal("Error while connecting to NotificationService: ", err.Error())
 	}
@@ -30,11 +30,11 @@ func Connect() {
 
 	// Redis connection
 	rdb := redis.NewClient(&redis.Options{
-		Addr: "redis_api:6379",
+		Addr: "redis_api:6371",
 	})
-	
+
 	// MinIO connection
-	minioClient, err := minio.New("minio:9000", &minio.Options{
+	minioClient, err := minio.New("minio:3330", &minio.Options{
 		Creds:  credentials.NewStaticV4("Dior", "isakov05@", ""),
 		Secure: false,
 	})
@@ -56,9 +56,9 @@ func Connect() {
 
 	// Setting up the API with the handlers
 	r := api.NewGin(h)
-	fmt.Println("Server started on port:8080")
+	fmt.Println("Server started on port:3331")
 
-	err = r.Run(":8080")
+	err = r.Run(":3331")
 	if err != nil {
 		log.Fatal("Error while running server: ", err.Error())
 	}

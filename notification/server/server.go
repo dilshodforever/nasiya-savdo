@@ -18,7 +18,7 @@ func Connection() net.Listener {
 		log.Fatal("Error while connecting to DB: ", err.Error())
 	}
 
-	lis, err := net.Listen("tcp", ":8089")
+	lis, err := net.Listen("tcp", ":3031")
 	if err != nil {
 		log.Fatal("Error while starting TCP listener: ", err.Error())
 	}
