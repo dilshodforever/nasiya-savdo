@@ -21,7 +21,7 @@ import (
 // @Success 200 {object} string "Check successful"
 // @Failure 401 {string} string "Unauthorized"
 // @Router /check/location [post]
-func (h *Handler)Check(ctx *gin.Context) {
+func (h *Handler) Check(ctx *gin.Context) {
 	deviceInfo, location, err := getClientDetails(ctx.Request)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Unable to retrieve client details"})
@@ -39,8 +39,8 @@ func getClientDetails(r *http.Request) (string, string, error) {
 	// Qurilma haqida ma'lumot
 	ua := user_agent.New(r.Header.Get("User-Agent"))
 	browserName, browserVersion := ua.Browser()
-	
-	deviceInfo := fmt.Sprintf("OS: %s, Device: %s, Browser: %s %s, Model: %s", ua.OS(), ua.Platform(), browserName, browserVersion,ua.Model())
+
+	deviceInfo := fmt.Sprintf("OS: %s, Device: %s, Browser: %s %s, Model: %s", ua.OS(), ua.Platform(), browserName, browserVersion, ua.Model())
 
 	// IP manzilni olish
 	clientIP := getClientIP(r)
@@ -69,7 +69,6 @@ func getClientIP(r *http.Request) string {
 	return strings.TrimSpace(ip)
 }
 
-
 func GetLocationFromIPWithDetails(ip string) (string, error) {
 	apiKey := "4738305de27795684d5922efff0699df" // O'zingizning API kalitingizni kiriting
 	url := fmt.Sprintf("http://api.ipstack.com/%s?access_key=%s", ip, apiKey)
@@ -81,12 +80,12 @@ func GetLocationFromIPWithDetails(ip string) (string, error) {
 	defer resp.Body.Close()
 
 	var result struct {
-		Country     string `json:"country_name"`
-		City        string `json:"city"`
-		Region      string `json:"region_name"`
-		Zip         string `json:"zip"`
-		Latitude    float64 `json:"latitude"`
-		Longitude   float64 `json:"longitude"`
+		Country   string  `json:"country_name"`
+		City      string  `json:"city"`
+		Region    string  `json:"region_name"`
+		Zip       string  `json:"zip"`
+		Latitude  float64 `json:"latitude"`
+		Longitude float64 `json:"longitude"`
 	}
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return "", err
