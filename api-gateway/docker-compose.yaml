@@ -1,14 +1,5 @@
 version: '3.9'
 services:
-  # API Gateway
-  api-gateway:
-    container_name: api-gateway
-    build: .
-    ports:
-      - "3331:3331"
-    networks:
-      - mynetwork
-
   minio:
     image: docker.io/bitnami/minio:2024
     ports:
@@ -28,8 +19,16 @@ services:
     networks:
       - mynetwork
   
-
-
+  # API Gateway
+  api-gateway-nasiya:
+    container_name: api-gateway-nasiya
+    build: .
+    ports:
+      - "3331:3331"
+    depends_on:
+      - minio
+    networks:
+      - mynetwork
 
 
 # Docker Networks
